@@ -3,7 +3,7 @@ import * as util from 'utils'
 
 // ------------------------------------------
 // THIS FILE IS NOT SUPPOSED TO BE WORLD EDIT
-// PLESE FIND THESE FUNCTIONS ELSE WHERE
+// PLEASE FIND THESE FUNCTIONS ELSE WHERE
 // SUPPOSED TO BE A FUNCTION FILE FOR EASILY
 // EDITING THE WORLD
 // ------------------------------------------

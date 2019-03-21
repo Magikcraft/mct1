@@ -34,8 +34,6 @@ var tools = require("@magikcraft/mct1/tools");
 var events = require("events");
 var questTools = require("@magikcraft/mct1/quests/quest-tools");
 var db_1 = require("./db");
-// import * as http from 'http'
-var api = require("@magikcraft/mct1/api");
 var QuestBase = /** @class */ (function () {
     function QuestBase(conf) {
         this.state = {};
@@ -78,7 +76,6 @@ var QuestBase = /** @class */ (function () {
         }, 2000); // delay first track by 2 secs
     };
     QuestBase.prototype.track = function () {
-        var _this = this;
         // user(this.player).db.
         this.log("track quest " + this.world.name);
         var _a = this, player = _a.player, world = _a.world, name = _a.name;
@@ -115,23 +112,6 @@ var QuestBase = /** @class */ (function () {
             inventory: inventory,
             mct1: mct1,
         };
-        // api.post('/minecraft/player/state/track', {state}, (err, res) => {
-        // 	if (err) this.log('err', err)
-        // 	else this.log('logged player state to DB')
-        // })
-        // V2 method in the wings
-        var payload = {
-            player: player.name,
-            world: world.name,
-            session: user_1.user(player).sessionId,
-            payload: JSON.stringify(state),
-        };
-        api.post('/minecraft/player/state/log', payload, function (err, res) {
-            if (err)
-                _this.log('err', err);
-            else
-                _this.log('logged player state to DB');
-        });
         // Log to console.
         var logs = [];
         logs.push("PLAYER: " + player.name);
@@ -152,14 +132,12 @@ var QuestBase = /** @class */ (function () {
         this.log(logs.join(' | '));
     };
     QuestBase.prototype.stop = function () {
-        var _a = this, player = _a.player, world = _a.world, options = _a.options;
         // Remove all mobs!
-        world.getEntities().forEach(function (e) {
+        this.world.getEntities().forEach(function (e) {
             if (e.type != 'PLAYER') {
                 e.remove();
             }
         });
-        // __plugin.server.dispatchCommand(__plugin.server.consoleSender, `killall monsters ${world.name}`)
         this.unregisterAllEvents();
         this.clearAllIntervals();
         this.clearAllTimeouts();
@@ -182,7 +160,7 @@ var QuestBase = /** @class */ (function () {
         });
     };
     QuestBase.prototype.complete = function () {
-        var _a = this, player = _a.player, world = _a.world, options = _a.options, nextQuestName = _a.nextQuestName;
+        var _a = this, player = _a.player, options = _a.options, nextQuestName = _a.nextQuestName;
         this.stop();
         if (this.nextQuestName) {
             quests_1.questCommand(nextQuestName, 'start', player, options);
@@ -384,7 +362,7 @@ var QuestMCT1 = /** @class */ (function (_super) {
     QuestMCT1.prototype.registerEvents = function () {
         var _this = this;
         _super.prototype.registerEvents.call(this);
-        var _a = this, player = _a.player, world = _a.world, options = _a.options, log = _a.log, nextQuestName = _a.nextQuestName;
+        var player = this.player;
         if (this.endChestLocation) {
             // inventoryClose
             this.registerEvent('inventoryClose', function (event) {

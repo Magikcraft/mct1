@@ -17,6 +17,12 @@
         "scriptcraft"
     ],
     "author": "Magikcraft.io",
+    "contributors": [
+        "Tim Marwick <tim@magikcraft.io> (https://triyuga.github.io/)",
+        "Jonn Dillon (https://github.com/Technosasquach)",
+        "Katie Morgan",
+        "Josh Wulf <josh@magikcraft.io> (https://github.com/jwulf)"
+    ],
     "license": "ISC",
     "bugs": {
         "url": "https://github.com/Magikcraft/mct1/issues"

@@ -8,8 +8,6 @@ import * as tools from '@magikcraft/mct1/tools'
 import * as events from 'events'
 import * as questTools from '@magikcraft/mct1/quests/quest-tools'
 import DB from './db'
-// import * as http from 'http'
-import * as api from '@magikcraft/mct1/api'
 
 export type QuestMode = 'single' | 'multi'
 export interface QuestOptions {
@@ -120,23 +118,6 @@ export class QuestBase {
             mct1: mct1,
         }
 
-        // api.post('/minecraft/player/state/track', {state}, (err, res) => {
-        // 	if (err) this.log('err', err)
-        // 	else this.log('logged player state to DB')
-        // })
-
-        // V2 method in the wings
-        const payload = {
-            player: player.name,
-            world: world.name,
-            session: user(player).sessionId,
-            payload: JSON.stringify(state),
-        }
-        api.post('/minecraft/player/state/log', payload, (err, res) => {
-            if (err) this.log('err', err)
-            else this.log('logged player state to DB')
-        })
-
         // Log to console.
         const logs: any[] = []
         logs.push(`PLAYER: ${player.name}`)
@@ -160,14 +141,12 @@ export class QuestBase {
     }
 
     stop() {
-        const { player, world, options } = this
         // Remove all mobs!
-        world.getEntities().forEach(e => {
+        this.world.getEntities().forEach(e => {
             if (e.type != 'PLAYER') {
                 e.remove()
             }
         })
-        // __plugin.server.dispatchCommand(__plugin.server.consoleSender, `killall monsters ${world.name}`)
         this.unregisterAllEvents()
         this.clearAllIntervals()
         this.clearAllTimeouts()
@@ -195,7 +174,7 @@ export class QuestBase {
     }
 
     complete() {
-        const { player, world, options, nextQuestName } = this
+        const { player, options, nextQuestName } = this
         this.stop()
 
         if (this.nextQuestName) {
@@ -439,7 +418,7 @@ export class QuestMCT1 extends QuestBase {
 
     registerEvents() {
         super.registerEvents()
-        const { player, world, options, log, nextQuestName } = this
+        const { player } = this
 
         if (this.endChestLocation) {
             // inventoryClose
