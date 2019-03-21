@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("@magikcraft/mct1/utils/fs");
 var log_1 = require("@magikcraft/mct1/log");
 var server = require("@magikcraft/mct1/utils/server");
-var utils_1 = require("utils");
 var utils = require('utils'); // tslint:disable-line
 var log = log_1.Logger(__filename);
 var quests = {
@@ -75,40 +74,35 @@ function mv() {
 function importWorld(templateWorldName) {
     server.executeCommand("mv import " + templateWorldName + " normal");
 }
-function deleteWorld(worldName, cb) {
-    log("Deleting ./" + worldName);
-    try {
-        var w = utils_1.world(worldName);
-        var worldFilePath = w ? w.getWorldFolder().getPath() : undefined;
+function deleteWorld(worldName) {
+    return new Promise(function (resolve) {
+        log("Deleting ./" + worldName);
+        var w = utils.world(worldName);
+        var worldFilePath = w ? w.getWorldFolder().getPath() : "worlds/" + worldName;
         mv().deleteWorld(worldName);
-        if (worldFilePath && fs.exists(worldFilePath)) {
-            log("Removing " + worldFilePath + "...");
+        if (fs.exists(worldFilePath)) {
+            log("Removing file " + worldFilePath + "...");
             fs.remove(worldFilePath);
         }
-        cb && cb();
-    }
-    catch (e) {
-        log(e);
-        cb && cb(e);
-    }
+        resolve(worldName);
+    });
 }
-function cloneWorld(worldName, templateWorldName, cb) {
-    try {
+function cloneWorld(worldName, templateWorldName) {
+    return new Promise(function (resolve, reject) {
         log("Cloning " + worldName);
         server.executeCommand("mv import " + templateWorldName + " normal");
-        var success = mv().cloneWorld(templateWorldName, worldName, 'normal');
-        if (!success) {
-            log("Failed to clone world " + templateWorldName);
-            return cb && cb("Failed to clone world");
-        }
-        var world_1 = utils.world(worldName);
-        log("World clone complete for " + worldName);
-        return cb && cb(null, world_1);
-    }
-    catch (e) {
-        log(e);
-        return cb && cb(e, null);
-    }
+        deleteWorld(worldName)
+            .finally(function () {
+            var success = mv().cloneWorld(templateWorldName, worldName, 'normal');
+            if (!success) {
+                return reject("Failed to clone world " + templateWorldName);
+            }
+            var world = utils.world(worldName);
+            log("World clone complete for " + worldName);
+            return resolve(world);
+        })
+            .catch(log);
+    });
 }
 function createQuest(_a) {
     var questName = _a.questName, player = _a.player, world = _a.world, opts = _a.opts;
@@ -127,18 +121,16 @@ function doCommand(worldName, templateWorldName, questName, player, method, opts
     switch (method) {
         case 'start':
             echo(player, "Starting quest " + questName + "...");
-            deleteWorld(worldName, function (err) {
-                if (err) {
-                    return;
-                }
-                cloneWorld(worldName, templateWorldName, function (err, world) {
-                    if (err) {
-                        return;
-                    }
+            deleteWorld(worldName)
+                .then(function () {
+                cloneWorld(worldName, templateWorldName)
+                    .then(function (world) {
                     var quest = createQuest({ opts: opts, player: player, questName: questName, world: world });
                     quest.start();
-                });
-            });
+                })
+                    .catch(log);
+            })
+                .catch(log);
             break;
         case 'import':
             importWorld(templateWorldName);
@@ -147,7 +139,9 @@ function doCommand(worldName, templateWorldName, questName, player, method, opts
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.
-            deleteWorld(worldName, function () { return log("Deleted " + worldName); });
+            deleteWorld(worldName)
+                .then(function () { return log("Deleted " + worldName); })
+                .catch(log);
             break;
     }
 }

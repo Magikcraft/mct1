@@ -1,10 +1,10 @@
+import { Multiverse } from '@magikcraft/mct1/world/multiverse';
 import * as fs from '@magikcraft/mct1/utils/fs'
 import { Logger } from '@magikcraft/mct1/log'
 import * as server from '@magikcraft/mct1/utils/server'
 import { QuestConfig } from 'quests/Quest'
-import { world } from 'utils';
 
-const utils = require('utils') // tslint:disable-line
+import utils = require('utils'); // tslint:disable-line
 
 const log = Logger(__filename)
 
@@ -73,49 +73,42 @@ export function questCommand(questName, method, player, opts) {
     doCommand(worldName, templateWorldName, questName, player, method, opts)
 }
 
-function mv() {
-    return __plugin.server
-        .getPluginManager()
-        .getPlugin('Multiverse-Core')
-}
 
 function importWorld(templateWorldName: string) {
     server.executeCommand(`mv import ${templateWorldName} normal`)
 }
 
-function deleteWorld(worldName: string, cb) {
-    log(`Deleting ./${worldName}`)
-    try {
-        const w = world(worldName);
-        const worldFilePath = w ? w.getWorldFolder().getPath() : undefined;
-        mv().deleteWorld(worldName)
-        if (worldFilePath && fs.exists(worldFilePath)) {
-            log(`Removing ${worldFilePath}...`)
+function deleteWorld(worldName: string) {
+    return new Promise(resolve => {
+        log(`Deleting ./${worldName}`)
+        const w = utils.world(worldName);
+        const worldFilePath = w ? w.getWorldFolder().getPath() : `worlds/${worldName}`;
+        Multiverse().deleteWorld(worldName)
+        if (fs.exists(worldFilePath)) {
+            log(`Removing file ${worldFilePath}...`)
             fs.remove(worldFilePath)
         }
-        cb && cb()
-    } catch (e) {
-        log(e)
-        cb && cb(e)
-    }
+        resolve(worldName);
+    });
 }
 
-function cloneWorld(worldName: string, templateWorldName: string, cb) {
-    try {
-        log(`Cloning ${worldName}`)
-        server.executeCommand(`mv import ${templateWorldName} normal`)
-        const success = mv().cloneWorld(templateWorldName, worldName, 'normal')
-        if (!success) {
-            log(`Failed to clone world ${templateWorldName}`)
-            return cb && cb(`Failed to clone world`)
-        }
-        const world = utils.world(worldName)
-        log(`World clone complete for ${worldName}`)
-        return cb && cb(null, world)
-    } catch (e) {
-        log(e)
-        return cb && cb(e, null)
-    }
+function cloneWorld(worldName: string, templateWorldName: string) {
+    return new Promise((resolve, reject) => {
+        deleteWorld(worldName)
+            .catch(log)
+            .finally(() => {
+                log(`Cloning ${worldName}`)
+                server.executeCommand(`mv import ${templateWorldName} normal`)
+                const success = Multiverse().cloneWorld(templateWorldName, worldName, 'normal')
+                if (!success) {
+                    return reject(`Failed to clone world ${templateWorldName}`)
+                } else {
+                    const world = utils.world(worldName)
+                    log(`World clone complete for ${worldName}`)
+                    return resolve(world)
+                }
+            });
+    });
 }
 
 function createQuest({ questName, player, world, opts }) {
@@ -137,18 +130,9 @@ function doCommand(worldName, templateWorldName, questName, player, method, opts
     switch (method) {
         case 'start':
             echo(player, `Starting quest ${questName}...`)
-            deleteWorld(worldName, err => {
-                if (err) {
-                    return
-                }
-                cloneWorld(worldName, templateWorldName, (err, world) => {
-                    if (err) {
-                        return
-                    }
-                    const quest = createQuest({ opts, player, questName, world })
-                    quest.start()
-                })
-            })
+            cloneWorld(worldName, templateWorldName)
+                .then(world => createQuest({ opts, player, questName, world }).start())
+                .catch(log)
             break
         case 'import':
             importWorld(templateWorldName)
@@ -157,7 +141,9 @@ function doCommand(worldName, templateWorldName, questName, player, method, opts
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.
-            deleteWorld(worldName, () => log(`Deleted ${worldName}`))
+            deleteWorld(worldName)
+                .then(() => log(`Deleted ${worldName}`))
+                .catch(log);
             break
     }
 }
