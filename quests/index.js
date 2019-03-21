@@ -39,7 +39,7 @@ var multiverse_1 = require("@magikcraft/mct1/world/multiverse");
 var fs = require("@magikcraft/mct1/utils/fs");
 var log_1 = require("@magikcraft/mct1/log");
 var server = require("@magikcraft/mct1/utils/server");
-var utils = require("utils"); // tslint:disable-line
+var utils = require("utils");
 var log = log_1.Logger(__filename);
 var quests = {
     mct1: {

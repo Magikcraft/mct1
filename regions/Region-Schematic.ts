@@ -2,7 +2,7 @@ import { Vector3 } from '@magikcraft/mct1/vector3'
 import { Region } from '@magikcraft/mct1/regions'
 import { Schematic } from '@magikcraft/mct1/regions/schematic'
 import { EditCore } from '@magikcraft/mct1/regions/worldedit'
-import util = require('utils')
+import * as util from 'utils'
 
 export class Region_Schematic {
     /**

@@ -1,9 +1,10 @@
-const Material = Java.type('org.bukkit.Material')
-const Locations = require('./locs')
-import * as questTools from '../../quest-tools'
-import { worldly } from '@magikcraft/mct1/world'
-const Location = Java.type('org.bukkit.Location')
 import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
+import { worldly } from '@magikcraft/mct1/world'
+import * as questTools from '../../quest-tools'
+import * as Locations from './locs'
+
+const Location = Java.type('org.bukkit.Location')
+const Material = Java.type('org.bukkit.Material')
 
 export default class QuestMCT1Magmarun extends QuestMCT1 {
     activeRuns: Array<any> = []
@@ -18,7 +19,6 @@ export default class QuestMCT1Magmarun extends QuestMCT1 {
         this.registerEvents()
 
         const { player, world, log, options, Locs, state } = this
-
         ;[1, 2, 3, 4, 5].forEach(i => {
             const key = `run${i}`
             worldly(world).registerRegion(

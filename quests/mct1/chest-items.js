@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var questTools = require("../quest-tools");
 var journals_1 = require("./journals");
-var items = require('items');
+var items = require("items");
 exports.ChestItems = {
     jailCell: [questTools.makeInsulinStack(1), items.cookedChicken(5)],
     jail: [journals_1.Journals.jail2, items.cookedChicken(5)],

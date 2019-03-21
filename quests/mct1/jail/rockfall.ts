@@ -1,6 +1,6 @@
 import { Vector3 } from '@magikcraft/mct1/vector3'
 import { Region } from '@magikcraft/mct1/regions'
-var utils = require('utils')
+import * as utils from 'utils'
 
 import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)

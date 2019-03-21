@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var journals_1 = require("./journals");
-var items = require('items');
+var items = require("items");
 exports.Inventories = {
     prologue: [
         items.legacyWoodSword(1),

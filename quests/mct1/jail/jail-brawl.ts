@@ -1,7 +1,9 @@
 import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
+
 const Sound = Java.type('org.bukkit.Sound')
 
-import MobTools = require('@magikcraft/mct1/mobs')
+import * as MobTools from '@magikcraft/mct1/mobs'
 
 export default class JailBrawl {
     log: any
@@ -22,7 +24,6 @@ export default class JailBrawl {
 
     constructor(Locs, jailGuard) {
         this.Locs = Locs
-        this.log = Logger(__filename)
         this.jailGuard = jailGuard
     }
 
@@ -31,7 +32,7 @@ export default class JailBrawl {
 
         this.timers.push(
             setTimeout(() => {
-                this.log('Lure away guard')
+                log('Lure away guard')
                 this.jailGuardLure = MobTools.spawn(
                     'armor_stand',
                     this.Locs.locations.jailGuardLure

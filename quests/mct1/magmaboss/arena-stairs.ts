@@ -1,13 +1,8 @@
 import { Vector3 } from '@magikcraft/mct1/vector3'
 import { Region } from '@magikcraft/mct1/regions'
-import utils = require('utils')
-
-import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
+import * as utils from 'utils'
 
 const Material = Java.type('org.bukkit.Material')
-const Effect = Java.type('org.bukkit.Effect')
-const Sound = Java.type('org.bukkit.Sound')
 
 export default class ArenaStairs {
     region: Region

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = require('utils');
+var utils = require("utils");
 /**
  * Vector3
  * @constructor
@@ -14,7 +14,7 @@ var Vector3 = /** @class */ (function () {
         if (x === void 0) { x = 0; }
         if (y === void 0) { y = 0; }
         if (z === void 0) { z = 0; }
-        if (world === void 0) { world = ""; }
+        if (world === void 0) { world = ''; }
         this.x = 0;
         this.y = 0;
         this.z = 0;
@@ -50,7 +50,7 @@ var Vector3 = /** @class */ (function () {
             y: this.y,
             z: this.z,
             yaw: 0.0,
-            pitch: 0.0
+            pitch: 0.0,
         };
         return loc;
     };
@@ -62,7 +62,7 @@ var Vector3 = /** @class */ (function () {
      * Will create a Vector3 object based on a location object
      */
     Vector3.FromLocation = function (location) {
-        var JSONloc = util.locationToJSON(location);
+        var JSONloc = utils.locationToJSON(location);
         return new Vector3(JSONloc.x, JSONloc.y, JSONloc.z, JSONloc.world);
     };
     /**
@@ -78,9 +78,9 @@ var Vector3 = /** @class */ (function () {
             y: this.y,
             z: this.z,
             yaw: 0.0,
-            pitch: 0.0
+            pitch: 0.0,
         };
-        return util.locationFromJSON(loc);
+        return utils.locationFromJSON(loc);
     };
     /**
      * FromArray
@@ -184,9 +184,7 @@ var Vector3 = /** @class */ (function () {
      * Will calculate the magnitude of the vector using Pythagorean Theorem
      */
     Vector3.prototype.magnitude = function () {
-        return Math.sqrt(Math.pow(this.x, 2) +
-            Math.pow(this.y, 2) +
-            Math.pow(this.z, 2));
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
     };
     /**
      * normalized
@@ -210,7 +208,7 @@ var Vector3 = /** @class */ (function () {
     Vector3.prototype.getWorld = function (worldObj) {
         worldObj = worldObj || false;
         if (worldObj) {
-            return util.world(this.world);
+            return utils.world(this.world);
         }
         else {
             return this.world;
@@ -240,10 +238,18 @@ var Vector3 = /** @class */ (function () {
      */
     Vector3.prototype.toString = function () {
         if (this.world == '') {
-            return "[" + this.x + ", " + this.y + ", " + this.z + "]";
+            return '[' + this.x + ', ' + this.y + ', ' + this.z + ']';
         }
         else {
-            return "[" + this.x + ", " + this.y + ", " + this.z + ", " + this.world + "]";
+            return ('[' +
+                this.x +
+                ', ' +
+                this.y +
+                ', ' +
+                this.z +
+                ', ' +
+                this.world +
+                ']');
         }
     };
     /**
@@ -255,7 +261,7 @@ var Vector3 = /** @class */ (function () {
             return this.world;
         }
         else {
-            return util.world(this.world);
+            return utils.world(this.world);
         }
     };
     /**
@@ -512,9 +518,9 @@ var Vector3 = /** @class */ (function () {
      * Dot Product of two vectors
      */
     Vector3.Dot = function (vectorA, vectorB) {
-        return (vectorA.x * vectorB.x) +
-            (vectorA.y * vectorB.y) +
-            (vectorA.z * vectorB.z);
+        return (vectorA.x * vectorB.x +
+            vectorA.y * vectorB.y +
+            vectorA.z * vectorB.z);
     };
     /**
      * Lerp
@@ -646,12 +652,16 @@ var Vector3 = /** @class */ (function () {
         // Old code
         var uniqueWorlds = [];
         for (var i = 0; i < vectors.length; i++) {
-            if (uniqueWorlds.length == 0) { // If no worlds exist yet
+            if (uniqueWorlds.length == 0) {
+                // If no worlds exist yet
                 uniqueWorlds.push(vectors[i].world || ''); // Add it
             }
-            else { // If worlds exist
-                for (var j = 0; j < uniqueWorlds.length; i++) { // For every unique word
-                    if (uniqueWorlds[i] != (vectors[i].world || '')) { // If the dose not exist yet in the array
+            else {
+                // If worlds exist
+                for (var j = 0; j < uniqueWorlds.length; i++) {
+                    // For every unique word
+                    if (uniqueWorlds[i] != (vectors[i].world || '')) {
+                        // If the dose not exist yet in the array
                         uniqueWorlds.push(vectors[i].world || '');
                     }
                 }
@@ -665,10 +675,12 @@ var Vector3 = /** @class */ (function () {
                 finalWorlds.push(uniqueWorlds[k]);
             }
         }
-        if (uniqueWorlds.length == 0) { // No worlds were in the array
+        if (uniqueWorlds.length == 0) {
+            // No worlds were in the array
             return '';
         }
-        else if (uniqueWorlds.length == 1) { // Only one world was found
+        else if (uniqueWorlds.length == 1) {
+            // Only one world was found
             return uniqueWorlds[0];
         }
         else {
@@ -721,7 +733,9 @@ var Vector3 = /** @class */ (function () {
     Vector3.infinity = function () {
         return new Vector3(Infinity, Infinity, Infinity);
     };
-    Vector3.NotEqualsComponent = function (vectorA, vectorB) { return !Vector3.EqualsComponent(vectorA, vectorB); };
+    Vector3.NotEqualsComponent = function (vectorA, vectorB) {
+        return !Vector3.EqualsComponent(vectorA, vectorB);
+    };
     Vector3.NotEquals = function (vectorA, vectorB) { return !Vector3.Equals(vectorA, vectorB); };
     return Vector3;
 }());

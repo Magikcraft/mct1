@@ -13,12 +13,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Material = Java.type('org.bukkit.Material');
-var Locations = require('./locs');
-var questTools = require("../../quest-tools");
-var world_1 = require("@magikcraft/mct1/world");
-var Location = Java.type('org.bukkit.Location');
 var Quest_1 = require("@magikcraft/mct1/quests/Quest");
+var world_1 = require("@magikcraft/mct1/world");
+var questTools = require("../../quest-tools");
+var Locations = require("./locs");
+var Location = Java.type('org.bukkit.Location');
+var Material = Java.type('org.bukkit.Material');
 var QuestMCT1Magmarun = /** @class */ (function (_super) {
     __extends(QuestMCT1Magmarun, _super);
     function QuestMCT1Magmarun(conf) {

@@ -1,4 +1,4 @@
-const Locations = require('./locs')
+import * as Locations from './locs'
 import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 
 export default class QuestMCT1Sunken extends QuestMCT1 {

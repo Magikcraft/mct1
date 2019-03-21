@@ -1,10 +1,10 @@
-import * as events from 'events'
-
 import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
-import items = require('items')
 import * as tools from '@magikcraft/mct1/tools'
 import { user } from '@magikcraft/mct1/user'
+import * as events from 'events'
+import * as items from 'items'
+
+const log = Logger(__filename)
 
 const indexMap = {
     hotbarFirst: 0,

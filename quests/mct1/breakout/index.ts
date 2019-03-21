@@ -1,4 +1,4 @@
-import Locations = require('./locs')
+import * as Locations from './locs'
 import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 import { worldly } from '@magikcraft/mct1/world'
 

@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
 var inventory = require("inventory");
 var items = require("items");
-var Material = Java.type('org.bukkit.Material');
 var bossbar_1 = require("@magikcraft/mct1/bossbar");
 var log_1 = require("@magikcraft/mct1/log");
 var log = log_1.Logger(__filename);

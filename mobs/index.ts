@@ -1,8 +1,5 @@
-const entities = require('entities')
+import * as entities from 'entities'
 const Location = Java.type('org.bukkit.Location')
-
-import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
 
 export function spawn(type, loc) {
     // entities.forEach(e => log('e', e))

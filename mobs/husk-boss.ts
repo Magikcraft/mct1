@@ -1,6 +1,6 @@
-var entities = require('entities')
-var items = require('items')
-var Vector = Java.type('org.bukkit.util.Vector')
+import * as entities from 'entities'
+import * as items from 'items'
+const Vector = Java.type('org.bukkit.util.Vector')
 
 export function huskBoss(loc) {
     const mob = loc.world.spawnEntity(loc, entities['husk']())

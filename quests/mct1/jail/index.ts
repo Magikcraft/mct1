@@ -1,19 +1,14 @@
-import Locations = require('./locs')
-
-import { Journals } from '@magikcraft/mct1/quests/mct1/journals'
+import * as MobTools from '@magikcraft/mct1/mobs'
 import { ChestItems } from '@magikcraft/mct1/quests/mct1/chest-items'
-
-import * as questTools from '../../quest-tools'
-
-import { worldly } from '@magikcraft/mct1/world'
-import { user } from '@magikcraft/mct1/user'
-
-const Rockfall = require('./rockfall').default
-import MobTools = require('@magikcraft/mct1/mobs')
-import items = require('items')
-import JailBrawl from './jail-brawl'
-
+import { Journals } from '@magikcraft/mct1/quests/mct1/journals'
 import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
+import { user } from '@magikcraft/mct1/user'
+import { worldly } from '@magikcraft/mct1/world'
+import * as items from 'items'
+import * as questTools from '../../quest-tools'
+import JailBrawl from './jail-brawl'
+import * as Locations from './locs'
+import Rockfall from './rockfall'
 
 export default class QuestMCT1Prologue extends QuestMCT1 {
     jailGuard: any

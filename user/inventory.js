@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var events = require("events");
 var log_1 = require("@magikcraft/mct1/log");
-var log = log_1.Logger(__filename);
-var items = require("items");
 var tools = require("@magikcraft/mct1/tools");
 var user_1 = require("@magikcraft/mct1/user");
+var events = require("events");
+var items = require("items");
+var log = log_1.Logger(__filename);
 var indexMap = {
     hotbarFirst: 0,
     hotbarLast: 8,

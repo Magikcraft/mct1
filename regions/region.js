@@ -1,9 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var vector3_1 = require("@magikcraft/mct1/vector3");
-var util = require('utils');
-var vectorA = null;
-var vectorB = null;
+var util = require("utils");
 /**
  * Region
  * @constructor
@@ -15,8 +13,8 @@ var vectorB = null;
  */
 var Region = /** @class */ (function () {
     function Region(vectorA, vectorB, world, name) {
-        if (world === void 0) { world = ""; }
-        if (name === void 0) { name = ""; }
+        if (world === void 0) { world = ''; }
+        if (name === void 0) { name = ''; }
         this.vectorA = new vector3_1.Vector3(0, 0, 0, '');
         this.vectorB = new vector3_1.Vector3(0, 0, 0, '');
         this.world = '';
@@ -44,10 +42,12 @@ var Region = /** @class */ (function () {
      */
     Region.prototype.FromArray = function (array) {
         var region = new Region(new vector3_1.Vector3(array[0][0], array[0][1], array[0][2]), new vector3_1.Vector3(array[1][0], array[1][1], array[1][2]));
-        if (array[0][4]) { // World in vectorA exists
+        if (array[0][4]) {
+            // World in vectorA exists
             region.vectorA.world = array[0][4];
         }
-        if (array[0][4]) { // World in vectorA exists
+        if (array[0][4]) {
+            // World in vectorA exists
             region.vectorB.world = array[1][4];
         }
         return region;
@@ -59,17 +59,44 @@ var Region = /** @class */ (function () {
      * Will return a string version of the region
      */
     Region.prototype.toString = function () {
-        if (this.world == '' && this.name == '') { // Only vectors given
-            return "[" + this.vectorA.toString() + "," + this.vectorB.toString() + "]";
+        if (this.world == '' && this.name == '') {
+            // Only vectors given
+            return ('[' +
+                this.vectorA.toString() +
+                ',' +
+                this.vectorB.toString() +
+                ']');
         }
-        else if (this.name == '' && this.world != '') { // No ID given
-            return "[" + this.vectorA.toString() + "," + this.vectorB.toString() + ", " + this.world + "]";
+        else if (this.name == '' && this.world != '') {
+            // No ID given
+            return ('[' +
+                this.vectorA.toString() +
+                ',' +
+                this.vectorB.toString() +
+                ', ' +
+                this.world +
+                ']');
         }
-        else if (this.name != '' && this.world == '') { // All args where given
-            return "[" + this.vectorA.toString() + "," + this.vectorB.toString() + ", (Name)" + this.world + "]";
+        else if (this.name != '' && this.world == '') {
+            // All args where given
+            return ('[' +
+                this.vectorA.toString() +
+                ',' +
+                this.vectorB.toString() +
+                ', (Name)' +
+                this.world +
+                ']');
         }
         else {
-            return "[" + this.vectorA.toString() + "," + this.vectorB.toString() + ", " + this.world + ", " + this.name + "]";
+            return ('[' +
+                this.vectorA.toString() +
+                ',' +
+                this.vectorB.toString() +
+                ', ' +
+                this.world +
+                ', ' +
+                this.name +
+                ']');
         }
     };
     /**
@@ -128,7 +155,7 @@ var Region = /** @class */ (function () {
      * @returns {number} - The length of the region in the x axis
      *
      * Will calculate the length of the the x axis of the region
-    */
+     */
     Region.prototype.xLength = function () {
         return Math.abs(this.vectorA.x - this.vectorB.x);
     };
@@ -137,7 +164,7 @@ var Region = /** @class */ (function () {
      * @returns {number} - The length of the region in the y axis
      *
      * Will calculate the length of the the y axis of the region
-    */
+     */
     Region.prototype.yLength = function () {
         return Math.abs(this.vectorA.y - this.vectorB.y);
     };
@@ -146,7 +173,7 @@ var Region = /** @class */ (function () {
      * @returns {number} - The length of the region in the z axis
      *
      * Will calculate the length of the the z axis of the region
-    */
+     */
     Region.prototype.zLength = function () {
         return Math.abs(this.vectorA.z - this.vectorB.z);
     };
@@ -214,7 +241,7 @@ var Region = /** @class */ (function () {
     Region.prototype.getCenterPoint = function () {
         var smallestPoint = this.getSmallestPoint();
         var size = this.getSize();
-        return new vector3_1.Vector3(smallestPoint.x + (size.x / 2), smallestPoint.y + (size.y / 2), smallestPoint.z + (size.z / 2), this.world);
+        return new vector3_1.Vector3(smallestPoint.x + size.x / 2, smallestPoint.y + size.y / 2, smallestPoint.z + size.z / 2, this.world);
     };
     /**
      * getWorld
@@ -296,7 +323,8 @@ var Region = /** @class */ (function () {
             var greatestBounds = this.getLargestPoint().toArray; // << Vector3 Returns
             var smallestBounds = this.getSmallestPoint().toArray; // << Vector3 Returns
             var arrayPositions = [];
-            for (var a = 0; a < 3; a++) { // Check through all axis's
+            for (var a = 0; a < 3; a++) {
+                // Check through all axis's
                 // If the location is greater than the greatest bounds
                 if (location[a] > greatestBounds[a]) {
                     arrayPositions.push([greatestBounds[a]]);

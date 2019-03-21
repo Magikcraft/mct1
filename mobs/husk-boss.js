@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var entities = require('entities');
-var items = require('items');
+var entities = require("entities");
+var items = require("items");
 var Vector = Java.type('org.bukkit.util.Vector');
 function huskBoss(loc) {
     var mob = loc.world.spawnEntity(loc, entities['husk']());

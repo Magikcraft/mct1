@@ -1,7 +1,5 @@
 import { Vector3 } from './Vector3'
-import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
-import blocks = require('blocks')
+import * as blocks from 'blocks'
 
 export class Vector3World {
     // Will get the first safe spawnable block

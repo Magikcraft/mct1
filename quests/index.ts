@@ -4,7 +4,7 @@ import { Logger } from '@magikcraft/mct1/log'
 import * as server from '@magikcraft/mct1/utils/server'
 import { QuestConfig } from 'quests/Quest'
 
-import utils = require('utils') // tslint:disable-line
+import * as utils from 'utils'
 
 const log = Logger(__filename)
 

@@ -13,17 +13,17 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Locations = require("./locs");
-var journals_1 = require("@magikcraft/mct1/quests/mct1/journals");
-var chest_items_1 = require("@magikcraft/mct1/quests/mct1/chest-items");
-var questTools = require("../../quest-tools");
-var world_1 = require("@magikcraft/mct1/world");
-var user_1 = require("@magikcraft/mct1/user");
-var Rockfall = require('./rockfall').default;
 var MobTools = require("@magikcraft/mct1/mobs");
-var items = require("items");
-var jail_brawl_1 = require("./jail-brawl");
+var chest_items_1 = require("@magikcraft/mct1/quests/mct1/chest-items");
+var journals_1 = require("@magikcraft/mct1/quests/mct1/journals");
 var Quest_1 = require("@magikcraft/mct1/quests/Quest");
+var user_1 = require("@magikcraft/mct1/user");
+var world_1 = require("@magikcraft/mct1/world");
+var items = require("items");
+var questTools = require("../../quest-tools");
+var jail_brawl_1 = require("./jail-brawl");
+var Locations = require("./locs");
+var rockfall_1 = require("./rockfall");
 var QuestMCT1Prologue = /** @class */ (function (_super) {
     __extends(QuestMCT1Prologue, _super);
     function QuestMCT1Prologue(conf) {
@@ -61,7 +61,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         this.jailGuard.getEquipment().setItemInHand(items['diamondSword'](1));
         this.jailGuard.getEquipment().setHelmet(items['diamondHelmet'](1));
         // Setup rockfall
-        this.rockfall = new Rockfall(Locs.regions.rockfall);
+        this.rockfall = new rockfall_1.default(Locs.regions.rockfall);
         // Setup chest1
         questTools.putItemsInChest(Locs.locations.chest1, chest_items_1.ChestItems.jailCell);
     };

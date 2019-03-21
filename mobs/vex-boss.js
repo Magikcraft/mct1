@@ -1,10 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var entities = require('entities');
-var items = require('items');
+var entities = require("entities");
+var items = require("items");
 var Vector = Java.type('org.bukkit.util.Vector');
-var log_1 = require("@magikcraft/mct1/log");
-var log = log_1.Logger(__filename);
 function vexBoss(loc) {
     // const mob = loc.world.spawnEntity(loc, entities['wither_skeleton']());
     var mob = loc.world.spawnEntity(loc, entities['vex']());

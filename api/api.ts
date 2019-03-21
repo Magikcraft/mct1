@@ -1,7 +1,7 @@
 /**
  * Communicate with Magikcraft API (GraphQL) via the endpoint app.
  */
-import utils = require('utils')
+import * as utils from 'utils'
 import { ENDPOINT_URL } from '@magikcraft/mct1/utils/environment'
 import * as http from 'http'
 import { Logger } from '@magikcraft/mct1/log'

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("@magikcraft/mct1/log");
+var log = log_1.Logger(__filename);
 var Sound = Java.type('org.bukkit.Sound');
 var MobTools = require("@magikcraft/mct1/mobs");
 var JailBrawl = /** @class */ (function () {
@@ -17,14 +18,13 @@ var JailBrawl = /** @class */ (function () {
         ];
         this.timers = []; // all mobs stored in here.
         this.Locs = Locs;
-        this.log = log_1.Logger(__filename);
         this.jailGuard = jailGuard;
     }
     JailBrawl.prototype.start = function () {
         var _this = this;
         this.initBrawl();
         this.timers.push(setTimeout(function () {
-            _this.log('Lure away guard');
+            log('Lure away guard');
             _this.jailGuardLure = MobTools.spawn('armor_stand', _this.Locs.locations.jailGuardLure);
             // jailGuardLure.setVisible(false)
             _this.jailGuard.setTarget(_this.jailGuardLure);

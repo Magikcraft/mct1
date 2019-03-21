@@ -1,8 +1,8 @@
+import { Logger } from '@magikcraft/mct1/log'
+import * as Mobs from '@magikcraft/mct1/mobs'
 import { Vector3 } from '@magikcraft/mct1/vector3'
 import { Vector3World } from '@magikcraft/mct1/vector3/Vector3-WorldUtil'
-import * as Mobs from '@magikcraft/mct1/mobs'
-const teleport = require('teleport')
-import { Logger } from '@magikcraft/mct1/log'
+import * as teleport from 'teleport'
 const log = Logger(__filename)
 
 export default class Wither {

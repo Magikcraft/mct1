@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var log_1 = require("@magikcraft/mct1/log");
+var Mobs = require("@magikcraft/mct1/mobs");
 var vector3_1 = require("@magikcraft/mct1/vector3");
 var Vector3_WorldUtil_1 = require("@magikcraft/mct1/vector3/Vector3-WorldUtil");
-var Mobs = require("@magikcraft/mct1/mobs");
-var teleport = require('teleport');
-var log_1 = require("@magikcraft/mct1/log");
+var teleport = require("teleport");
 var log = log_1.Logger(__filename);
 var Wither = /** @class */ (function () {
     function Wither(region) {

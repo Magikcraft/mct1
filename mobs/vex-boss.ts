@@ -1,8 +1,6 @@
-var entities = require('entities')
-var items = require('items')
+import * as entities from 'entities'
+import * as items from 'items'
 var Vector = Java.type('org.bukkit.util.Vector')
-import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
 
 export function vexBoss(loc) {
     // const mob = loc.world.spawnEntity(loc, entities['wither_skeleton']());

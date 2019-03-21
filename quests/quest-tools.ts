@@ -1,20 +1,15 @@
-import entities = require('entities')
-import MobTools = require('@magikcraft/mct1/mobs')
+import * as MobTools from '@magikcraft/mct1/mobs'
+import { Vector3 } from '@magikcraft/mct1/vector3'
+import * as entities from 'entities'
+import * as items from 'items'
+import * as utils from 'utils'
 const Effect = Java.type('org.bukkit.Effect')
 const Sound = Java.type('org.bukkit.Sound')
-const Particle = Java.type('org.bukkit.Particle')
 const Material = Java.type('org.bukkit.Material')
 const Location = Java.type('org.bukkit.Location')
 const Vector = Java.type('org.bukkit.util.Vector')
 const ItemStack = Java.type('org.bukkit.inventory.ItemStack')
-import items = require('items')
 const Color = Java.type('org.bukkit.Color')
-
-import { Vector3 } from '@magikcraft/mct1/vector3'
-var utils = require('utils')
-
-import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
 
 export function shootFireballAtTarget(entity, targetLoc) {
     const fb = Java.type('org.bukkit.entity.LargeFireball').class

@@ -1,20 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var entities = require("entities");
 var MobTools = require("@magikcraft/mct1/mobs");
+var vector3_1 = require("@magikcraft/mct1/vector3");
+var entities = require("entities");
+var items = require("items");
+var utils = require("utils");
 var Effect = Java.type('org.bukkit.Effect');
 var Sound = Java.type('org.bukkit.Sound');
-var Particle = Java.type('org.bukkit.Particle');
 var Material = Java.type('org.bukkit.Material');
 var Location = Java.type('org.bukkit.Location');
 var Vector = Java.type('org.bukkit.util.Vector');
 var ItemStack = Java.type('org.bukkit.inventory.ItemStack');
-var items = require("items");
 var Color = Java.type('org.bukkit.Color');
-var vector3_1 = require("@magikcraft/mct1/vector3");
-var utils = require('utils');
-var log_1 = require("@magikcraft/mct1/log");
-var log = log_1.Logger(__filename);
 function shootFireballAtTarget(entity, targetLoc) {
     var fb = Java.type('org.bukkit.entity.LargeFireball').class;
     var loc1 = entity.location;

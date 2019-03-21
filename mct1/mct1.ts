@@ -1,7 +1,6 @@
-import events = require('events')
-import inventory = require('inventory')
-import items = require('items')
-const Material = Java.type('org.bukkit.Material')
+import * as events from 'events'
+import * as inventory from 'inventory'
+import * as items from 'items'
 
 import { BossBar } from '@magikcraft/mct1/bossbar'
 import { IBossBar } from '@magikcraft/mct1/bossbar/bossbar'

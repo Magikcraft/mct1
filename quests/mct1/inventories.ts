@@ -1,6 +1,5 @@
-import * as questTools from '../quest-tools'
 import { Journals } from './journals'
-const items = require('items')
+import * as items from 'items'
 
 export const Inventories = {
     prologue: [

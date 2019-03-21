@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var vector3_1 = require("@magikcraft/mct1/vector3");
-var utils = require('utils');
+var utils = require("utils");
 var log_1 = require("@magikcraft/mct1/log");
 var log = log_1.Logger(__filename);
 var Material = Java.type('org.bukkit.Material');

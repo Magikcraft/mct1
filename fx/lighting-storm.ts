@@ -1,11 +1,6 @@
 import { Region } from '@magikcraft/mct1/regions'
-import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
-var util = require('utils')
 
-let lightningTimes = 0
 let region: Region
-let times: number
 let delayMin: number
 let delayAvg: number
 let count: number = 0

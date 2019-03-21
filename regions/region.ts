@@ -1,33 +1,42 @@
 import { Vector3, Direction } from '@magikcraft/mct1/vector3'
-var util = require('utils')
-
-var vectorA = null;
-var vectorB = null;
+import * as util from 'utils'
 
 interface iRegion {
-    vectorA: Vector3,
-    vectorB: Vector3,
-    world: string,
-    name: string,
-    constructor(vectorA: Vector3, vectorB: Vector3, name?: string),
-    toArray(): Array<number[]>,
-    toString(): string,
-    xArray(): Array<number>,
-    yArray(): Array<number>,
-    zArray(): Array<number>,
-    contains(sampleVector): boolean,
-    getSmallestPoint(): Vector3,
-    getLargestPoint(): Vector3,
-    getCenterPoint(): Vector3,
-    getSize(): Vector3,
-    randomPoint(): Vector3,
-    randomPoints(amount: number): Array<Vector3>,
-    closestPoint(location: Vector3): Vector3,
-    distToClosestPoint(location: Vector3): number,
-    AreOverlaping(regionA: iRegion, regionB): Boolean,
-    Alter(region: Region, amount: number, direction?: Direction | Array<Direction>): Region,
-    Expand(region: Region, amount?: number, direction?: Direction | Array<Direction>): Region,
-    Contract(region: Region, amount?: number, direction?: Direction | Array<Direction>): Region
+    vectorA: Vector3
+    vectorB: Vector3
+    world: string
+    name: string
+    constructor(vectorA: Vector3, vectorB: Vector3, name?: string)
+    toArray(): Array<number[]>
+    toString(): string
+    xArray(): Array<number>
+    yArray(): Array<number>
+    zArray(): Array<number>
+    contains(sampleVector): boolean
+    getSmallestPoint(): Vector3
+    getLargestPoint(): Vector3
+    getCenterPoint(): Vector3
+    getSize(): Vector3
+    randomPoint(): Vector3
+    randomPoints(amount: number): Array<Vector3>
+    closestPoint(location: Vector3): Vector3
+    distToClosestPoint(location: Vector3): number
+    AreOverlaping(regionA: iRegion, regionB): Boolean
+    Alter(
+        region: Region,
+        amount: number,
+        direction?: Direction | Array<Direction>
+    ): Region
+    Expand(
+        region: Region,
+        amount?: number,
+        direction?: Direction | Array<Direction>
+    ): Region
+    Contract(
+        region: Region,
+        amount?: number,
+        direction?: Direction | Array<Direction>
+    ): Region
 }
 
 /**
@@ -40,18 +49,16 @@ interface iRegion {
  * Creates and instance of a region
  */
 export class Region {
+    vectorA: Vector3 = new Vector3(0, 0, 0, '')
+    vectorB: Vector3 = new Vector3(0, 0, 0, '')
+    world: string = ''
+    name: string = ''
 
-    vectorA: Vector3 = new Vector3(0, 0, 0, '');
-    vectorB: Vector3 = new Vector3(0, 0, 0, '');
-    world: string = '';
-    name: string = '';
-
-
-    constructor(vectorA, vectorB, world = "", name = "") {
-        this.vectorA = vectorA || Vector3.zero;
-        this.vectorB = vectorB || Vector3.zero;
-        this.world = world;
-        this.name = name;
+    constructor(vectorA, vectorB, world = '', name = '') {
+        this.vectorA = vectorA || Vector3.zero
+        this.vectorB = vectorB || Vector3.zero
+        this.world = world
+        this.name = name
     }
 
     /**
@@ -62,7 +69,7 @@ export class Region {
      * >> array -> [ [0,0,0], [0,0,0] ];
      */
     toArray(): Array<any> {
-        return [this.vectorA.toArray(), this.vectorB.toArray()];
+        return [this.vectorA.toArray(), this.vectorB.toArray()]
     }
 
     /**
@@ -75,14 +82,16 @@ export class Region {
         var region = new Region(
             new Vector3(array[0][0], array[0][1], array[0][2]),
             new Vector3(array[1][0], array[1][1], array[1][2])
-        );
-        if (array[0][4]) { // World in vectorA exists
-            region.vectorA.world = array[0][4];
+        )
+        if (array[0][4]) {
+            // World in vectorA exists
+            region.vectorA.world = array[0][4]
         }
-        if (array[0][4]) { // World in vectorA exists
-            region.vectorB.world = array[1][4];
+        if (array[0][4]) {
+            // World in vectorA exists
+            region.vectorB.world = array[1][4]
         }
-        return region;
+        return region
     }
 
     /**
@@ -92,14 +101,49 @@ export class Region {
      * Will return a string version of the region
      */
     toString(): string {
-        if (this.world == '' && this.name == '') { // Only vectors given
-            return "[" + this.vectorA.toString() + "," + this.vectorB.toString() + "]";
-        } else if (this.name == '' && this.world != '') { // No ID given
-            return "[" + this.vectorA.toString() + "," + this.vectorB.toString() + ", " + this.world + "]";
-        } else if (this.name != '' && this.world == '') { // All args where given
-            return "[" + this.vectorA.toString() + "," + this.vectorB.toString() + ", (Name)" + this.world + "]";
+        if (this.world == '' && this.name == '') {
+            // Only vectors given
+            return (
+                '[' +
+                this.vectorA.toString() +
+                ',' +
+                this.vectorB.toString() +
+                ']'
+            )
+        } else if (this.name == '' && this.world != '') {
+            // No ID given
+            return (
+                '[' +
+                this.vectorA.toString() +
+                ',' +
+                this.vectorB.toString() +
+                ', ' +
+                this.world +
+                ']'
+            )
+        } else if (this.name != '' && this.world == '') {
+            // All args where given
+            return (
+                '[' +
+                this.vectorA.toString() +
+                ',' +
+                this.vectorB.toString() +
+                ', (Name)' +
+                this.world +
+                ']'
+            )
         } else {
-            return "[" + this.vectorA.toString() + "," + this.vectorB.toString() + ", " + this.world + ", " + this.name + "]";
+            return (
+                '[' +
+                this.vectorA.toString() +
+                ',' +
+                this.vectorB.toString() +
+                ', ' +
+                this.world +
+                ', ' +
+                this.name +
+                ']'
+            )
         }
     }
 
@@ -112,13 +156,13 @@ export class Region {
      * >> [ 201, 202, 203... ]
      */
     xArray(): Array<number> {
-        var smallestBounds = this.getSmallestPoint();
-        var regionSize = this.getSize();
-        var returnable: Array<number> = [];
+        var smallestBounds = this.getSmallestPoint()
+        var regionSize = this.getSize()
+        var returnable: Array<number> = []
         for (var i = 0; i < regionSize.x; i++) {
-            returnable.push(smallestBounds.x + i);
+            returnable.push(smallestBounds.x + i)
         }
-        return returnable;
+        return returnable
     }
     /**
      * yArray
@@ -129,13 +173,13 @@ export class Region {
      * >> [ 201, 202, 203... ]
      */
     yArray(): Array<number> {
-        var smallestBounds = this.getSmallestPoint();
-        var regionSize = this.getSize();
-        var returnable: Array<number> = [];
+        var smallestBounds = this.getSmallestPoint()
+        var regionSize = this.getSize()
+        var returnable: Array<number> = []
         for (var i = 0; i < (regionSize.y || 1); i++) {
-            returnable.push(smallestBounds.y + i);
+            returnable.push(smallestBounds.y + i)
         }
-        return returnable;
+        return returnable
     }
     /**
      * xArray
@@ -146,13 +190,13 @@ export class Region {
      * >> [ 201, 202, 203... ]
      */
     zArray(): Array<number> {
-        var smallestBounds = this.getSmallestPoint();
-        var regionSize = this.getSize();
-        var returnable: Array<number> = [];
+        var smallestBounds = this.getSmallestPoint()
+        var regionSize = this.getSize()
+        var returnable: Array<number> = []
         for (var i = 0; i < (regionSize.z || 1); i++) {
-            returnable.push(smallestBounds.z + i);
+            returnable.push(smallestBounds.z + i)
         }
-        return returnable;
+        return returnable
     }
 
     /**
@@ -160,7 +204,7 @@ export class Region {
      * @returns {number} - The length of the region in the x axis
      *
      * Will calculate the length of the the x axis of the region
-    */
+     */
     xLength(): number {
         return Math.abs(this.vectorA.x - this.vectorB.x)
     }
@@ -170,9 +214,9 @@ export class Region {
      * @returns {number} - The length of the region in the y axis
      *
      * Will calculate the length of the the y axis of the region
-    */
+     */
     yLength(): number {
-        return Math.abs(this.vectorA.y - this.vectorB.y);
+        return Math.abs(this.vectorA.y - this.vectorB.y)
     }
 
     /**
@@ -180,12 +224,10 @@ export class Region {
      * @returns {number} - The length of the region in the z axis
      *
      * Will calculate the length of the the z axis of the region
-    */
+     */
     zLength(): number {
-        return Math.abs(this.vectorA.z - this.vectorB.z);
+        return Math.abs(this.vectorA.z - this.vectorB.z)
     }
-
-
 
     /**
      * contains
@@ -196,25 +238,35 @@ export class Region {
      */
     contains(sampleVector: Vector3): boolean {
         if (this.world == sampleVector.world) {
-            if ((sampleVector.x || 0) < Math.min(this.vectorA.x, this.vectorB.x)) {
-                return false;
-            } else if ((sampleVector.x || 0) > Math.max(this.vectorA.x, this.vectorB.x)) {
-                return false;
-            }
-            else if ((sampleVector.y || 0) < Math.min(this.vectorA.y, this.vectorB.y)) {
-                return false;
-            } else if ((sampleVector.y || 0) > Math.max(this.vectorA.y, this.vectorB.y)) {
-                return false;
-            }
-            else if ((sampleVector.z || 0) < Math.min(this.vectorA.z, this.vectorB.z)) {
-                return false;
-            } else if ((sampleVector.z || 0) > Math.max(this.vectorA.z, this.vectorB.z)) {
-                return false;
+            if (
+                (sampleVector.x || 0) < Math.min(this.vectorA.x, this.vectorB.x)
+            ) {
+                return false
+            } else if (
+                (sampleVector.x || 0) > Math.max(this.vectorA.x, this.vectorB.x)
+            ) {
+                return false
+            } else if (
+                (sampleVector.y || 0) < Math.min(this.vectorA.y, this.vectorB.y)
+            ) {
+                return false
+            } else if (
+                (sampleVector.y || 0) > Math.max(this.vectorA.y, this.vectorB.y)
+            ) {
+                return false
+            } else if (
+                (sampleVector.z || 0) < Math.min(this.vectorA.z, this.vectorB.z)
+            ) {
+                return false
+            } else if (
+                (sampleVector.z || 0) > Math.max(this.vectorA.z, this.vectorB.z)
+            ) {
+                return false
             } else {
-                return true;
+                return true
             }
         } else {
-            return false;
+            return false
         }
     }
 
@@ -231,7 +283,7 @@ export class Region {
             Math.min(this.vectorA.y, this.vectorB.y),
             Math.min(this.vectorA.z, this.vectorB.z),
             this.world
-        );
+        )
     }
 
     /**
@@ -247,7 +299,7 @@ export class Region {
             Math.max(this.vectorA.y, this.vectorB.y),
             Math.max(this.vectorA.z, this.vectorB.z),
             this.world
-        );
+        )
     }
 
     /**
@@ -257,14 +309,14 @@ export class Region {
      * Returns the center point of the region as a vector3
      */
     getCenterPoint(): Vector3 {
-        var smallestPoint = this.getSmallestPoint();
-        var size = this.getSize();
+        var smallestPoint = this.getSmallestPoint()
+        var size = this.getSize()
         return new Vector3(
-            smallestPoint.x + (size.x / 2),
-            smallestPoint.y + (size.y / 2),
-            smallestPoint.z + (size.z / 2),
+            smallestPoint.x + size.x / 2,
+            smallestPoint.y + size.y / 2,
+            smallestPoint.z + size.z / 2,
             this.world
-        );
+        )
     }
 
     /**
@@ -272,12 +324,12 @@ export class Region {
      * @param {boolean} [worldObj] - Optional bool to export world name
      */
     getWorld(worldObj?: boolean): string | any {
-        this._unifyWorldNames();
-        worldObj = worldObj || false;
+        this._unifyWorldNames()
+        worldObj = worldObj || false
         if (worldObj) {
-            return util.world(this.world);
+            return util.world(this.world)
         } else {
-            return this.world;
+            return this.world
         }
     }
 
@@ -293,7 +345,7 @@ export class Region {
             Math.abs(this.vectorA.y - this.vectorB.y),
             Math.abs(this.vectorA.z - this.vectorB.z),
             this.world
-        );
+        )
     }
 
     /**
@@ -303,15 +355,15 @@ export class Region {
      * Will get a random point inside the region
      */
     randomPoint() {
-        var regionSize = this.getSize(); // << Returns Vector3
-        var smallestPoint = this.getSmallestPoint();
+        var regionSize = this.getSize() // << Returns Vector3
+        var smallestPoint = this.getSmallestPoint()
         var vec = new Vector3(
             Math.round(smallestPoint.x + Math.random() * (regionSize.x || 0)),
             Math.round(smallestPoint.y + Math.random() * (regionSize.y || 0)),
             Math.round(smallestPoint.z + Math.random() * (regionSize.z || 0)),
             this.world
-        );
-        return vec;
+        )
+        return vec
     }
 
     /**
@@ -322,15 +374,15 @@ export class Region {
      * Will create an array of Vector3 points within the region
      */
     randomPoints(amount): Array<Vector3> {
-        amount = amount || 1;
+        amount = amount || 1
         if (amount == 0) {
-            return [this.randomPoint()];
+            return [this.randomPoint()]
         } else {
-            var coords: Array<Vector3> = [];
+            var coords: Array<Vector3> = []
             for (var i = 0; i < amount; i++) {
-                coords.push(this.randomPoint());
+                coords.push(this.randomPoint())
             }
-            return coords;
+            return coords
         }
     }
 
@@ -351,41 +403,47 @@ export class Region {
         // Less computation for the engine to do
         if (this.contains(location)) {
             // The location is in the region
-            return location;
+            return location
         } else {
             // Get all of the closet points in panes
-            var locationArray = location.toArray();
-            var greatestBounds = this.getLargestPoint().toArray; // << Vector3 Returns
-            var smallestBounds = this.getSmallestPoint().toArray; // << Vector3 Returns
+            var locationArray = location.toArray()
+            var greatestBounds = this.getLargestPoint().toArray // << Vector3 Returns
+            var smallestBounds = this.getSmallestPoint().toArray // << Vector3 Returns
             var arrayPositions: Array<number[]> = []
-            for (var a = 0; a < 3; a++) { // Check through all axis's
+            for (var a = 0; a < 3; a++) {
+                // Check through all axis's
                 // If the location is greater than the greatest bounds
                 if (location[a] > greatestBounds[a]) {
-                    arrayPositions.push([greatestBounds[a]]);
+                    arrayPositions.push([greatestBounds[a]])
                     // If the location is smaller than the smallest bounds
                 } else if (location[a] < smallestBounds[a]) {
-                    arrayPositions.push([smallestBounds[a]]);
+                    arrayPositions.push([smallestBounds[a]])
                     // The location must be within the bounds.
                 } else {
                     // Depending on the iteration, get the appropiate axis's array
                     switch (a) {
                         case 0:
-                            arrayPositions.push(this.xArray());
-                            break;
+                            arrayPositions.push(this.xArray())
+                            break
                         case 1:
-                            arrayPositions.push(this.yArray());
-                            break;
+                            arrayPositions.push(this.yArray())
+                            break
                         case 2:
-                            arrayPositions.push(this.zArray());
-                            break;
+                            arrayPositions.push(this.zArray())
+                            break
                         default:
-                            break;
+                            break
                     }
                 }
             }
             // Test for the closest point
-            var closestPoint: Vector3 = new Vector3(Infinity, Infinity, Infinity, this.world);
-            var closestDist: number = Infinity;
+            var closestPoint: Vector3 = new Vector3(
+                Infinity,
+                Infinity,
+                Infinity,
+                this.world
+            )
+            var closestDist: number = Infinity
             for (var x = 0; x < arrayPositions[0].length; x++) {
                 for (var y = 0; y < arrayPositions[1].length; y++) {
                     for (var z = 0; z < arrayPositions[2].length; z++) {
@@ -396,16 +454,16 @@ export class Region {
                             arrayPositions[1][y],
                             arrayPositions[2][z],
                             this.world
-                        );
-                        var testDist = Vector3.Distance(testPoint, location);
+                        )
+                        var testDist = Vector3.Distance(testPoint, location)
                         if (testDist < closestDist) {
-                            closestDist = testDist;
-                            closestPoint = testPoint;
+                            closestDist = testDist
+                            closestPoint = testPoint
                         }
                     }
                 }
             }
-            return closestPoint;
+            return closestPoint
         }
     }
 
@@ -418,7 +476,7 @@ export class Region {
      * Refer to closestPoint
      */
     distToClosestPoint(location: Vector3): number {
-        return Vector3.Distance(this.closestPoint(location), location);
+        return Vector3.Distance(this.closestPoint(location), location)
     }
 
     /**
@@ -430,64 +488,86 @@ export class Region {
      * Will return true if the regions overlap
      */
     AreOverlaping(regionA: Region, regionB): Boolean {
-        var centerB = regionB.getCenterPoint();
-        var queryPoint = regionA.closestPoint(centerB);
-        return regionB.isIn(queryPoint) ? true : false;
+        var centerB = regionB.getCenterPoint()
+        var queryPoint = regionA.closestPoint(centerB)
+        return regionB.isIn(queryPoint) ? true : false
     }
 
     Alter(region: Region, amount: number, direction?: any): Region {
         if (!direction) {
             // Change in all directions
-            var smallestVector: Vector3 = region.getSmallestPoint();
-            var largestVector: Vector3 = region.getLargestPoint();
-            var alterVector: Vector3 = new Vector3(1 * amount, 1 * amount, 1 * amount);
-            var vectorA = Vector3.Minus(smallestVector, alterVector);
-            var vectorB = Vector3.Add(largestVector, alterVector);
-            return new Region(vectorA, vectorB);
+            var smallestVector: Vector3 = region.getSmallestPoint()
+            var largestVector: Vector3 = region.getLargestPoint()
+            var alterVector: Vector3 = new Vector3(
+                1 * amount,
+                1 * amount,
+                1 * amount
+            )
+            var vectorA = Vector3.Minus(smallestVector, alterVector)
+            var vectorB = Vector3.Add(largestVector, alterVector)
+            return new Region(vectorA, vectorB)
         } else if (!direction[0]) {
             // Not array, but direction given
-            var smallestVector: Vector3 = region.getSmallestPoint();
-            var largestVector: Vector3 = region.getLargestPoint();
+            var smallestVector: Vector3 = region.getSmallestPoint()
+            var largestVector: Vector3 = region.getLargestPoint()
             if (direction == Direction.UP) {
-                smallestVector.y = Math.max(0, Math.min(largestVector.y + amount, 128));
+                smallestVector.y = Math.max(
+                    0,
+                    Math.min(largestVector.y + amount, 128)
+                )
             } else if (direction == Direction.EAST) {
-                largestVector.x += amount;
+                largestVector.x += amount
                 return new Region(smallestVector, largestVector)
             } else if (direction == Direction.NORTH) {
-                largestVector.z += amount;
+                largestVector.z += amount
                 return new Region(smallestVector, largestVector)
             } else if (direction == Direction.DOWN) {
-                smallestVector.y = Math.max(0, Math.min(smallestVector.y - amount, 128));
+                smallestVector.y = Math.max(
+                    0,
+                    Math.min(smallestVector.y - amount, 128)
+                )
                 return new Region(smallestVector, largestVector)
             } else if (direction == Direction.SOUTH) {
-                smallestVector.x -= amount;
+                smallestVector.x -= amount
                 return new Region(smallestVector, largestVector)
             } else if (direction == Direction.WEST) {
-                smallestVector.z -= amount;
+                smallestVector.z -= amount
                 return new Region(smallestVector, largestVector)
             } else {
-                return this.Alter(region, amount);
+                return this.Alter(region, amount)
             }
         } else {
             // Has to be array
             // Do the operation[0],
             // If last, return, else remove [0] and try again
-            var _region = this.Alter(region, amount, direction[direction.length - 1]);
+            var _region = this.Alter(
+                region,
+                amount,
+                direction[direction.length - 1]
+            )
             if (direction.length == 1) {
-                return _region;
+                return _region
             } else {
-                return this.Alter(_region, amount, direction.pop());
+                return this.Alter(_region, amount, direction.pop())
             }
         }
-        return region;
+        return region
     }
-    Expand(region: Region, amount?: number, direction?: Direction | Array<Direction>): Region {
-        amount = Math.abs(amount || 1);
-        return this.Alter(region, amount, direction);
+    Expand(
+        region: Region,
+        amount?: number,
+        direction?: Direction | Array<Direction>
+    ): Region {
+        amount = Math.abs(amount || 1)
+        return this.Alter(region, amount, direction)
     }
-    Contract(region: Region, amount?: number, direction?: Direction | Array<Direction>): Region {
-        amount = -Math.abs(amount || 1);
-        return this.Alter(region, amount, direction);
+    Contract(
+        region: Region,
+        amount?: number,
+        direction?: Direction | Array<Direction>
+    ): Region {
+        amount = -Math.abs(amount || 1)
+        return this.Alter(region, amount, direction)
     }
 
     /**
@@ -498,8 +578,8 @@ export class Region {
      */
     private _unifyWorldNames() {
         if (this.world == '') {
-            var worldA = this.vectorA.world || '';
-            var worldB = this.vectorA.world || '';
+            var worldA = this.vectorA.world || ''
+            var worldB = this.vectorA.world || ''
             if (worldA == '' && worldB == '') {
                 // No world is given in the regions
                 // Just give it a null world
@@ -510,22 +590,22 @@ export class Region {
                 // World B as the given world
                 // Assign the region and vectorA worlds to vectorB's world
                 this.vectorA.world = worldB
-                this.world = worldB;
-                return worldB;
+                this.world = worldB
+                return worldB
             } else if (worldB == '') {
                 // World A as the given world
                 // Assign the region and vectorB worlds to vectorA's world
                 this.vectorB.world = worldA
-                this.world = worldA;
-                return worldA;
+                this.world = worldA
+                return worldA
             } else if (worldB == worldA) {
                 // Both worlds have the same name
                 // Assign the region world to the two vectors one's
-                this.world = worldA;
+                this.world = worldA
             }
         } else {
-            this.vectorA.world = this.world;
-            this.vectorB.world = this.world;
+            this.vectorA.world = this.world
+            this.vectorB.world = this.world
         }
     }
 }
