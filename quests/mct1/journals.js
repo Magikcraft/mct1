@@ -1,0 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var questTools = require("../quest-tools");
+exports.Journals = {
+    jail1: questTools.createBook('Journal 1', 'Dominus', [
+        "Five Weeks. The demon has kept me here for five weeks. He wanted our secrets but I will not give them.\n\nMy powers are returning. Soon I will be strong enough to escape the fortress.\n\nIf you are reading this, follow me. There is food and medicine",
+        "under the bed.\n\nTry to keep your BGL level in healthy, keep the bar green.\n\nIf you make it to the portal, join us in Castellum.\n\nTogether we will be strong enough to stop the Wither once and for all... Good luck!",
+    ]),
+    jail2: questTools.createBook('Journal 2', 'Dominus', [
+        "These ruins are like a maze. I had rest and eat several times. Good thing I had enough insulin to bring my blood sugar back down - it always rises after food. Without medication I would be in trouble.\n\nThankfully, none of the Wither\u2019s monsters seem to...",
+        "wander out this far.\n\nI hope the refilling runes are working on the bottle I left in the cell.  So long as they are, your insulin supply will never run out.  Food can be found and potions made, but medicine is harder to come by.",
+    ]),
+    sunken: questTools.createBook('Journal 3', 'Dominus', [
+        "We must have passed under the old moat. Some of the ruins have sunk into the water. Other parts are submerged completely.\n\nIt took a lot of swimming and jumping just to get through. Food is going to become a problem...",
+        "Physical activity makes you hungry but it also makes the effects of insulin stronger. I nearly forgot and came close to hypo in the maze.\n\nThere was a hole in the wall along the way. It took a while to reach but I managed to climb out and...",
+        "found a small Wither camp. They didn\u2019t have a lot of food, but it should be enough. I\u2019ve left some in the chest in case we need it.\n\nHopefully the next area will be drier."
+    ]),
+    magmarun: questTools.createBook('Journal 4', 'Dominus', "The traps and barriers mean I must be getting close to the fortress portals. It won\u2019t be long before we find the first of the Wither\u2019s guards.\n\n\nBe prepared."),
+    magmaboss: questTools.createBook('Journal 5', 'Dominus', "The end is in sight. Through these gates lie the fortress and, inside, the portals home.\n\n\nBut it will be difficult. If the Magma Cubes were just the guard dogs, the monsters within will be too much for any normal villager to escape.\n\n\nBut maybe you are like me? If so, there is something that can help.\n\n\nPeople like us \u2013 Glykosans \u2013 are special. The need for insulin and sugar is the price we pay, but those who manage the condition well can gain great power over time. You probably felt a taste of this when you were first chosen. It fades as blood sugar spikes and falls, but with control these powers can be regained.\n\n\nMyself, and others, belong to a small group of Alchemists. We wanted to see if we could develop potions that helped young Glykosans gain powers faster.\n\n\nThis is why the Wither is hunting. He wants the secrets of this alchemy, to create potions that give his own mobs power. He will raid every village in the world until the alchemists are captured and under his control. If he discovers our secrets his armies will be unstoppable.\n\n\nThe Wither does not know, but I was carrying a bottle of a new, experimental, catalyst potion when he captured me. His guards searched me but I was able to keep it from them.\n\n\nI leave it for you now.\n\n\nWith it you can gain three of our powers \u2013 swiftness, leaping and the ability to call down thunder. These powers will be with you permanently, but be warned \u2013 only those with good control will be able to access their true effects.\n\n\nStill, these powers alone will not be enough. Once you are free, join us in Castellum. With enough Glykosans together we can begin a plan to end the Demon threat for good.\n\n\nSee you soon."),
+};

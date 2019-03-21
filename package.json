@@ -1,0 +1,26 @@
+{
+    "name": "mct1",
+    "version": "1.0.0",
+    "description": "Minecraft for Type 1 Diabetes",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Magikcraft/mct1.git"
+    },
+    "keywords": [
+        "minecraft",
+        "magikcraft",
+        "sma",
+        "scriptcraft"
+    ],
+    "author": "Magikcraft.io",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Magikcraft/mct1/issues"
+    },
+    "homepage": "https://github.com/Magikcraft/mct1#readme",
+    "scriptcraft_load_dir": "autoload"
+}

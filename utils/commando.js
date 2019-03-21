@@ -1,0 +1,1 @@
+exports.commando = require('../../../scriptcraft/plugins/commando/commando').commando;
