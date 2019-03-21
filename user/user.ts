@@ -1,14 +1,14 @@
 import * as events from 'events'
 
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
-import { MCT1 } from 'mct1/mct1'
-import * as tools from 'mct1/tools'
+import { MCT1 } from '@magikcraft/mct1/mct1'
+import * as tools from '@magikcraft/mct1/tools'
 import DB from './db'
 import PlayerInventory from './inventory'
 import PlayerEffects from './effects'
-import { user } from 'mct1/user';
+import { user } from '@magikcraft/mct1/user';
 import Follower from './follower'
 
 const GameMode = Java.type('org.bukkit.GameMode')

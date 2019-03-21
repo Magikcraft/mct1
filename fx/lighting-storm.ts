@@ -1,7 +1,6 @@
-import { Vector3 } from 'mct1/vector3';
-import { Region } from 'mct1/regions';
-import { Logger } from 'mct1/log';
-const log = Logger(`${[__dirname, __filename].join('/')}`);
+import { Region } from '@magikcraft/mct1/regions';
+import { Logger } from '@magikcraft/mct1/log';
+const log = Logger(__filename);
 var util = require('utils');
 
 let lightningTimes = 0;

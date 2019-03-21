@@ -1,5 +1,5 @@
-import { color, IBossBar, style } from 'mct1/bossbar/bossbar';
-import * as environment from 'mct1/utils/environment';
+import { color, IBossBar, style } from '@magikcraft/mct1/bossbar/bossbar';
+import * as environment from '@magikcraft/mct1/utils/environment';
 
 const hasBukkitBossBar = environment.HAS_BOSSBAR_BUKKIT
 
@@ -13,8 +13,8 @@ export const TextComponent = hasBukkitBossBar
     : undefined
 export type TextComponent = any
 
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 /**
  *

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var quests_1 = require("mct1/quests");
-var log_1 = require("mct1/log");
+var quests_1 = require("@magikcraft/mct1/quests");
+var log_1 = require("@magikcraft/mct1/log");
 var utils = require("utils");
-var commando_1 = require("mct1/utils/commando");
+var commando_1 = require("@magikcraft/mct1/utils/commando");
 // import { isAdminUser } from 'magikcraft/user';
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var log = log_1.Logger(__filename);
 commando_1.commando('quest', function (args, player) {
     log('/quest - args: ' + args);
     var questName = args.shift();

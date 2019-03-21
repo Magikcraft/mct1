@@ -1,5 +1,5 @@
-import { Vector3 } from "mct1/vector3";
-import { Region } from "mct1/regions";
+import { Vector3 } from "@magikcraft/mct1/vector3";
+import { Region } from "@magikcraft/mct1/regions";
 
 /**
  * @interface BlockData

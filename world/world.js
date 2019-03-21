@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
-var log_1 = require("mct1/log");
-var tools = require("mct1/tools");
-var index_1 = require("mct1/world/index");
-var server = require("mct1/utils/server");
+var log_1 = require("@magikcraft/mct1/log");
+var tools = require("@magikcraft/mct1/tools");
+var index_1 = require("@magikcraft/mct1/world/index");
+var server = require("@magikcraft/mct1/utils/server");
 var Biome = Java.type('org.bukkit.block.Biome');
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var log = log_1.Logger(__filename);
 // User class
 var World = /** @class */ (function () {
     function World(world) {
@@ -24,8 +24,8 @@ var World = /** @class */ (function () {
         this.setDay = function () { return server.executeCommand("time day " + _this.world.name); };
         this.setDusk = function () { return server.executeCommand("time dusk " + _this.world.name); };
         this.setNight = function () { return server.executeCommand("time night " + _this.world.name); };
-        this.setSun = function () { return server.executeCommand("weather " + _this.world.name + " sun"); };
-        this.setStorm = function () { return server.executeCommand("weather " + _this.world.name + " storm"); };
+        this.setSun = function () { return server.executeCommand("weather " + _this.world.name + " clear"); };
+        this.setStorm = function () { return server.executeCommand("weather " + _this.world.name + " thunder"); };
         this.setRain = function () { return server.executeCommand("weather " + _this.world.name + " rain"); };
         this.registerPlayerEnterRegionEvent = function (regionName, handler, player) {
             _this._registerPlayerRegionEvent('enter', regionName, handler, player);

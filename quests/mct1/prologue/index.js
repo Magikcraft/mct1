@@ -13,17 +13,17 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Locations = require('./locs');
-var LightningSuperStrike = require("mct1/fx/lightning-super-strike");
+var Locations = require("./locs");
+var LightningSuperStrike = require("@magikcraft/mct1/fx/lightning-super-strike");
 var questTools = require("../../quest-tools");
-var MobTools = require('mct1/mobs');
-var LightingStorm = require("mct1/fx/lighting-storm");
+var MobTools = require("@magikcraft/mct1/mobs");
+var LightingStorm = require("@magikcraft/mct1/fx/lighting-storm");
 var wither_1 = require("./wither");
-var user_1 = require("mct1/user");
-var world_1 = require("mct1/world");
+var user_1 = require("@magikcraft/mct1/user");
+var world_1 = require("@magikcraft/mct1/world");
 var intervalModifier = 60000; // Useful for testing!
 // const intervalModifier = -90000 // Useful for testing!
-var Quest_1 = require("mct1/quests/Quest");
+var Quest_1 = require("@magikcraft/mct1/quests/Quest");
 var QuestMCT1Prologue = /** @class */ (function (_super) {
     __extends(QuestMCT1Prologue, _super);
     function QuestMCT1Prologue(conf) {

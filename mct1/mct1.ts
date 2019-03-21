@@ -3,10 +3,10 @@ import inventory = require('inventory')
 import items = require('items')
 const Material = Java.type('org.bukkit.Material')
 
-import { BossBar } from 'mct1/bossbar'
-import { IBossBar } from 'mct1/bossbar/bossbar'
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { BossBar } from '@magikcraft/mct1/bossbar'
+import { IBossBar } from '@magikcraft/mct1/bossbar/bossbar'
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 import { activityCosts, activityTypes } from './activities'
 import foods from './foods'
@@ -18,7 +18,7 @@ foods.forEach(item => Food[item.type] = item)
 
 let _bar: IBossBar
 
-import { user } from 'mct1/user';
+import { user } from '@magikcraft/mct1/user';
 
 export class MCT1 {
 
@@ -911,7 +911,7 @@ export class MCT1 {
     }
 
     makeLigtningSnowballItemStack = (num) => {
-        const item = items.snowBall(num)
+        const item = items.snowball(num)
         const itemMeta = item.getItemMeta()
         const zapzaps = this.zapZaps()
         const zapzap = zapzaps[Math.floor(Math.random() * zapzaps.length)]

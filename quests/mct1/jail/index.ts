@@ -1,20 +1,19 @@
-const Location = Java.type('org.bukkit.Location');
-const Locations = require('./locs')
+import Locations = require('./locs');
 
-import { Journals } from 'mct1/quests/mct1/journals'
-import { ChestItems } from 'mct1/quests/mct1/chest-items'
+import { Journals } from '@magikcraft/mct1/quests/mct1/journals'
+import { ChestItems } from '@magikcraft/mct1/quests/mct1/chest-items'
 
 import * as questTools from '../../quest-tools'
 
-import { worldly } from 'mct1/world'
-import { user } from 'mct1/user'
+import { worldly } from '@magikcraft/mct1/world'
+import { user } from '@magikcraft/mct1/user'
 
 const Rockfall = require('./rockfall').default;
-const MobTools = require('mct1/mobs')
-const items = require('items')
+import MobTools = require('@magikcraft/mct1/mobs');
+import items = require('items');
 import JailBrawl from './jail-brawl'
 
-import { QuestConfig, QuestMCT1 } from 'mct1/quests/Quest'
+import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 
 export default class QuestMCT1Prologue extends QuestMCT1 {
     jailGuard: any

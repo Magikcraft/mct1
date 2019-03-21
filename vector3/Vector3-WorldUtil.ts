@@ -1,8 +1,7 @@
 import { Vector3 } from './Vector3';
-import { Direction } from './Direction'
-import { Logger } from 'mct1/log';
-const log = Logger(`${[__dirname, __filename].join('/')}`);
-var blocks = require('blocks');
+import { Logger } from '@magikcraft/mct1/log';
+const log = Logger(__filename);
+import blocks = require('blocks');
 
 export class Vector3World {
 

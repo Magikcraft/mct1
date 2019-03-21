@@ -1,5 +1,5 @@
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 const PotionEffect = Java.type('org.bukkit.potion.PotionEffect')
 

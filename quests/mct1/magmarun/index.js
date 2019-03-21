@@ -16,9 +16,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Material = Java.type('org.bukkit.Material');
 var Locations = require('./locs');
 var questTools = require("../../quest-tools");
-var world_1 = require("mct1/world");
+var world_1 = require("@magikcraft/mct1/world");
 var Location = Java.type('org.bukkit.Location');
-var Quest_1 = require("mct1/quests/Quest");
+var Quest_1 = require("@magikcraft/mct1/quests/Quest");
 var QuestMCT1Magmarun = /** @class */ (function (_super) {
     __extends(QuestMCT1Magmarun, _super);
     function QuestMCT1Magmarun(conf) {

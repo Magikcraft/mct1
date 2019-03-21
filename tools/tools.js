@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils = require('utils');
+var utils = require("utils");
 var Location = Java.type('org.bukkit.Location');
 var Material = Java.type('org.bukkit.Material');
 var ItemStack = Java.type('org.bukkit.inventory.ItemStack');

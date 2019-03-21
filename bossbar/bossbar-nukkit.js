@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var environment = require("mct1/utils/environment");
-var log_1 = require("mct1/log");
+var environment = require("@magikcraft/mct1/utils/environment");
+var log_1 = require("@magikcraft/mct1/log");
 var log = log_1.Logger('NukkitBossBar');
 var PokkitPlayer;
 var barID = environment.ENGINE_ID;

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var log_1 = require("mct1/log");
+var log_1 = require("@magikcraft/mct1/log");
 var Sound = Java.type('org.bukkit.Sound');
-var MobTools = require("mct1/mobs");
+var MobTools = require("@magikcraft/mct1/mobs");
 var JailBrawl = /** @class */ (function () {
     function JailBrawl(Locs, jailGuard) {
         this.brawlSounds = [
@@ -17,7 +17,7 @@ var JailBrawl = /** @class */ (function () {
         ];
         this.timers = []; // all mobs stored in here.
         this.Locs = Locs;
-        this.log = log_1.Logger("" + [__dirname, __filename].join('/'));
+        this.log = log_1.Logger(__filename);
         this.jailGuard = jailGuard;
     }
     JailBrawl.prototype.start = function () {

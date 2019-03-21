@@ -1,5 +1,5 @@
 {
-    "name": "mct1",
+    "name": "@magikcraft/mct1",
     "version": "1.0.0",
     "description": "Minecraft for Type 1 Diabetes",
     "main": "index.js",

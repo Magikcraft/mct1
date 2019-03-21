@@ -14,7 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Locations = require('./locs');
-var Quest_1 = require("mct1/quests/Quest");
+var Quest_1 = require("@magikcraft/mct1/quests/Quest");
 var QuestMCT1Sunken = /** @class */ (function (_super) {
     __extends(QuestMCT1Sunken, _super);
     function QuestMCT1Sunken(conf) {

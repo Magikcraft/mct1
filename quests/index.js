@@ -1,53 +1,54 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("mct1/utils/fs");
-var log_1 = require("mct1/log");
-var server = require("mct1/utils/server");
+var fs = require("@magikcraft/mct1/utils/fs");
+var log_1 = require("@magikcraft/mct1/log");
+var server = require("@magikcraft/mct1/utils/server");
+var utils_1 = require("utils");
 var utils = require('utils'); // tslint:disable-line
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var log = log_1.Logger(__filename);
 var quests = {
     'mct1': {
-        filePath: 'mct1/quests/mct1/prologue',
+        filePath: '@magikcraft/mct1/quests/mct1/prologue',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-jail',
     },
     'mct1-prologue': {
-        filePath: 'mct1/quests/mct1/prologue',
+        filePath: '@magikcraft/mct1/quests/mct1/prologue',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-jail',
     },
     'mct1-jail': {
-        filePath: 'mct1/quests/mct1/jail',
+        filePath: '@magikcraft/mct1/quests/mct1/jail',
         worldName: 'mct1-jail',
         nextQuestName: 'mct1-sunken',
     },
     'mct1-sunken': {
-        filePath: 'mct1/quests/mct1/sunken',
+        filePath: '@magikcraft/mct1/quests/mct1/sunken',
         worldName: 'mct1-sunken-v2',
         nextQuestName: 'mct1-magmarun',
     },
     'mct1-magmarun': {
-        filePath: 'mct1/quests/mct1/magmarun',
+        filePath: '@magikcraft/mct1/quests/mct1/magmarun',
         worldName: 'mct1-magmarun',
         nextQuestName: 'mct1-magmaboss',
     },
     'mct1-magmaboss': {
-        filePath: 'mct1/quests/mct1/magmaboss',
+        filePath: '@magikcraft/mct1/quests/mct1/magmaboss',
         worldName: 'mct1-magmaboss',
         nextQuestName: 'mct1-breakout',
     },
     'mct1-breakout': {
-        filePath: 'mct1/quests/mct1/breakout',
+        filePath: '@magikcraft/mct1/quests/mct1/breakout',
         worldName: 'mct1-breakout',
         nextQuestName: 'mct1-village',
     },
     'mct1-village': {
-        filePath: 'mct1/quests/mct1/village',
+        filePath: '@magikcraft/mct1/quests/mct1/village',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-breakout2',
     },
     'mct1-breakout2': {
-        filePath: 'mct1/quests/mct1/breakout2',
+        filePath: '@magikcraft/mct1/quests/mct1/breakout2',
         worldName: 'mct1-breakout',
         nextQuestName: 'mct1-village',
     },
@@ -75,10 +76,13 @@ function importWorld(templateWorldName) {
     server.executeCommand("mv import " + templateWorldName + " normal");
 }
 function deleteWorld(worldName, cb) {
+    log("Deleting ./" + worldName);
     try {
+        var w = utils_1.world(worldName);
+        var worldPath = w ? w.getWorldFolder().getPath() : undefined;
         mv().deleteWorld(worldName);
-        if (fs.exists("./" + worldName)) {
-            fs.remove("./" + worldName);
+        if (worldPath && fs.exists(worldPath)) {
+            fs.remove(worldPath);
         }
         cb && cb();
     }
@@ -96,9 +100,9 @@ function cloneWorld(worldName, templateWorldName, cb) {
             log("Failed to clone world " + templateWorldName);
             return cb && cb("Failed to clone world");
         }
-        var world = utils.world(worldName);
+        var world_1 = utils.world(worldName);
         log("World clone complete for " + worldName);
-        return cb && cb(null, world);
+        return cb && cb(null, world_1);
     }
     catch (e) {
         log(e);

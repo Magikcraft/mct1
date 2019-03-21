@@ -1,10 +1,10 @@
 
-import { Vector3 } from 'mct1/vector3'
-import { Vector3World } from 'mct1/vector3/Vector3-WorldUtil'
-import * as Mobs from 'mct1/mobs'
+import { Vector3 } from '@magikcraft/mct1/vector3'
+import { Vector3World } from '@magikcraft/mct1/vector3/Vector3-WorldUtil'
+import * as Mobs from '@magikcraft/mct1/mobs'
 const teleport = require('teleport')
-import { Logger } from "mct1/log"
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from "@magikcraft/mct1/log"
+const log = Logger(__filename);
 
 export default class Wither {
     region

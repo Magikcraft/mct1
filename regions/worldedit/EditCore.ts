@@ -1,5 +1,5 @@
-import { Vector3 } from "mct1/vector3";
-const util = require("utils");
+import { Vector3 } from "@magikcraft/mct1/vector3";
+import util = require("utils");
 
 // ------------------------------------------
 // THIS FILE IS NOT SUPPOSED TO BE WORLD EDIT

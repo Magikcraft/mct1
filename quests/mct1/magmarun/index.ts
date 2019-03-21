@@ -1,9 +1,9 @@
 const Material = Java.type('org.bukkit.Material')
 const Locations = require('./locs')
 import * as questTools from '../../quest-tools';
-import { worldly } from 'mct1/world'
+import { worldly } from '@magikcraft/mct1/world'
 const Location = Java.type('org.bukkit.Location')
-import { QuestConfig, QuestMCT1 } from 'mct1/quests/Quest'
+import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 
 export default class QuestMCT1Magmarun extends QuestMCT1 {
     activeRuns: Array<any> = []

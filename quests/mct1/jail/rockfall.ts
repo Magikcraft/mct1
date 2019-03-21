@@ -1,9 +1,9 @@
-import { Vector3 } from "mct1/vector3";
-import { Region } from "mct1/regions";
+import { Vector3 } from "@magikcraft/mct1/vector3";
+import { Region } from "@magikcraft/mct1/regions";
 var utils = require('utils')
 
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 const Material = Java.type('org.bukkit.Material')
 const Effect = Java.type('org.bukkit.Effect')
@@ -74,7 +74,7 @@ export default class Rockfall {
             Sound.BLOCK_SAND_FALL,
             undefined,
             // undefined, undefined,
-            Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE,
+            Sound.ENTITY_DRAGON_FIREBALL_EXPLODE,
             undefined,
             // undefined, undefined,
         ];
@@ -92,7 +92,7 @@ export default class Rockfall {
                 dropLoc.setZ(loc.z + 0.5);
 
                 world.spawnFallingBlock(dropLoc, block.type, block.data);
-                loc.world.playEffect(loc, Effect.EXPLOSION, 100);
+                loc.world.playEffect(loc, Effect.WITHER_BREAK_BLOCK, 100);
                 if (sound) loc.world.playSound(loc, sound, 5, 1);
                 // BLOCK_STONE_FALL
                 // world.createExplosion(loc.x, loc.y, loc.z, 1, false, false);

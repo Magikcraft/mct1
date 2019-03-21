@@ -1,7 +1,7 @@
 console.log('MCT1 is loaded!');
 
-import * as environment from 'mct1/utils/environment';
-import { Logger } from 'mct1/log';
+import * as environment from '@magikcraft/mct1/utils/environment';
+import { Logger } from '@magikcraft/mct1/log';
 
 const log = Logger('bootstrap')
 

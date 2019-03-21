@@ -1,8 +1,8 @@
 
-import { Logger } from 'mct1/log'
+import { Logger } from '@magikcraft/mct1/log'
 const Sound = Java.type('org.bukkit.Sound')
 
-import MobTools = require('mct1/mobs');
+import MobTools = require('@magikcraft/mct1/mobs');
 
 export default class JailBrawl {
 
@@ -24,7 +24,7 @@ export default class JailBrawl {
 
     constructor(Locs, jailGuard) {
         this.Locs = Locs
-        this.log = Logger(`${[__dirname, __filename].join('/')}`)
+        this.log = Logger(__filename)
         this.jailGuard = jailGuard
     }
 

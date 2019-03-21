@@ -4,16 +4,16 @@ var events = require("events");
 var inventory = require("inventory");
 var items = require("items");
 var Material = Java.type('org.bukkit.Material');
-var bossbar_1 = require("mct1/bossbar");
-var log_1 = require("mct1/log");
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var bossbar_1 = require("@magikcraft/mct1/bossbar");
+var log_1 = require("@magikcraft/mct1/log");
+var log = log_1.Logger(__filename);
 var activities_1 = require("./activities");
 var foods_1 = require("./foods");
 var Color = Java.type('org.bukkit.Color');
 var Food = {};
 foods_1.default.forEach(function (item) { return Food[item.type] = item; });
 var _bar;
-var user_1 = require("mct1/user");
+var user_1 = require("@magikcraft/mct1/user");
 var MCT1 = /** @class */ (function () {
     function MCT1(player) {
         var _this = this;
@@ -323,7 +323,7 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this.makeLigtningSnowballItemStack = function (num) {
-            var item = items.snowBall(num);
+            var item = items.snowball(num);
             var itemMeta = item.getItemMeta();
             var zapzaps = _this.zapZaps();
             var zapzap = zapzaps[Math.floor(Math.random() * zapzaps.length)];

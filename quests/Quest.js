@@ -24,18 +24,18 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var quests_1 = require("mct1/quests");
-var log_1 = require("mct1/log");
-var world_1 = require("mct1/world");
-var user_1 = require("mct1/user");
-var inventories_1 = require("mct1/quests/mct1/inventories");
-var chest_items_1 = require("mct1/quests/mct1/chest-items");
-var tools = require("mct1/tools");
+var quests_1 = require("@magikcraft/mct1/quests");
+var log_1 = require("@magikcraft/mct1/log");
+var world_1 = require("@magikcraft/mct1/world");
+var user_1 = require("@magikcraft/mct1/user");
+var inventories_1 = require("@magikcraft/mct1/quests/mct1/inventories");
+var chest_items_1 = require("@magikcraft/mct1/quests/mct1/chest-items");
+var tools = require("@magikcraft/mct1/tools");
 var events = require("events");
-var questTools = require("mct1/quests/quest-tools");
+var questTools = require("@magikcraft/mct1/quests/quest-tools");
 var db_1 = require("./db");
 // import * as http from 'http'
-var api = require("mct1/api");
+var api = require("@magikcraft/mct1/api");
 var QuestBase = /** @class */ (function () {
     function QuestBase(conf) {
         this.state = {};

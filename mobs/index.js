@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var entities = require('entities');
 var Location = Java.type('org.bukkit.Location');
-var log_1 = require("mct1/log");
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var log_1 = require("@magikcraft/mct1/log");
+var log = log_1.Logger(__filename);
 function spawn(type, loc) {
     // entities.forEach(e => log('e', e))
     var mob = loc.world.spawnEntity(loc, entities[type]());

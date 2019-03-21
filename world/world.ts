@@ -1,12 +1,12 @@
 import * as events from 'events'
-import { Logger } from 'mct1/log'
-import * as tools from 'mct1/tools'
-import { worldDelete } from 'mct1/world/index'
-import * as server from 'mct1/utils/server'
+import { Logger } from '@magikcraft/mct1/log'
+import * as tools from '@magikcraft/mct1/tools'
+import { worldDelete } from '@magikcraft/mct1/world/index'
+import * as server from '@magikcraft/mct1/utils/server'
 
 const Biome = Java.type('org.bukkit.block.Biome')
 
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+const log = Logger(__filename)
 
 interface IWorldRegion {
     name: string;
@@ -77,8 +77,8 @@ export default class World {
     setDay = () => server.executeCommand(`time day ${this.world.name}`)
     setDusk = () => server.executeCommand(`time dusk ${this.world.name}`)
     setNight = () => server.executeCommand(`time night ${this.world.name}`)
-    setSun = () => server.executeCommand(`weather ${this.world.name} sun`)
-    setStorm = () => server.executeCommand(`weather ${this.world.name} storm`)
+    setSun = () => server.executeCommand(`weather ${this.world.name} clear`)
+    setStorm = () => server.executeCommand(`weather ${this.world.name} thunder`)
     setRain = () => server.executeCommand(`weather ${this.world.name} rain`)
 
     setChunkBiome(loc, biome: string) {

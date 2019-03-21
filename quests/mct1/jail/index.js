@@ -13,18 +13,17 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Location = Java.type('org.bukkit.Location');
-var Locations = require('./locs');
-var journals_1 = require("mct1/quests/mct1/journals");
-var chest_items_1 = require("mct1/quests/mct1/chest-items");
+var Locations = require("./locs");
+var journals_1 = require("@magikcraft/mct1/quests/mct1/journals");
+var chest_items_1 = require("@magikcraft/mct1/quests/mct1/chest-items");
 var questTools = require("../../quest-tools");
-var world_1 = require("mct1/world");
-var user_1 = require("mct1/user");
+var world_1 = require("@magikcraft/mct1/world");
+var user_1 = require("@magikcraft/mct1/user");
 var Rockfall = require('./rockfall').default;
-var MobTools = require('mct1/mobs');
-var items = require('items');
+var MobTools = require("@magikcraft/mct1/mobs");
+var items = require("items");
 var jail_brawl_1 = require("./jail-brawl");
-var Quest_1 = require("mct1/quests/Quest");
+var Quest_1 = require("@magikcraft/mct1/quests/Quest");
 var QuestMCT1Prologue = /** @class */ (function (_super) {
     __extends(QuestMCT1Prologue, _super);
     function QuestMCT1Prologue(conf) {

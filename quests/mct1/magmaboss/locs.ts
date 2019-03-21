@@ -1,9 +1,9 @@
-import { Region } from 'mct1/regions';
-import { Vector3 } from 'mct1/vector3';
+import { Region } from '@magikcraft/mct1/regions';
+import { Vector3 } from '@magikcraft/mct1/vector3';
 const Location = Java.type('org.bukkit.Location');
 
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 export const getLocations = (world) => {
     return {

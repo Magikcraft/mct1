@@ -1,7 +1,7 @@
-import * as fs from 'mct1/utils/fs'
+import * as fs from '@magikcraft/mct1/utils/fs'
 
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 export default class DB {
     player

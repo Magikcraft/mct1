@@ -1,4 +1,4 @@
-import { Vector3, Direction } from 'mct1/vector3'
+import { Vector3, Direction } from '@magikcraft/mct1/vector3'
 var util = require('utils')
 
 var vectorA = null;

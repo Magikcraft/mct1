@@ -1,11 +1,11 @@
-import { questCommand } from 'mct1/quests'
-import { Logger } from 'mct1/log'
+import { questCommand } from '@magikcraft/mct1/quests'
+import { Logger } from '@magikcraft/mct1/log'
 import * as utils from 'utils'
 
-import { commando } from 'mct1/utils/commando'
+import { commando } from '@magikcraft/mct1/utils/commando'
 // import { isAdminUser } from 'magikcraft/user';
 
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+const log = Logger(__filename)
 
 commando('quest', (args, player) => {
     log('/quest - args: ' + args)

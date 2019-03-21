@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var log_1 = require("mct1/log");
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var log_1 = require("@magikcraft/mct1/log");
+var log = log_1.Logger(__filename);
 function readDir(path) {
     var File = Java.type('java.io.File');
     var folder = new File(path);

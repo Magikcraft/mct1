@@ -28,7 +28,7 @@ Now compose the worlds and the MCT1 SMA plugin using docker:
     docker run -it -p 25565:25565 \
         --mount type=bind,src=$(pwd)/mct1-worlds,dst=/server/worlds \
         --mount source=scriptcraft-cache,target=/server/cache \
-        --mount type=bind,src=$(pwd)/mct1,dst=/server/scriptcraft-plugins/mct1 \
+        --mount type=bind,src=$(pwd)/mct1,dst=/server/scriptcraft-plugins/@magikcraft/mct1 \
         magikcraft/scriptcraft
 
 ## Scriptcraft Typings

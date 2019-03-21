@@ -1,19 +1,19 @@
-const Locations = require('./locs')
-import LightningSuperStrike = require('mct1/fx/lightning-super-strike')
+import Locations = require('./locs');
+import LightningSuperStrike = require('@magikcraft/mct1/fx/lightning-super-strike')
 
 import * as questTools from '../../quest-tools';
-const MobTools = require('mct1/mobs')
+import MobTools = require('@magikcraft/mct1/mobs');
 
-import LightingStorm = require('mct1/fx/lighting-storm');
+import LightingStorm = require('@magikcraft/mct1/fx/lighting-storm');
 import Wither from './wither'
 
-import { user } from 'mct1/user'
-import { worldly } from 'mct1/world'
+import { user } from '@magikcraft/mct1/user'
+import { worldly } from '@magikcraft/mct1/world'
 
 const intervalModifier = 60000 // Useful for testing!
 // const intervalModifier = -90000 // Useful for testing!
 
-import { QuestConfig, QuestMCT1 } from 'mct1/quests/Quest'
+import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 
 export default class QuestMCT1Prologue extends QuestMCT1 {
     wither: any

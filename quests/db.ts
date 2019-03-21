@@ -1,4 +1,4 @@
-import * as fs from 'mct1/utils/fs'
+import * as fs from '@magikcraft/mct1/utils/fs'
 
 export default class DB {
     questName: string

@@ -17,10 +17,10 @@ var Material = Java.type('org.bukkit.Material');
 var Location = Java.type('org.bukkit.Location');
 var EntityType = Java.type('org.bukkit.entity.EntityType');
 var Locations = require('./locs');
-var questTools = require("mct1/quests/quest-tools");
-var world_1 = require("mct1/world");
+var questTools = require("@magikcraft/mct1/quests/quest-tools");
+var world_1 = require("@magikcraft/mct1/world");
 var arena_stairs_1 = require("./arena-stairs");
-var Quest_1 = require("mct1/quests/Quest");
+var Quest_1 = require("@magikcraft/mct1/quests/Quest");
 var QuestMCT1Magmaboss = /** @class */ (function (_super) {
     __extends(QuestMCT1Magmaboss, _super);
     function QuestMCT1Magmaboss(conf) {

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var vector3_1 = require("mct1/vector3");
+var vector3_1 = require("@magikcraft/mct1/vector3");
 var utils = require('utils');
-var log_1 = require("mct1/log");
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var log_1 = require("@magikcraft/mct1/log");
+var log = log_1.Logger(__filename);
 var Material = Java.type('org.bukkit.Material');
 var Effect = Java.type('org.bukkit.Effect');
 var Sound = Java.type('org.bukkit.Sound');
@@ -57,7 +57,7 @@ var Rockfall = /** @class */ (function () {
             Sound.BLOCK_SAND_FALL,
             undefined,
             // undefined, undefined,
-            Sound.ENTITY_ENDERDRAGON_FIREBALL_EXPLODE,
+            Sound.ENTITY_DRAGON_FIREBALL_EXPLODE,
             undefined,
         ];
         var interval = 0;
@@ -74,7 +74,7 @@ var Rockfall = /** @class */ (function () {
                 dropLoc.setX(loc.x + 0.5);
                 dropLoc.setZ(loc.z + 0.5);
                 world.spawnFallingBlock(dropLoc, block.type, block.data);
-                loc.world.playEffect(loc, Effect.EXPLOSION, 100);
+                loc.world.playEffect(loc, Effect.WITHER_BREAK_BLOCK, 100);
                 if (sound)
                     loc.world.playSound(loc, sound, 5, 1);
                 // BLOCK_STONE_FALL

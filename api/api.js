@@ -4,10 +4,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Communicate with Magikcraft API (GraphQL) via the endpoint app.
  */
 var utils = require("utils");
-var environment_1 = require("mct1/utils/environment");
+var environment_1 = require("@magikcraft/mct1/utils/environment");
 var http = require("http");
-var log_1 = require("mct1/log");
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var log_1 = require("@magikcraft/mct1/log");
+var log = log_1.Logger(__filename);
 function get(path, payload, callback) {
     if (!environment_1.ENDPOINT_URL)
         return;

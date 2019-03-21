@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var vector3_1 = require("mct1/vector3");
-var schematic_1 = require("mct1/regions/schematic");
-var worldedit_1 = require("mct1/regions/worldedit");
-var util = require('utils');
+var vector3_1 = require("@magikcraft/mct1/vector3");
+var schematic_1 = require("@magikcraft/mct1/regions/schematic");
+var worldedit_1 = require("@magikcraft/mct1/regions/worldedit");
+var util = require("utils");
 var Region_Schematic = /** @class */ (function () {
     function Region_Schematic() {
     }

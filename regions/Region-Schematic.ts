@@ -1,9 +1,8 @@
-import { Vector3 } from "mct1/vector3";
-import { Region } from "mct1/regions";
-import { Schematic } from "mct1/regions/schematic";
-import { EditCore } from "mct1/regions/worldedit";
-var util = require('utils')
-
+import { Vector3 } from "@magikcraft/mct1/vector3";
+import { Region } from "@magikcraft/mct1/regions";
+import { Schematic } from "@magikcraft/mct1/regions/schematic";
+import { EditCore } from "@magikcraft/mct1/regions/worldedit";
+import util = require('utils');
 
 export class Region_Schematic {
 

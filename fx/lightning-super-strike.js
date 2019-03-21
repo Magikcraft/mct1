@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Location = Java.type('org.bukkit.Location');
-var log_1 = require("mct1/log");
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
+var log_1 = require("@magikcraft/mct1/log");
+var log = log_1.Logger(__filename);
 function kaboom(loc, distance, delay) {
     if (distance === void 0) { distance = 10; }
     if (delay === void 0) { delay = 100; }

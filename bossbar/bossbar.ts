@@ -1,4 +1,4 @@
-import * as environment from 'mct1/utils/environment';
+import * as environment from '@magikcraft/mct1/utils/environment';
 
 export interface IBossBar {
     render()

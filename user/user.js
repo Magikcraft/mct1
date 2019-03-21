@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
-var log_1 = require("mct1/log");
-var log = log_1.Logger("" + [__dirname, __filename].join('/'));
-var mct1_1 = require("mct1/mct1");
-var tools = require("mct1/tools");
+var log_1 = require("@magikcraft/mct1/log");
+var log = log_1.Logger(__filename);
+var mct1_1 = require("@magikcraft/mct1/mct1");
+var tools = require("@magikcraft/mct1/tools");
 var db_1 = require("./db");
 var inventory_1 = require("./inventory");
 var effects_1 = require("./effects");
-var user_1 = require("mct1/user");
+var user_1 = require("@magikcraft/mct1/user");
 var follower_1 = require("./follower");
 var GameMode = Java.type('org.bukkit.GameMode');
 // User class

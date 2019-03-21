@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var vector3_1 = require("mct1/vector3");
+var vector3_1 = require("@magikcraft/mct1/vector3");
 var util = require('utils');
 var vectorA = null;
 var vectorB = null;

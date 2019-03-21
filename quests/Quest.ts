@@ -1,15 +1,15 @@
-import { questCommand } from 'mct1/quests'
-import { Logger } from 'mct1/log'
-import { worldly } from 'mct1/world'
-import { user } from 'mct1/user'
-import { Inventories } from 'mct1/quests/mct1/inventories';
-import { ChestItems } from 'mct1/quests/mct1/chest-items';
-import * as tools from 'mct1/tools'
+import { questCommand } from '@magikcraft/mct1/quests'
+import { Logger } from '@magikcraft/mct1/log'
+import { worldly } from '@magikcraft/mct1/world'
+import { user } from '@magikcraft/mct1/user'
+import { Inventories } from '@magikcraft/mct1/quests/mct1/inventories';
+import { ChestItems } from '@magikcraft/mct1/quests/mct1/chest-items';
+import * as tools from '@magikcraft/mct1/tools'
 import * as events from 'events'
-import * as questTools from 'mct1/quests/quest-tools'
+import * as questTools from '@magikcraft/mct1/quests/quest-tools'
 import DB from './db'
 // import * as http from 'http'
-import * as api from 'mct1/api'
+import * as api from '@magikcraft/mct1/api'
 
 export type QuestMode = 'single' | 'multi'
 export interface QuestOptions {

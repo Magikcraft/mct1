@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("mct1/utils/fs");
+var fs = require("@magikcraft/mct1/utils/fs");
 var DB = /** @class */ (function () {
     function DB(questName) {
         this.questName = questName;

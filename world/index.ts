@@ -1,8 +1,8 @@
 export * from './biome'
 export * from './multiverse'
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
-import World from 'mct1/world/world'
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
+import World from '@magikcraft/mct1/world/world'
 
 // We have used the "world" namespace for this to distinguish it from the "world".
 

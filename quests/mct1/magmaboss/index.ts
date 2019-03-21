@@ -3,10 +3,10 @@ const Location = Java.type('org.bukkit.Location')
 const EntityType = Java.type('org.bukkit.entity.EntityType')
 const Locations = require('./locs')
 
-import * as questTools from 'mct1/quests/quest-tools'
-import { worldly } from 'mct1/world'
+import * as questTools from '@magikcraft/mct1/quests/quest-tools'
+import { worldly } from '@magikcraft/mct1/world'
 import ArenaStairs from './arena-stairs'
-import { QuestConfig, QuestMCT1 } from 'mct1/quests/Quest'
+import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 
 export default class QuestMCT1Magmaboss extends QuestMCT1 {
     arenaStairs: any

@@ -2,10 +2,10 @@
  * Communicate with Magikcraft API (GraphQL) via the endpoint app.
  */
 import utils = require('utils')
-import { ENDPOINT_URL } from 'mct1/utils/environment'
+import { ENDPOINT_URL } from '@magikcraft/mct1/utils/environment'
 import * as http from 'http'
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 export function get(path, payload, callback: (err: any, res: any) => any) {
     if (!ENDPOINT_URL) return

@@ -1,5 +1,5 @@
-import { Vector3 } from "mct1/vector3";
-import { Region, Region_Schematic } from "mct1/regions";
+import { Vector3 } from "@magikcraft/mct1/vector3";
+import { Region, Region_Schematic } from "@magikcraft/mct1/regions";
 
 
 const testRegion = new Region(

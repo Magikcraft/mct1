@@ -40,7 +40,7 @@
         ,
         "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
         "paths": {
-            "mct1/*": [
+            "@magikcraft/mct1/*": [
                 "./*"
             ],
             // "*": [

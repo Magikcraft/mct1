@@ -1,9 +1,9 @@
-import { Vector3 } from "mct1/vector3";
-import { Region } from "mct1/regions";
-var utils = require('utils')
+import { Vector3 } from "@magikcraft/mct1/vector3";
+import { Region } from "@magikcraft/mct1/regions";
+import utils = require('utils');
 
-import { Logger } from 'mct1/log'
-const log = Logger(`${[__dirname, __filename].join('/')}`)
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 const Material = Java.type('org.bukkit.Material')
 const Effect = Java.type('org.bukkit.Effect')

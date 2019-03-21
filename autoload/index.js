@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 console.log('MCT1 is loaded!');
-var environment = require("mct1/utils/environment");
-var log_1 = require("mct1/log");
+var environment = require("@magikcraft/mct1/utils/environment");
+var log_1 = require("@magikcraft/mct1/log");
 var log = log_1.Logger('bootstrap');
 var WATCH_RELOAD_STATE = environment.DISABLE_WATCH_RELOAD ? 'disabled' : 'enabled';
 var ENGINE_MODE = environment.SINGLE_ENGINE_MODE

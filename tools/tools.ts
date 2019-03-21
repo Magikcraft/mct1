@@ -1,5 +1,4 @@
-
-const utils = require('utils')
+import utils = require('utils');
 const Location = Java.type('org.bukkit.Location')
 const Material = Java.type('org.bukkit.Material')
 const ItemStack = Java.type('org.bukkit.inventory.ItemStack')
