@@ -72,14 +72,14 @@ export default class World {
         this.clearAllIntervals()
     }
 
-    setTime = (time: 'dawn' | 'day' | 'dusk' | 'night') => server.executeCommand(`time ${time} ${this.world.name}`)
-    setDawn = () => server.executeCommand(`time dawn ${this.world.name}`)
-    setDay = () => server.executeCommand(`time day ${this.world.name}`)
-    setDusk = () => server.executeCommand(`time dusk ${this.world.name}`)
-    setNight = () => server.executeCommand(`time night ${this.world.name}`)
-    setSun = () => server.executeCommand(`weather ${this.world.name} clear`)
-    setStorm = () => server.executeCommand(`weather ${this.world.name} thunder`)
-    setRain = () => server.executeCommand(`weather ${this.world.name} rain`)
+    // setTime = (time: 'dawn' | 'day' | 'dusk' | 'night') => server.executeCommand(`time ${time} ${this.world.name}`)
+    setDawn = () => this.world.setTime(6000)
+    setDay = () => this.world.setTime(12000)
+    setDusk = () => this.world.setTime(18000)
+    setNight = () => this.world.setTime(20000)
+    setSun = () => this.world.setStorm(false) || this.world.setThundering(false)
+    setStorm = () => this.world.setThundering(true) || this.world.setStorm(true)
+    setRain = () => this.world.setStorm(true)
 
     setChunkBiome(loc, biome: string) {
         const chunk = this.world.getChunkAt(loc)

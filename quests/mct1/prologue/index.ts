@@ -30,8 +30,8 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
     start() {
         super.start();
-        const { player, world, log, options, Locs } = this;
-        const { regions } = Locs;
+
+        const { player, world, log, Locs } = this;
 
         // this.registerEvents(); // called by parent
 
@@ -41,7 +41,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         user(player).mct1.setHealth(20)
         user(player).mct1.stop()
 
-        worldly(world).setDay()
+        worldly(world).setDawn()
         worldly(world).setSun()
         worldly(world).preventMobSpawning(['HUSK', 'WITHER'])
 

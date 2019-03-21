@@ -79,10 +79,11 @@ function deleteWorld(worldName, cb) {
     log("Deleting ./" + worldName);
     try {
         var w = utils_1.world(worldName);
-        var worldPath = w ? w.getWorldFolder().getPath() : undefined;
+        var worldFilePath = w ? w.getWorldFolder().getPath() : undefined;
         mv().deleteWorld(worldName);
-        if (worldPath && fs.exists(worldPath)) {
-            fs.remove(worldPath);
+        if (worldFilePath && fs.exists(worldFilePath)) {
+            log("Removing " + worldFilePath + "...");
+            fs.remove(worldFilePath);
         }
         cb && cb();
     }
@@ -111,8 +112,6 @@ function cloneWorld(worldName, templateWorldName, cb) {
 }
 function createQuest(_a) {
     var questName = _a.questName, player = _a.player, world = _a.world, opts = _a.opts;
-    // This dynamic import is a code smell
-    // It needs a higher-order abstraction that takes a configuration object
     var QuestClass = require(quests[questName].filePath).default;
     var questConfig = {
         name: questName,

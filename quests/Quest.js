@@ -154,7 +154,12 @@ var QuestBase = /** @class */ (function () {
     QuestBase.prototype.stop = function () {
         var _a = this, player = _a.player, world = _a.world, options = _a.options;
         // Remove all mobs!
-        __plugin.server.dispatchCommand(__plugin.server.consoleSender, "killall monsters " + world.name);
+        world.getEntities().forEach(function (e) {
+            if (e.type != 'PLAYER') {
+                e.remove();
+            }
+        });
+        // __plugin.server.dispatchCommand(__plugin.server.consoleSender, `killall monsters ${world.name}`)
         this.unregisterAllEvents();
         this.clearAllIntervals();
         this.clearAllTimeouts();

@@ -160,7 +160,12 @@ export class QuestBase {
     stop() {
         const { player, world, options } = this;
         // Remove all mobs!
-        __plugin.server.dispatchCommand(__plugin.server.consoleSender, `killall monsters ${world.name}`)
+        world.getEntities().forEach(e => {
+            if (e.type != 'PLAYER') {
+                e.remove();
+            }
+        });
+        // __plugin.server.dispatchCommand(__plugin.server.consoleSender, `killall monsters ${world.name}`)
         this.unregisterAllEvents()
         this.clearAllIntervals()
         this.clearAllTimeouts()

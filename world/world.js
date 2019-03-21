@@ -19,14 +19,14 @@ var World = /** @class */ (function () {
         this.timers = {};
         this.destroyWorldIfEmpty = false;
         this.destroyWorldIfEmptyDelay = 3000;
-        this.setTime = function (time) { return server.executeCommand("time " + time + " " + _this.world.name); };
-        this.setDawn = function () { return server.executeCommand("time dawn " + _this.world.name); };
-        this.setDay = function () { return server.executeCommand("time day " + _this.world.name); };
-        this.setDusk = function () { return server.executeCommand("time dusk " + _this.world.name); };
-        this.setNight = function () { return server.executeCommand("time night " + _this.world.name); };
-        this.setSun = function () { return server.executeCommand("weather " + _this.world.name + " clear"); };
-        this.setStorm = function () { return server.executeCommand("weather " + _this.world.name + " thunder"); };
-        this.setRain = function () { return server.executeCommand("weather " + _this.world.name + " rain"); };
+        // setTime = (time: 'dawn' | 'day' | 'dusk' | 'night') => server.executeCommand(`time ${time} ${this.world.name}`)
+        this.setDawn = function () { return _this.world.setTime(6000); };
+        this.setDay = function () { return _this.world.setTime(12000); };
+        this.setDusk = function () { return _this.world.setTime(18000); };
+        this.setNight = function () { return _this.world.setTime(20000); };
+        this.setSun = function () { return _this.world.setStorm(false) || _this.world.setThundering(false); };
+        this.setStorm = function () { return _this.world.setThundering(true) || _this.world.setStorm(true); };
+        this.setRain = function () { return _this.world.setStorm(true); };
         this.registerPlayerEnterRegionEvent = function (regionName, handler, player) {
             _this._registerPlayerRegionEvent('enter', regionName, handler, player);
         };

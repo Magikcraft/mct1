@@ -39,15 +39,14 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
     QuestMCT1Prologue.prototype.start = function () {
         var _this = this;
         _super.prototype.start.call(this);
-        var _a = this, player = _a.player, world = _a.world, log = _a.log, options = _a.options, Locs = _a.Locs;
-        var regions = Locs.regions;
+        var _a = this, player = _a.player, world = _a.world, log = _a.log, Locs = _a.Locs;
         // this.registerEvents(); // called by parent
         player.setFoodLevel(15);
         user_1.user(player).mct1.setInfiniteInsulin(false);
         user_1.user(player).mct1.setFoodLevel(20);
         user_1.user(player).mct1.setHealth(20);
         user_1.user(player).mct1.stop();
-        world_1.worldly(world).setDay();
+        world_1.worldly(world).setDawn();
         world_1.worldly(world).setSun();
         world_1.worldly(world).preventMobSpawning(['HUSK', 'WITHER']);
         // Hide portal.

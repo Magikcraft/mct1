@@ -44,6 +44,7 @@ var User = /** @class */ (function () {
     User.prototype.teleport = function (location) {
         // Player cannot teleport with a passenger. See https://www.spigotmc.org/threads/catch-a-player-teleport-attempt-while-passenger-is-set.95710/
         this.player.eject();
+        log("Teleporting " + this.player.name);
         this.player.teleport(location);
     };
     // continue () {
