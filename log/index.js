@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  *
  * @example
  *
- * import { Logger } from 'magikcraft/log'
+ * import { Logger } from '@magikcraft/log'
  * const log = Logger('my_module')
  * log('A message')
  * log('Players:', players)

@@ -7,7 +7,7 @@ export type Logger = (namespace: string) => Log
  *
  * @example
  *
- * import { Logger } from 'magikcraft/log'
+ * import { Logger } from '@magikcraft/log'
  * const log = Logger('my_module')
  * log('A message')
  * log('Players:', players)
