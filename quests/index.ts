@@ -78,37 +78,30 @@ function importWorld(templateWorldName: string) {
     server.executeCommand(`mv import ${templateWorldName} normal`)
 }
 
-function deleteWorld(worldName: string) {
-    return new Promise(resolve => {
-        log(`Deleting ./${worldName}`)
-        const w = utils.world(worldName);
-        const worldFilePath = w ? w.getWorldFolder().getPath() : `worlds/${worldName}`;
-        Multiverse().deleteWorld(worldName)
-        if (fs.exists(worldFilePath)) {
-            log(`Removing file ${worldFilePath}...`)
-            fs.remove(worldFilePath)
-        }
-        resolve(worldName);
-    });
+async function deleteWorld(worldName: string) {
+    log(`Deleting ./${worldName}`)
+    const w = utils.world(worldName);
+    const worldFilePath = w ? w.getWorldFolder().getPath() : `worlds/${worldName}`;
+    Multiverse().deleteWorld(worldName)
+    if (fs.exists(worldFilePath)) {
+        log(`Removing file ${worldFilePath}...`)
+        fs.remove(worldFilePath)
+    }
+    return worldName;
 }
 
-function cloneWorld(worldName: string, templateWorldName: string) {
-    return new Promise((resolve, reject) => {
-        deleteWorld(worldName)
-            .catch(log)
-            .finally(() => {
-                log(`Cloning ${worldName}`)
-                server.executeCommand(`mv import ${templateWorldName} normal`)
-                const success = Multiverse().cloneWorld(templateWorldName, worldName, 'normal')
-                if (!success) {
-                    return reject(`Failed to clone world ${templateWorldName}`)
-                } else {
-                    const world = utils.world(worldName)
-                    log(`World clone complete for ${worldName}`)
-                    return resolve(world)
-                }
-            });
-    });
+async function cloneWorld(worldName: string, templateWorldName: string) {
+    await deleteWorld(worldName);
+    log(`Cloning ${worldName}`)
+    server.executeCommand(`mv import ${templateWorldName} normal`)
+    const success = Multiverse().cloneWorld(templateWorldName, worldName, 'normal')
+    if (!success) {
+        return log(`Failed to clone world ${templateWorldName}`)
+    }
+    const world = utils.world(worldName)
+    log(`World clone complete for ${worldName}`)
+    return world
+
 }
 
 function createQuest({ questName, player, world, opts }) {
@@ -126,13 +119,12 @@ function createQuest({ questName, player, world, opts }) {
     return quest
 }
 
-function doCommand(worldName, templateWorldName, questName, player, method, opts) {
+async function doCommand(worldName, templateWorldName, questName, player, method, opts) {
     switch (method) {
         case 'start':
             echo(player, `Starting quest ${questName}...`)
-            cloneWorld(worldName, templateWorldName)
-                .then(world => createQuest({ opts, player, questName, world }).start())
-                .catch(log)
+            const world = await cloneWorld(worldName, templateWorldName)
+            createQuest({ opts, player, questName, world }).start()
             break
         case 'import':
             importWorld(templateWorldName)
@@ -141,9 +133,7 @@ function doCommand(worldName, templateWorldName, questName, player, method, opts
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.
-            deleteWorld(worldName)
-                .then(() => log(`Deleted ${worldName}`))
-                .catch(log);
+            await deleteWorld(worldName)
             break
     }
 }
