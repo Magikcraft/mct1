@@ -20,9 +20,10 @@ var EditCore = /** @class */ (function () {
         return block;
     };
     EditCore.getBlock = function (location) {
-        return util.getWorld(location.getWorld()).getBlockAt(location.x, location.y, location.z);
+        return util
+            .getWorld(location.getWorld())
+            .getBlockAt(location.x, location.y, location.z);
     };
-    ;
     return EditCore;
 }());
 exports.EditCore = EditCore;

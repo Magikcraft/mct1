@@ -1,5 +1,5 @@
-import { Vector3 } from "@magikcraft/mct1/vector3";
-import util = require("utils");
+import { Vector3 } from '@magikcraft/mct1/vector3'
+import util = require('utils')
 
 // ------------------------------------------
 // THIS FILE IS NOT SUPPOSED TO BE WORLD EDIT
@@ -9,19 +9,19 @@ import util = require("utils");
 // ------------------------------------------
 
 export class EditCore {
-
     static putBlock(x, y, z, blockId, metadata, world, update) {
         if (typeof metadata == 'undefined') {
-            metadata = 0;
+            metadata = 0
         }
-        var block = world.getBlockAt(x, y, z);
-        block.setTypeIdAndData(blockId, metadata, false);
-        block.data = metadata;
-        return block;
+        var block = world.getBlockAt(x, y, z)
+        block.setTypeIdAndData(blockId, metadata, false)
+        block.data = metadata
+        return block
     }
 
     static getBlock(location: Vector3) {
-        return util.getWorld(location.getWorld()).getBlockAt(location.x, location.y, location.z);
-    };
-
+        return util
+            .getWorld(location.getWorld())
+            .getBlockAt(location.x, location.y, location.z)
+    }
 }

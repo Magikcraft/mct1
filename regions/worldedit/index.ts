@@ -1,1 +1,1 @@
-export { EditCore } from "./EditCore";
+export { EditCore } from './EditCore'

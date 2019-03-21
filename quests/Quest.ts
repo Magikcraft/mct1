@@ -2,8 +2,8 @@ import { questCommand } from '@magikcraft/mct1/quests'
 import { Logger } from '@magikcraft/mct1/log'
 import { worldly } from '@magikcraft/mct1/world'
 import { user } from '@magikcraft/mct1/user'
-import { Inventories } from '@magikcraft/mct1/quests/mct1/inventories';
-import { ChestItems } from '@magikcraft/mct1/quests/mct1/chest-items';
+import { Inventories } from '@magikcraft/mct1/quests/mct1/inventories'
+import { ChestItems } from '@magikcraft/mct1/quests/mct1/chest-items'
 import * as tools from '@magikcraft/mct1/tools'
 import * as events from 'events'
 import * as questTools from '@magikcraft/mct1/quests/quest-tools'
@@ -26,19 +26,19 @@ export interface QuestConfig {
 }
 
 export class QuestBase {
-    name: string;
-    nextQuestName?: string;
-    player: any;
+    name: string
+    nextQuestName?: string
+    player: any
     db: DB // player database
-    world: any;
-    state: any = {};
-    options: any;
-    log: any;
+    world: any
+    state: any = {}
+    options: any
+    log: any
     /** When set to true, this.debug will print messages to log */
-    verbose: boolean = false;
-    Locs: any = {};
-    inventory: any[] = [];
-    waypoints?: any[];
+    verbose: boolean = false
+    Locs: any = {}
+    inventory: any[] = []
+    waypoints?: any[]
     endPortalRegion?: any[]
 
     private events: any = {}
@@ -46,18 +46,18 @@ export class QuestBase {
     private timers: any = {}
 
     constructor(conf: QuestConfig) {
-        this.name = conf.name;
-        this.nextQuestName = conf.nextQuestName;
-        this.player = conf.player;
-        this.world = conf.world;
+        this.name = conf.name
+        this.nextQuestName = conf.nextQuestName
+        this.player = conf.player
+        this.world = conf.world
         this.db = new DB(this.world.name)
-        this.options = conf.options || {};
-        this.log = Logger(`mct1/quests/${this.name}--${this.player.name}`);
+        this.options = conf.options || {}
+        this.log = Logger(`mct1/quests/${this.name}--${this.player.name}`)
         this.verbose = (conf.options && conf.options.verbose) || false
     }
 
     start() {
-        const { player, world } = this;
+        const { player, world } = this
         this.stop() // stop and restart, in case already running.
         this.registerEvents()
         this.setupWayPoints()
@@ -78,30 +78,32 @@ export class QuestBase {
     track() {
         // user(this.player).db.
         this.log(`track quest ${this.world.name}`)
-        const { player, world, name } = this;
+        const { player, world, name } = this
 
         const inventoryJSON = user(player).inventory.exportToJSON(
             user(player).inventory.getAllitemStacks()
         )
         const inventory = inventoryJSON
-            .map((item, i) => (item) ? { ...item, slot: i } : null)
-            .filter((item) => item)
+            .map((item, i) => (item ? { ...item, slot: i } : null))
+            .filter(item => item)
 
-        const mct1 = (user(player).mct1.isStarted)
+        const mct1 = user(player).mct1.isStarted
             ? {
-                bgl: user(player).mct1.bgl,
-                insulin: user(player).mct1.insulin,
-                digestionQueue: user(player).mct1.digestionQueue
-                    .map((item) => ({ ...item })), // Clone instead of object reference
-                isStarted: user(player).mct1.isStarted,
-                isUSA: user(player).mct1.isUSA,
-                hasInfiniteInsulin: user(player).mct1.hasInfiniteInsulin,
-                hasLightningSnowballs: user(player).mct1.hasLightningSnowballs,
-                hasSuperJump: user(player).mct1.hasSuperJump,
-                hasSuperSpeed: user(player).mct1.hasSuperSpeed,
-                hasNightVision: user(player).mct1.hasNightVision,
-                isSuperCharged: user(player).mct1.isSuperCharged,
-            }
+                  bgl: user(player).mct1.bgl,
+                  insulin: user(player).mct1.insulin,
+                  digestionQueue: user(player).mct1.digestionQueue.map(
+                      item => ({ ...item })
+                  ), // Clone instead of object reference
+                  isStarted: user(player).mct1.isStarted,
+                  isUSA: user(player).mct1.isUSA,
+                  hasInfiniteInsulin: user(player).mct1.hasInfiniteInsulin,
+                  hasLightningSnowballs: user(player).mct1
+                      .hasLightningSnowballs,
+                  hasSuperJump: user(player).mct1.hasSuperJump,
+                  hasSuperSpeed: user(player).mct1.hasSuperSpeed,
+                  hasNightVision: user(player).mct1.hasNightVision,
+                  isSuperCharged: user(player).mct1.isSuperCharged,
+              }
             : false
 
         const state = {
@@ -128,7 +130,7 @@ export class QuestBase {
             player: player.name,
             world: world.name,
             session: user(player).sessionId,
-            payload: JSON.stringify(state)
+            payload: JSON.stringify(state),
         }
         api.post('/minecraft/player/state/log', payload, (err, res) => {
             if (err) this.log('err', err)
@@ -145,8 +147,8 @@ export class QuestBase {
             logs.push(`BGL: ${mct1.bgl}`)
             logs.push(`INSULIN: ${mct1.insulin}`)
 
-            let digestionQueue: any[] = [];
-            mct1.digestionQueue.forEach((item) => {
+            let digestionQueue: any[] = []
+            mct1.digestionQueue.forEach(item => {
                 if (item && item.food && item.food.type) {
                     digestionQueue.push(item.food.type)
                 }
@@ -158,13 +160,13 @@ export class QuestBase {
     }
 
     stop() {
-        const { player, world, options } = this;
+        const { player, world, options } = this
         // Remove all mobs!
         world.getEntities().forEach(e => {
             if (e.type != 'PLAYER') {
-                e.remove();
+                e.remove()
             }
-        });
+        })
         // __plugin.server.dispatchCommand(__plugin.server.consoleSender, `killall monsters ${world.name}`)
         this.unregisterAllEvents()
         this.clearAllIntervals()
@@ -172,26 +174,29 @@ export class QuestBase {
     }
 
     registerEvents() {
-        const { player, world, options, log } = this;
+        const { player, world, options, log } = this
 
         // playerChangedWorld
-        this.registerEvent('playerChangedWorld', (event) => {
-            if (event.player.name == player.name && event.from.name == world.name) {
-                this.stop();
+        this.registerEvent('playerChangedWorld', event => {
+            if (
+                event.player.name == player.name &&
+                event.from.name == world.name
+            ) {
+                this.stop()
             }
         })
 
         // playerQuit
-        this.registerEvent('playerQuit', (event) => {
+        this.registerEvent('playerQuit', event => {
             if (event.player.name == player.name) {
-                this.stop();
+                this.stop()
             }
         })
     }
 
     complete() {
-        const { player, world, options, nextQuestName } = this;
-        this.stop();
+        const { player, world, options, nextQuestName } = this
+        this.stop()
 
         if (this.nextQuestName) {
             questCommand(nextQuestName, 'start', player, options)
@@ -221,7 +226,7 @@ export class QuestBase {
         }
     }
 
-    setInterval = function (callback: any, interval: number, key?: string) {
+    setInterval = function(callback: any, interval: number, key?: string) {
         const k = key || tools.uuid()
         this.intervals[k] = setInterval(callback, interval)
     }
@@ -245,11 +250,11 @@ export class QuestBase {
         }
     }
 
-	/**
-	 * Print debugging messages to the log when this.verbose is true
-	 * @param msg - The message to log. Can be used for a label.
-	 * @param toLog - An object or string to log.
-	 */
+    /**
+     * Print debugging messages to the log when this.verbose is true
+     * @param msg - The message to log. Can be used for a label.
+     * @param toLog - An object or string to log.
+     */
     debug(msg, toLog?: any) {
         if (this.verbose) {
             this.log(msg, toLog)
@@ -263,8 +268,7 @@ export class QuestBase {
     }
 
     unregisterEvent(key: string) {
-        if (this.events[key])
-            this.events[key].unregister()
+        if (this.events[key]) this.events[key].unregister()
     }
 
     unregisterEventsLike(wildcard: string) {
@@ -283,25 +287,33 @@ export class QuestBase {
     }
 
     setupEndPortal() {
-        const { player, world, endPortalRegion } = this;
+        const { player, world, endPortalRegion } = this
         if (endPortalRegion) {
             const name = 'endPortal'
-            worldly(world).registerRegion(name, endPortalRegion[0], endPortalRegion[1]);
-            worldly(world).registerPlayerEnterRegionEvent(name, (event) => {
+            worldly(world).registerRegion(
+                name,
+                endPortalRegion[0],
+                endPortalRegion[1]
+            )
+            worldly(world).registerPlayerEnterRegionEvent(name, event => {
                 this.complete()
             })
         }
     }
 
     setupWayPoints() {
-        const { player, world, Locs, log } = this;
-        const { waypoints } = Locs;
+        const { player, world, Locs, log } = this
+        const { waypoints } = Locs
         if (waypoints) {
             for (const name in waypoints) {
                 const waypoint = waypoints[name]
                 const key = `waypoint-${name}`
-                worldly(world).registerRegion(key, waypoint.region[0], waypoint.region[1]);
-                worldly(world).registerPlayerEnterRegionEvent(key, (event) => {
+                worldly(world).registerRegion(
+                    key,
+                    waypoint.region[0],
+                    waypoint.region[1]
+                )
+                worldly(world).registerPlayerEnterRegionEvent(key, event => {
                     user(player).saveSpawn(waypoint.saveLocation)
                 })
             }
@@ -328,22 +340,20 @@ export class QuestMCT1 extends QuestBase {
         }
     }
 
-    start() { // Set defaults for MCT1 quests.
-        const { name, player, world, options, log, Locs } = this;
-        const { locations, regions } = Locs;
+    start() {
+        // Set defaults for MCT1 quests.
+        const { name, player, world, options, log, Locs } = this
+        const { locations, regions } = Locs
 
         if (ChestItems[this.mct1QuestName])
             this.endChestContents = ChestItems[this.mct1QuestName]
 
-        if (locations.endChest)
-            this.endChestLocation = locations.endChest
-        if (regions.endGate)
-            this.endGateRegion = regions.endGate
-        if (regions.endPortal)
-            this.endPortalRegion = regions.endPortal
+        if (locations.endChest) this.endChestLocation = locations.endChest
+        if (regions.endGate) this.endGateRegion = regions.endGate
+        if (regions.endPortal) this.endPortalRegion = regions.endPortal
 
         // Do this here ...
-        super.start();
+        super.start()
 
         user(player).teleport(locations.spawn)
         user(player).saveSpawn(locations.spawn)
@@ -367,10 +377,12 @@ export class QuestMCT1 extends QuestBase {
         worldly(world).preventMobSpawning(['HUSK'])
         // worldly(world).setDestroyWorldIfEmpty(true, 3000)
 
-
         // setup endchest contents
         if (this.endChestLocation && this.endChestContents) {
-            questTools.putItemsInChest(this.endChestLocation, this.endChestContents)
+            questTools.putItemsInChest(
+                this.endChestLocation,
+                this.endChestContents
+            )
         }
 
         if (this.nextQuestName) {
@@ -380,15 +392,15 @@ export class QuestMCT1 extends QuestBase {
     }
 
     stop() {
-        super.stop();
+        super.stop()
     }
 
     complete() {
-        super.complete();
+        super.complete()
     }
 
     setMCT1SuperPowers(bool) {
-        const { player } = this;
+        const { player } = this
         if (bool) {
             user(player).mct1.setSuperCharged(false)
             user(player).mct1.setInfiniteSnowballs(true)
@@ -407,7 +419,7 @@ export class QuestMCT1 extends QuestBase {
     }
 
     openEndGate() {
-        const { player, world, options, log, nextQuestName } = this;
+        const { player, world, options, log, nextQuestName } = this
 
         // if (this.nextQuestName) {
         // 	// pre-import world to make quest start more snappy
@@ -427,18 +439,22 @@ export class QuestMCT1 extends QuestBase {
 
     registerEvents() {
         super.registerEvents()
-        const { player, world, options, log, nextQuestName } = this;
+        const { player, world, options, log, nextQuestName } = this
 
         if (this.endChestLocation) {
             // inventoryClose
-            this.registerEvent('inventoryClose', (event) => {
+            this.registerEvent('inventoryClose', event => {
                 if (event.player.name != player.name) return
                 if (event.inventory.type != 'CHEST') return
 
                 // end chest close...
                 const cLoc = event.inventory.location
                 const ecLoc = this.endChestLocation
-                if (cLoc.x === ecLoc.x && cLoc.y === ecLoc.y && cLoc.z === ecLoc.z) {
+                if (
+                    cLoc.x === ecLoc.x &&
+                    cLoc.y === ecLoc.y &&
+                    cLoc.z === ecLoc.z
+                ) {
                     this.openEndGate()
                 }
             })

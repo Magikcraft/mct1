@@ -49,7 +49,7 @@ var PlayerEffects = /** @class */ (function () {
             return;
         }
         var Color = Java.type('org.bukkit.Color');
-        var duration = milliseconds / 1000 * 40; // 20 tick. 1 tick = 0.05 seconds
+        var duration = (milliseconds / 1000) * 40; // 20 tick. 1 tick = 0.05 seconds
         var c = Color[color];
         var l = PotionEffectType[effectType];
         var effect = new PotionEffect(l, duration, amplifier, true, true, c);

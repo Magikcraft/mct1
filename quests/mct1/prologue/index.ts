@@ -1,10 +1,10 @@
-import Locations = require('./locs');
+import Locations = require('./locs')
 import LightningSuperStrike = require('@magikcraft/mct1/fx/lightning-super-strike')
 
-import * as questTools from '../../quest-tools';
-import MobTools = require('@magikcraft/mct1/mobs');
+import * as questTools from '../../quest-tools'
+import MobTools = require('@magikcraft/mct1/mobs')
 
-import LightingStorm = require('@magikcraft/mct1/fx/lighting-storm');
+import LightingStorm = require('@magikcraft/mct1/fx/lighting-storm')
 import Wither from './wither'
 
 import { user } from '@magikcraft/mct1/user'
@@ -20,18 +20,18 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
     constructor(conf: QuestConfig) {
         super(conf)
-        this.Locs = Locations.getLocations(this.world);
+        this.Locs = Locations.getLocations(this.world)
         this.state = {
             hasMCT1: false,
-            completed: false
+            completed: false,
         }
         this.wither = new Wither(this.Locs.regions.wither)
     }
 
     start() {
-        super.start();
+        super.start()
 
-        const { player, world, log, Locs } = this;
+        const { player, world, log, Locs } = this
 
         // this.registerEvents(); // called by parent
 
@@ -49,7 +49,11 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         questTools.replaceRegionV1(Locs.regions.portalOuter, 'AIR')
         questTools.replaceRegionV1(Locs.regions.portalGround, 'GRASS')
 
-        log(`Started quest mct1-prologue for ${player.name}, with intervalModifier: ${intervalModifier}`)
+        log(
+            `Started quest mct1-prologue for ${
+                player.name
+            }, with intervalModifier: ${intervalModifier}`
+        )
 
         this.setTimeout(() => {
             log(`Start Storm!`)
@@ -60,7 +64,6 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
             log(`Start Lightning!`)
             LightingStorm.start(Locs.regions.lightning)
         }, Math.max(30000 + intervalModifier, 0))
-
 
         this.setTimeout(() => {
             log(`Strike with Lightning!`)
@@ -92,7 +95,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         this.setTimeout(() => {
             log(`Here comes the Wither!`)
-            this.wither.start();
+            this.wither.start()
         }, Math.max(65000 + intervalModifier, 0))
 
         this.setTimeout(() => {
@@ -103,13 +106,13 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         this.setTimeout(() => {
             log(`Make Wither hunt Player!`)
-            this.wither.setPhase(2);
+            this.wither.setPhase(2)
         }, Math.max(145000 + intervalModifier, 0))
     }
 
     stop() {
         super.stop()
-        const { player, world, log, state } = this;
+        const { player, world, log, state } = this
         LightingStorm.stop()
         this.wither.stop()
         worldly(this.world).setSun()
@@ -117,30 +120,30 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
     registerEvents() {
         super.registerEvents()
-        const { player, world, log, state } = this;
+        const { player, world, log, state } = this
 
         // Cancel death, make player go blind and float up as if captured.
-        this.registerEvent('entityDamage', (event) => {
+        this.registerEvent('entityDamage', event => {
             if (event.entity.type != 'PLAYER') return
             if (event.entity.name != player.name) return
 
             if (event.finalDamage >= player.health) {
                 log('canceled deadly damage!')
-                event.setCancelled(true);
+                event.setCancelled(true)
                 if (!state.completed) {
-                    state.completed = true;
+                    state.completed = true
                     user(player).effects.add('LEVITATION')
                     user(player).mct1.bgl = 20 // Make player go blind.
 
                     setTimeout(() => {
-                        this.complete();
+                        this.complete()
                     }, 5000)
                 }
             }
         })
 
         // Launch lightning snowballs on all clicks.
-        this.registerEvent('playerInteract', (event) => {
+        this.registerEvent('playerInteract', event => {
             if (event.player.name != player.name) return
             const actions = [
                 'RIGHT_CLICK_BLOCK',
@@ -150,46 +153,59 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
             ]
             if (!state.hasMCT1) return
             if (actions.includes(event.action.toString())) {
-                event.player.launchProjectile(Java.type('org.bukkit.entity.Snowball').class)
+                event.player.launchProjectile(
+                    Java.type('org.bukkit.entity.Snowball').class
+                )
             }
         })
 
-        this.registerEvent('entityDamageByEntity', (event) => {
+        this.registerEvent('entityDamageByEntity', event => {
             // When the player hits a mob, shoot lighting snowball.
             if (event.damager && event.damager.type == 'PLAYER') {
                 if (event.damager.name != player.name) return
-                event.damager.launchProjectile(Java.type('org.bukkit.entity.Snowball').class)
+                event.damager.launchProjectile(
+                    Java.type('org.bukkit.entity.Snowball').class
+                )
             }
         })
     }
 
     spawnMobGroups(mobType, spawnNum) {
-        const { player, world, log, options, Locs } = this;
+        const { player, world, log, options, Locs } = this
 
         const attackPlayersOnroute = true
-        const targetLoc = Locs.locations.villageCenter;
+        const targetLoc = Locs.locations.villageCenter
 
         // Ensure not more than 100 mobs of mobType in world at one time!
         const maxMobs = 40
         let mobCount = 0
         let bossCount = 0
-        targetLoc.world.livingEntities.forEach((entity) => {
+        targetLoc.world.livingEntities.forEach(entity => {
             if (entity.type == mobType.toUpperCase()) {
                 mobCount++
             }
-        });
+        })
 
-        const adjustedSpawnNum = Math.max(Math.min(spawnNum, maxMobs - mobCount), 0)
+        const adjustedSpawnNum = Math.max(
+            Math.min(spawnNum, maxMobs - mobCount),
+            0
+        )
 
         if (adjustedSpawnNum > 0) {
             log(`Summoning ${adjustedSpawnNum} mobs of type ${mobType}`)
-            Locs.locations.mobSpawnPoints.map(function (spawnLoc, i) {
-                const _spawnNum = Math.round(adjustedSpawnNum / Locs.locations.mobSpawnPoints.length)
+            Locs.locations.mobSpawnPoints.map(function(spawnLoc, i) {
+                const _spawnNum = Math.round(
+                    adjustedSpawnNum / Locs.locations.mobSpawnPoints.length
+                )
                 for (var j = 0; j < _spawnNum; j++) {
                     const mob = MobTools.spawn(mobType, spawnLoc)
-                    MobTools.targetLocation(mob, targetLoc, attackPlayersOnroute)
+                    MobTools.targetLocation(
+                        mob,
+                        targetLoc,
+                        attackPlayersOnroute
+                    )
                 }
-            });
+            })
         }
 
         this.setTimeout(() => {

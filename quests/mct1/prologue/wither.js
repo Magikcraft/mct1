@@ -35,7 +35,8 @@ var Wither = /** @class */ (function () {
                 mob.setTarget(this.target);
                 break;
             case 2:
-            default: // Hunt players
+            default:
+                // Hunt players
                 var nearbyPlayer_1;
                 mob.getNearbyEntities(40, 40, 40).forEach(function (entity) {
                     if (nearbyPlayer_1)

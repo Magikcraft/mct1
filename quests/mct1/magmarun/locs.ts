@@ -1,9 +1,9 @@
-const Location = Java.type('org.bukkit.Location');
+const Location = Java.type('org.bukkit.Location')
 
 import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)
 
-export const getLocations = (world) => {
+export const getLocations = world => {
     return {
         world: world,
         waypoints: {
@@ -41,18 +41,28 @@ export const getLocations = (world) => {
                     new Location(world, -144, 102, 307),
                 ],
                 saveLocation: new Location(world, -134, 88, 243, -1, -16),
-            }
+            },
         },
         locations: {
             spawn: new Location(world, -177, 46, 148, -177, -1),
             // spawn: new Location(world, -141, 93, 321, 135, 26), // temp
             endChest: new Location(world, -144, 92, 318),
 
-            run1: run1(world).map(rows => rows.map(row => new Location(world, row.x, row.y, row.z))),
-            run2: run2(world).map(rows => rows.map(row => new Location(world, row.x, row.y, row.z))),
-            run3: run3(world).map(rows => rows.map(row => new Location(world, row.x, row.y, row.z))),
-            run4: run4(world).map(rows => rows.map(row => new Location(world, row.x, row.y, row.z))),
-            run5: run5(world).map(rows => rows.map(row => new Location(world, row.x, row.y, row.z))),
+            run1: run1(world).map(rows =>
+                rows.map(row => new Location(world, row.x, row.y, row.z))
+            ),
+            run2: run2(world).map(rows =>
+                rows.map(row => new Location(world, row.x, row.y, row.z))
+            ),
+            run3: run3(world).map(rows =>
+                rows.map(row => new Location(world, row.x, row.y, row.z))
+            ),
+            run4: run4(world).map(rows =>
+                rows.map(row => new Location(world, row.x, row.y, row.z))
+            ),
+            run5: run5(world).map(rows =>
+                rows.map(row => new Location(world, row.x, row.y, row.z))
+            ),
         },
         regions: {
             endPortal: [
@@ -68,68 +78,68 @@ export const getLocations = (world) => {
 }
 
 function run1(world) {
-    const y = 84;
-    const rows: any[] = [];
+    const y = 84
+    const rows: any[] = []
     for (let z = 156; z <= 188; z++) {
-        const row: any[] = [];
+        const row: any[] = []
         for (let x = -129; x >= -139; x--) {
-            row.push({ x, y, z });
+            row.push({ x, y, z })
         }
-        rows.push(row);
+        rows.push(row)
     }
-    return rows;
+    return rows
 }
 
 function run2(world) {
-    const y = 89;
-    const rows: any[] = [];
+    const y = 89
+    const rows: any[] = []
 
     for (let x = -126; x <= -95; x++) {
-        const row: any[] = [];
+        const row: any[] = []
         for (let z = 194; z <= 204; z++) {
-            row.push({ x, y, z });
+            row.push({ x, y, z })
         }
-        rows.push(row);
+        rows.push(row)
     }
-    return rows;
+    return rows
 }
 
 function run3(world) {
-    const y = 94;
-    const rows: any[] = [];
+    const y = 94
+    const rows: any[] = []
     for (let z = 206; z <= 238; z++) {
-        const row: any[] = [];
+        const row: any[] = []
         for (let x = -79; x >= -89; x--) {
-            row.push({ x, y, z });
+            row.push({ x, y, z })
         }
-        rows.push(row);
+        rows.push(row)
     }
-    return rows;
+    return rows
 }
 
 function run4(world) {
-    const y = 99;
-    const rows: any[] = [];
+    const y = 99
+    const rows: any[] = []
 
     for (let x = -90; x >= -123; x--) {
-        const row: any[] = [];
+        const row: any[] = []
         for (let z = 244; z <= 254; z++) {
-            row.push({ x, y, z });
+            row.push({ x, y, z })
         }
-        rows.push(row);
+        rows.push(row)
     }
-    return rows;
+    return rows
 }
 
 function run5(world) {
-    const y = 104;
-    const rows: any[] = [];
+    const y = 104
+    const rows: any[] = []
     for (let z = 256; z <= 292; z++) {
-        const row: any[] = [];
+        const row: any[] = []
         for (let x = -129; x >= -139; x--) {
-            row.push({ x, y, z });
+            row.push({ x, y, z })
         }
-        rows.push(row);
+        rows.push(row)
     }
-    return rows;
+    return rows
 }

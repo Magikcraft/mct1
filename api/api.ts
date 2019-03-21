@@ -11,19 +11,22 @@ export function get(path, payload, callback: (err: any, res: any) => any) {
     if (!ENDPOINT_URL) return
 
     const url = `${ENDPOINT_URL}/scriptcraft/get`
-    return http.request( // must return else lots errors
+    return http.request(
+        // must return else lots errors
         {
             url,
             method: 'GET',
             params: {
                 path,
                 payload: JSON.stringify(payload),
-            }
+            },
         },
         (_, responseJSON) => {
             const response = JSON.parse(responseJSON)
-            const res = (response && response.code === 200) ? responseJSON : undefined
-            const err = (!response || response.code !== 200) ? responseJSON : undefined
+            const res =
+                response && response.code === 200 ? responseJSON : undefined
+            const err =
+                !response || response.code !== 200 ? responseJSON : undefined
             if (err) log(err)
             callback(err, res)
         }
@@ -34,19 +37,22 @@ export function post(path, payload, callback: (err: any, res: any) => any) {
     if (!ENDPOINT_URL) return
 
     const url = `${ENDPOINT_URL}/scriptcraft/post`
-    http.request( // must return else lots errors
+    http.request(
+        // must return else lots errors
         {
             url,
             method: 'POST',
             params: {
                 path,
                 payload: JSON.stringify(payload),
-            }
+            },
         },
         (_, responseJSON) => {
             const response = JSON.parse(responseJSON)
-            const res = (response && response.code === 200) ? responseJSON : undefined
-            const err = (!response || response.code !== 200) ? responseJSON : undefined
+            const res =
+                response && response.code === 200 ? responseJSON : undefined
+            const err =
+                !response || response.code !== 200 ? responseJSON : undefined
             if (err) log(err)
             callback(err, res)
         }
@@ -54,7 +60,6 @@ export function post(path, payload, callback: (err: any, res: any) => any) {
 }
 
 export function logServerState() {
-
     const payload = {
         server: 'example.magikcraft.io',
         payload: JSON.stringify({
@@ -70,4 +75,3 @@ export function logServerState() {
         }
     })
 }
-

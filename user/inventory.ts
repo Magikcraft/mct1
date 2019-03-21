@@ -4,7 +4,7 @@ import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)
 import items = require('items')
 import * as tools from '@magikcraft/mct1/tools'
-import { user } from '@magikcraft/mct1/user';
+import { user } from '@magikcraft/mct1/user'
 
 const indexMap = {
     hotbarFirst: 0,
@@ -62,9 +62,12 @@ export default class PlayerInventory {
     logOutAll() {
         this.getAllitemStacks().forEach((itemStack, i) => {
             if (itemStack) {
-                log(`${this.player.name} inventory slot ${i} contains ${itemStack.amount} ${itemStack.type}`)
-            }
-            else {
+                log(
+                    `${this.player.name} inventory slot ${i} contains ${
+                        itemStack.amount
+                    } ${itemStack.type}`
+                )
+            } else {
                 log(`${this.player.name} inventory slot ${i} is EMPTY`)
             }
         })
@@ -79,7 +82,7 @@ export default class PlayerInventory {
         return itemStacks
     }
 
-    exportToJSON = (itemStacks) => {
+    exportToJSON = itemStacks => {
         // Important - using .map causes problems when this is called from
         // inside an event listener, use forEach instead to be safe!
         const itemStacksJSON: any[] = []
@@ -95,7 +98,8 @@ export default class PlayerInventory {
         // inside an event listener, use forEach instead to be safe!
         const itemStacks: any[] = []
         itemStacksJSON.forEach(itemStackJSON => {
-            if (itemStackJSON) itemStacks.push(tools.itemStackFromJSON(itemStackJSON))
+            if (itemStackJSON)
+                itemStacks.push(tools.itemStackFromJSON(itemStackJSON))
             else itemStacks.push(undefined)
         })
         return itemStacks
@@ -114,7 +118,10 @@ export default class PlayerInventory {
     }
 
     save(itemStacks: any[]) {
-        user(this.player).db.set('savedInventory', this.exportToJSON(itemStacks))
+        user(this.player).db.set(
+            'savedInventory',
+            this.exportToJSON(itemStacks)
+        )
     }
 
     saveCurrent() {
@@ -156,16 +163,16 @@ export default class PlayerInventory {
         const key = 'setReloadAtSpawn.playerRespawn'
         if (bool) {
             if (!this.events[key]) {
-                this.registerEvent('playerRespawn',
-                    (event) => {
+                this.registerEvent(
+                    'playerRespawn',
+                    event => {
                         if (event.player.name !== this.player.name) return
                         this.loadSaved()
                     },
                     key
                 )
             }
-        }
-        else {
+        } else {
             if (this.events[key]) {
                 this.unregisterEvent(key)
             }
@@ -178,21 +185,25 @@ export default class PlayerInventory {
         const key = 'setCleanupDeathDrops.playerDeath'
         if (bool) {
             if (!this.events[key]) {
-                this.registerEvent('playerDeath',
-                    (event) => {
+                this.registerEvent(
+                    'playerDeath',
+                    event => {
                         if (event.entity.type != 'PLAYER') return
                         if (event.entity.name !== this.player.name) return
-                        setTimeout(() => { // Clean-up dropped items
-                            event.entity.getNearbyEntities(2, 2, 2).forEach(entity => {
-                                if (entity.type == 'DROPPED_ITEM') entity.remove()
-                            })
+                        setTimeout(() => {
+                            // Clean-up dropped items
+                            event.entity
+                                .getNearbyEntities(2, 2, 2)
+                                .forEach(entity => {
+                                    if (entity.type == 'DROPPED_ITEM')
+                                        entity.remove()
+                                })
                         }, 500)
                     },
                     key
                 )
             }
-        }
-        else {
+        } else {
             if (this.events[key]) {
                 this.unregisterEvent(key)
             }
@@ -208,6 +219,4 @@ export default class PlayerInventory {
     private unregisterEvent(key: string) {
         if (this.events[key]) this.events[key].unregister()
     }
-
-
 }

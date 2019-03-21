@@ -11,7 +11,7 @@ var activities_1 = require("./activities");
 var foods_1 = require("./foods");
 var Color = Java.type('org.bukkit.Color');
 var Food = {};
-foods_1.default.forEach(function (item) { return Food[item.type] = item; });
+foods_1.default.forEach(function (item) { return (Food[item.type] = item); });
 var _bar;
 var user_1 = require("@magikcraft/mct1/user");
 var MCT1 = /** @class */ (function () {
@@ -43,10 +43,10 @@ var MCT1 = /** @class */ (function () {
         this.snowballSlot = 0;
         this.insulinSlot = 1;
         this.isStarted = false;
-        this.setSuperSpeed = function (bool) { return _this.hasSuperSpeed = bool; };
-        this.setSuperJump = function (bool) { return _this.hasSuperJump = bool; };
-        this.setNightVision = function (bool) { return _this.hasNightVision = bool; };
-        this.inHealthyRange = function () { return (_this.bgl >= 4 && _this.bgl <= 8); };
+        this.setSuperSpeed = function (bool) { return (_this.hasSuperSpeed = bool); };
+        this.setSuperJump = function (bool) { return (_this.hasSuperJump = bool); };
+        this.setNightVision = function (bool) { return (_this.hasNightVision = bool); };
+        this.inHealthyRange = function () { return _this.bgl >= 4 && _this.bgl <= 8; };
         this.unregisterEvents = function () {
             log("Unregistering events for " + _this.name);
             _this.eventListeners.forEach(function (listener, i) {
@@ -73,7 +73,8 @@ var MCT1 = /** @class */ (function () {
                 }
             }
             // Act on POTION drink... (insulin)
-            else if (_this.isInsulinStack(event.item)) { // important! use double arrow (not triple)
+            else if (_this.isInsulinStack(event.item)) {
+                // important! use double arrow (not triple)
                 log(_this.player.name + " drank an INSULIN POTION!");
                 _this.insulin = Math.min(_this.insulin + 2, 20);
                 _this.renderBars();
@@ -111,7 +112,7 @@ var MCT1 = /** @class */ (function () {
                 from: event.from,
                 blockType: blockType,
                 isSprinting: _this.isSprinting,
-                isSuper: _this.inHealthyRange()
+                isSuper: _this.inHealthyRange(),
             });
         };
         this._blockBreak = function (event) {
@@ -138,17 +139,20 @@ var MCT1 = /** @class */ (function () {
                     _this._playerItemConsume({
                         player: event.player,
                         item: {
-                            type: 'CAKE_SLICE'
-                        }
+                            type: 'CAKE_SLICE',
+                        },
                     });
                 }
             }
         };
         this._entityDamage = function (event) {
             // Prevent Player from taking lightning or fire damage.
-            if (event.entity.type == 'PLAYER' && event.entity.name == _this.player.name) {
+            if (event.entity.type == 'PLAYER' &&
+                event.entity.name == _this.player.name) {
                 // LIGHTNING, FIRE, FIRE_TICK
-                if (event.cause == 'LIGHTNING' || event.cause == 'FIRE' || event.cause == 'FIRE_TICK') {
+                if (event.cause == 'LIGHTNING' ||
+                    event.cause == 'FIRE' ||
+                    event.cause == 'FIRE_TICK') {
                     event.setCancelled(true);
                     event.entity.setFireTicks(0); // stop player from burning.
                 }
@@ -186,10 +190,10 @@ var MCT1 = /** @class */ (function () {
                 if (!_this.isSuperCharged) {
                     // Bring down foodLevel with every snowball
                     if (_this.foodLevel > 0) {
-                        _this.setFoodLevel(Math.max((_this.foodLevel - 0.2), 0));
+                        _this.setFoodLevel(Math.max(_this.foodLevel - 0.2, 0));
                     }
                     else {
-                        _this.setHealth(Math.max((_this.player.health - 0.3), 0));
+                        _this.setHealth(Math.max(_this.player.health - 0.3, 0));
                     }
                 }
                 // Log into nonMoveActivityLog
@@ -230,7 +234,8 @@ var MCT1 = /** @class */ (function () {
                     event.setCancelled(true);
                 }
             }
-            else { // PLAYER inventory clicks
+            else {
+                // PLAYER inventory clicks
                 // Creative mode case, disallow clicks on snowballs and insulin
                 if (event.click == 'CREATIVE') {
                     if (_this.isLightningSnowballStack(event.currentItem)) {
@@ -258,11 +263,13 @@ var MCT1 = /** @class */ (function () {
                 return;
             if (event.itemDrop.type == 'DROPPED_ITEM' && event.itemDrop.itemStack) {
                 // Cancel drop snowballs
-                if (_this.hasLightningSnowballs && _this.isLightningSnowballStack(event.itemDrop.itemStack)) {
+                if (_this.hasLightningSnowballs &&
+                    _this.isLightningSnowballStack(event.itemDrop.itemStack)) {
                     event.setCancelled(true);
                 }
                 // Cancel drop insulin
-                if (_this.hasInfiniteInsulin && _this.isInsulinStack(event.itemDrop.itemStack)) {
+                if (_this.hasInfiniteInsulin &&
+                    _this.isInsulinStack(event.itemDrop.itemStack)) {
                     event.setCancelled(true);
                 }
             }
@@ -294,12 +301,16 @@ var MCT1 = /** @class */ (function () {
             // Ensure infinite snowballs ever present
             if (_this.hasLightningSnowballs) {
                 _this.ensureInfiniteSnowballs();
-                setTimeout(function () { _this.ensureInfiniteSnowballs(); }, 10); // do it twice, in case respawn inventory is active
+                setTimeout(function () {
+                    _this.ensureInfiniteSnowballs();
+                }, 10); // do it twice, in case respawn inventory is active
             }
             // Ensure infinite insuilin ever present
             if (_this.hasInfiniteInsulin) {
                 _this.ensureInfiniteInsulin();
-                setTimeout(function () { _this.ensureInfiniteInsulin(); }, 10); // do it twice, in case respawn inventory is active
+                setTimeout(function () {
+                    _this.ensureInfiniteInsulin();
+                }, 10); // do it twice, in case respawn inventory is active
             }
         };
         this._entityRegainHealth = function (event) {
@@ -437,7 +448,8 @@ var MCT1 = /** @class */ (function () {
         if (this.bgl >= 4 && this.bgl <= 8) {
             color = 'GREEN';
         }
-        else if ((this.bgl < 4 && this.bgl > 2) || (this.bgl > 8 && this.bgl <= 12)) {
+        else if ((this.bgl < 4 && this.bgl > 2) ||
+            (this.bgl > 8 && this.bgl <= 12)) {
             color = 'YELLOW';
         }
         else {
@@ -450,9 +462,7 @@ var MCT1 = /** @class */ (function () {
         }
         if (!this.bars.bgl) {
             this.bars.bgl = bossbar_1.BossBar.bar('', this.player);
-            this.bars.bgl
-                .style(bossbar_1.BossBar.style.NOTCHED_20)
-                .render();
+            this.bars.bgl.style(bossbar_1.BossBar.style.NOTCHED_20).render();
         }
         this.bars.bgl
             .text("BGL: " + bgl) // round to 1 decimal
@@ -489,12 +499,14 @@ var MCT1 = /** @class */ (function () {
                     .style(bossbar_1.BossBar.style.NOTCHED_20)
                     .render();
             }
-            var label = (_this.debugMode)
+            var label = _this.debugMode
                 ? "Digesting: " + item.food.type.replace('_', ' ') + ", " + item.food.carbs + " carbs, " + item.food.GI + " GI"
                 : "Digesting: " + item.food.type.replace('_', ' ');
             _this.bars[index]
                 .text(label)
-                .color((item.food.GI === 'high') ? bossbar_1.BossBar.color.PINK : bossbar_1.BossBar.color.PURPLE)
+                .color(item.food.GI === 'high'
+                ? bossbar_1.BossBar.color.PINK
+                : bossbar_1.BossBar.color.PURPLE)
                 .progress(100 - percentDigested)
                 .render();
         });
@@ -539,9 +551,10 @@ var MCT1 = /** @class */ (function () {
             var totalActivityCost = this.calculateTotalActivityCost();
             this.resetActivityLogs();
             this.setInsulinSensitivity(totalActivityCost);
-            if (!this.isSuperCharged) { // only do if NOT isSuperCharged
+            if (!this.isSuperCharged) {
+                // only do if NOT isSuperCharged
                 var reduceFoodAmount = totalActivityCost / 1.5;
-                this.setFoodLevel(Math.max((this.foodLevel - reduceFoodAmount), 0));
+                this.setFoodLevel(Math.max(this.foodLevel - reduceFoodAmount, 0));
             }
         }
         // Every 10 ticks...
@@ -550,20 +563,20 @@ var MCT1 = /** @class */ (function () {
             this.bgl += 0.1;
             // If this.player has food in digestionQueue, up foodlevel
             if (this.digestionQueue && this.digestionQueue.length > 0) {
-                this.setFoodLevel(Math.min((this.foodLevel + 1), 20));
+                this.setFoodLevel(Math.min(this.foodLevel + 1, 20));
             }
         }
         // Every 5 ticks...
         if (tickCount % 5 === 0 && this.digestionQueue[0]) {
             // Regenerate if inHealthyRange
             if (this.inHealthyRange()) {
-                this.player.setHealth(Math.min((this.player.health + 0.5), 20));
+                this.player.setHealth(Math.min(this.player.health + 0.5, 20));
             }
         }
         // handle insulin in system
         if (this.insulin > 0) {
             this.insulin = Math.max(this.insulin - 0.1, 0);
-            this.bgl -= (0.15 * this.insulinSensitivityMultiplier);
+            this.bgl -= 0.15 * this.insulinSensitivityMultiplier;
             // log('Insulin effect of bgl: ', (0.15 * this.insulinSensitivityMultiplier))
         }
         // handle digestionQueue
@@ -578,12 +591,14 @@ var MCT1 = /** @class */ (function () {
                 this.digestionQueue[0].carbsDigested += 0.5;
                 this.bgl += 0.1;
             }
-            if (this.insulin > 0) { // if insulin in system, boost health!
+            if (this.insulin > 0) {
+                // if insulin in system, boost health!
                 if (this.player.health < 20) {
-                    this.player.setHealth(Math.min((this.player.health + 0.5), 20));
+                    this.player.setHealth(Math.min(this.player.health + 0.5, 20));
                 }
             }
-            if (this.digestionQueue[0].carbsDigested >= this.digestionQueue[0].food.carbs) {
+            if (this.digestionQueue[0].carbsDigested >=
+                this.digestionQueue[0].food.carbs) {
                 // finished digesting... remove from queue...
                 this.digestionQueue.splice(0, 1);
             }
@@ -604,12 +619,13 @@ var MCT1 = /** @class */ (function () {
         }
     };
     MCT1.prototype.doEffects = function () {
-        if ((this.bgl >= 4 && this.bgl <= 8)) {
+        if (this.bgl >= 4 && this.bgl <= 8) {
             // Healthy Range
             this.cancelNegativeEffects();
             this.giveSuperPowers();
         }
-        else { // Out of range...
+        else {
+            // Out of range...
             this.cancelSuperPowers();
             this.giveNegativeEffects();
         }
@@ -620,7 +636,8 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.giveNegativeEffects = function () {
         // Confusion!
-        if ((this.bgl < 4 && this.bgl >= 3) || (this.bgl > 8 && this.bgl <= 12)) {
+        if ((this.bgl < 4 && this.bgl >= 3) ||
+            (this.bgl > 8 && this.bgl <= 12)) {
             this._makeEffect('CONFUSION', 3500);
         }
         // More Confusion!
@@ -661,13 +678,14 @@ var MCT1 = /** @class */ (function () {
         if (color === void 0) { color = 'GREEN'; }
         if (amplifier === void 0) { amplifier = 1; }
         var PotionEffectType = Java.type('org.bukkit.potion.PotionEffectType');
-        if (this.player && this.player.hasPotionEffect(PotionEffectType[type]) == true) {
+        if (this.player &&
+            this.player.hasPotionEffect(PotionEffectType[type]) == true) {
             // Skip if effect already active!
             return;
         }
         var PotionEffect = Java.type('org.bukkit.potion.PotionEffect');
         var Color = Java.type('org.bukkit.Color');
-        var duration = milliseconds / 1000 * 40; // 20 tick. 1 tick = 0.05 seconds
+        var duration = (milliseconds / 1000) * 40; // 20 tick. 1 tick = 0.05 seconds
         var c = Color[color];
         var l = PotionEffectType[type];
         var effect = new PotionEffect(l, duration, amplifier, true, true, c);
@@ -675,7 +693,8 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype._cancelEffect = function (type) {
         var PotionEffectType = Java.type('org.bukkit.potion.PotionEffectType');
-        if (this.player && this.player.hasPotionEffect(PotionEffectType[type]) == true) {
+        if (this.player &&
+            this.player.hasPotionEffect(PotionEffectType[type]) == true) {
             this.player.removePotionEffect(PotionEffectType[type]);
         }
     };
@@ -699,7 +718,9 @@ var MCT1 = /** @class */ (function () {
                 activity = activity.replace('SUPER_', '');
             }
             var activityCost = parseFloat(activities_1.activityCosts[activity]);
-            totalActivityCost += (isSuper) ? (activityCost * _this.superActivityMultiplier) : activityCost;
+            totalActivityCost += isSuper
+                ? activityCost * _this.superActivityMultiplier
+                : activityCost;
         });
         return totalActivityCost;
     };
@@ -722,7 +743,7 @@ var MCT1 = /** @class */ (function () {
         // iterate over moveActivityLog and determine activities
         var distTravelled = 0;
         this.moveActivityLog.forEach(function (mLog, i) {
-            var isUpward = ((mLog.to.y).toFixed(2) > (mLog.from.y).toFixed(2));
+            var isUpward = mLog.to.y.toFixed(2) > mLog.from.y.toFixed(2);
             var activity;
             if (mLog.blockType == 'LADDER')
                 activity = activities_1.activityTypes.CLIMB_LADDER;
@@ -750,7 +771,8 @@ var MCT1 = /** @class */ (function () {
             distTravelled += distTotal;
             if (distTravelled >= 1) {
                 distTravelled -= 1; // reset
-                if (activity == activities_1.activityTypes.SPRINT_JUMP || activity == activities_1.activityTypes.JUMP) {
+                if (activity == activities_1.activityTypes.SPRINT_JUMP ||
+                    activity == activities_1.activityTypes.JUMP) {
                     var lastActitiy = activities[activities.length - 1];
                     if (activity != lastActitiy)
                         activities.push(activity);
@@ -782,15 +804,21 @@ var MCT1 = /** @class */ (function () {
             user_1.user(this.player).inventory.bumpItemIntoSlot(this.snowballSlot, this.makeLigtningSnowballItemStack(1));
         }
         // now make sure there aren't any duplicates
-        user_1.user(this.player).inventory.getAllitemStacks().forEach(function (itemStack, i) {
-            if (i != _this.snowballSlot && itemStack && _this.isLightningSnowballStack(itemStack)) {
+        user_1.user(this.player)
+            .inventory.getAllitemStacks()
+            .forEach(function (itemStack, i) {
+            if (i != _this.snowballSlot &&
+                itemStack &&
+                _this.isLightningSnowballStack(itemStack)) {
                 user_1.user(_this.player).inventory.setEmpty(i);
             }
         });
     };
     MCT1.prototype.removeInfiniteSnowballs = function () {
         var _this = this;
-        user_1.user(this.player).inventory.getAllitemStacks().forEach(function (itemStack, i) {
+        user_1.user(this.player)
+            .inventory.getAllitemStacks()
+            .forEach(function (itemStack, i) {
             if (itemStack && _this.isLightningSnowballStack(itemStack)) {
                 user_1.user(_this.player).inventory.setEmpty(i);
             }
@@ -803,15 +831,21 @@ var MCT1 = /** @class */ (function () {
             user_1.user(this.player).inventory.bumpItemIntoSlot(this.insulinSlot, this.makeInsulinStack(1));
         }
         // now make sure there aren't any duplicates
-        user_1.user(this.player).inventory.getAllitemStacks().forEach(function (itemStack, i) {
-            if (i != _this.insulinSlot && itemStack && _this.isInsulinStack(itemStack)) {
+        user_1.user(this.player)
+            .inventory.getAllitemStacks()
+            .forEach(function (itemStack, i) {
+            if (i != _this.insulinSlot &&
+                itemStack &&
+                _this.isInsulinStack(itemStack)) {
                 user_1.user(_this.player).inventory.setEmpty(i);
             }
         });
     };
     MCT1.prototype.removeInfiniteInsulin = function () {
         var _this = this;
-        user_1.user(this.player).inventory.getAllitemStacks().forEach(function (itemStack, i) {
+        user_1.user(this.player)
+            .inventory.getAllitemStacks()
+            .forEach(function (itemStack, i) {
             if (itemStack && _this.isInsulinStack(itemStack)) {
                 user_1.user(_this.player).inventory.setEmpty(i);
             }
@@ -830,16 +864,16 @@ var MCT1 = /** @class */ (function () {
         return potion;
     };
     MCT1.prototype.isInsulinStack = function (itemStack) {
-        return (itemStack.type == 'POTION'
-            && itemStack.itemMeta
-            && itemStack.itemMeta.displayName
-            && itemStack.itemMeta.displayName == 'Insulin');
+        return (itemStack.type == 'POTION' &&
+            itemStack.itemMeta &&
+            itemStack.itemMeta.displayName &&
+            itemStack.itemMeta.displayName == 'Insulin');
     };
     MCT1.prototype.isLightningSnowballStack = function (itemStack) {
-        return (itemStack.type == 'SNOW_BALL'
-            && itemStack.itemMeta
-            && itemStack.itemMeta.displayName
-            && this.zapZaps().includes(itemStack.itemMeta.displayName));
+        return (itemStack.type == 'SNOW_BALL' &&
+            itemStack.itemMeta &&
+            itemStack.itemMeta.displayName &&
+            this.zapZaps().includes(itemStack.itemMeta.displayName));
     };
     return MCT1;
 }());

@@ -7,6 +7,6 @@
  */
 export function exists(filename) {
     var File = java.io.File
-	const file = new File(filename)
-	return file.exists()
+    const file = new File(filename)
+    return file.exists()
 }

@@ -13,11 +13,7 @@ exports.Inventories = {
         items.emerald(1),
     ],
     jail: [],
-    sunken: [
-        items.cookedChicken(10),
-        journals_1.Journals.jail1,
-        journals_1.Journals.jail2,
-    ],
+    sunken: [items.cookedChicken(10), journals_1.Journals.jail1, journals_1.Journals.jail2],
     magmarun: [
         items.ironSword(1),
         items.shield(1),

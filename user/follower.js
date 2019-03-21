@@ -31,7 +31,7 @@ var Follower = /** @class */ (function () {
         this.eventHandlers = [
             events.playerChangedWorld(this.listener),
             events.playerRespawn(this.listener),
-            events.playerQuit(this.listener)
+            events.playerQuit(this.listener),
         ];
     };
     Follower.prototype._unregisterEventHandlers = function () {
@@ -46,7 +46,7 @@ var Follower = /** @class */ (function () {
         setTimeout(function () { return _this.user.player.setSpectatorTarget(_this.following); }, TELEPORT_RESETTLE_DELAY);
     };
     Follower.prototype.startFollowing = function (whoToFollow) {
-        var nooneToFollow = (!!whoToFollow || !utils.player(whoToFollow));
+        var nooneToFollow = !!whoToFollow || !utils.player(whoToFollow);
         if (nooneToFollow) {
             return;
         }

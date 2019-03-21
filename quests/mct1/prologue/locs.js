@@ -29,7 +29,7 @@ exports.getLocations = function (world) {
             wither: new regions_1.Region(new vector3_1.Vector3(200, 100, -280, world.name), new vector3_1.Vector3(250, 110, -330, world.name), world.name),
             portal: new regions_1.Region(new vector3_1.Vector3(349, 69, -316, world.name), new vector3_1.Vector3(351, 86, -303, world.name), world.name),
             portalOuter: new regions_1.Region(new vector3_1.Vector3(352, 85, -301, world.name), new vector3_1.Vector3(346, 66, -319, world.name), world.name),
-            portalGround: new regions_1.Region(new vector3_1.Vector3(352, 65, -301, world.name), new vector3_1.Vector3(346, 65, -319, world.name), world.name)
+            portalGround: new regions_1.Region(new vector3_1.Vector3(352, 65, -301, world.name), new vector3_1.Vector3(346, 65, -319, world.name), world.name),
         },
     };
 };

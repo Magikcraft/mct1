@@ -1,6 +1,6 @@
-const Location = Java.type('org.bukkit.Location');
+const Location = Java.type('org.bukkit.Location')
 
-export const getLocations = (world) => {
+export const getLocations = world => {
     return {
         world: world,
         locations: {

@@ -9,29 +9,28 @@ const Biome = Java.type('org.bukkit.block.Biome')
 const log = Logger(__filename)
 
 interface IWorldRegion {
-    name: string;
-    loc1: any; // region
-    loc2: any;
-    enterEventHandlers: IWorldRegionEventHandler[];
-    exitEventHandlers: IWorldRegionEventHandler[];
+    name: string
+    loc1: any // region
+    loc2: any
+    enterEventHandlers: IWorldRegionEventHandler[]
+    exitEventHandlers: IWorldRegionEventHandler[]
 }
 
 interface IWorldRegionEventHandler {
-    handler: any;
-    player?: any;
+    handler: any
+    player?: any
 }
 
 interface IWorldPlayer {
-    player: any;
-    moveCount: number;
-    inRegionNames: string[];
+    player: any
+    moveCount: number
+    inRegionNames: string[]
 }
-
 
 // User class
 export default class World {
     private world
-    private started: boolean = false;
+    private started: boolean = false
     private regions: IWorldRegion[] = []
     private regionEvents
     private worldPlayers: IWorldPlayer[] = []
@@ -85,7 +84,7 @@ export default class World {
         const chunk = this.world.getChunkAt(loc)
         for (let x = 0; x < 16; x++) {
             for (let z = 0; z < 16; z++) {
-                const block = chunk.getBlock(x, 0, z);
+                const block = chunk.getBlock(x, 0, z)
                 this.log('setChunkBiome', `${x} 0 ${z}`)
                 this.log('block.getBiome()', block.getBiome())
                 block.setBiome(Biome[biome])
@@ -139,19 +138,25 @@ export default class World {
     }
 
     allowMobSpawning = () => {
-        this.unregisterEvent('preventMobSpawning');
+        this.unregisterEvent('preventMobSpawning')
     }
 
     preventMobSpawning(except: string[] = []) {
-        this.unregisterEvent('preventMobSpawning');
-        this.registerEvent('creatureSpawn', event => {
-            if (event.entity.world.name !== this.world.name) return
-            const mobType = event.entity.type.toString()
-            if (except.includes(mobType)) return
-            const isMonster = (event.entity instanceof Java.type('org.bukkit.entity.Monster'))
-            if (!isMonster) return
-            event.setCancelled(true)
-        }, 'preventMobSpawning')
+        this.unregisterEvent('preventMobSpawning')
+        this.registerEvent(
+            'creatureSpawn',
+            event => {
+                if (event.entity.world.name !== this.world.name) return
+                const mobType = event.entity.type.toString()
+                if (except.includes(mobType)) return
+                const isMonster =
+                    event.entity instanceof
+                    Java.type('org.bukkit.entity.Monster')
+                if (!isMonster) return
+                event.setCancelled(true)
+            },
+            'preventMobSpawning'
+        )
     }
 
     setDestroyWorldIfEmpty(bool: boolean, delay?: number) {
@@ -184,7 +189,7 @@ export default class World {
         }
     }
 
-    setInterval = function (callback: any, interval: number, key?: string) {
+    setInterval = function(callback: any, interval: number, key?: string) {
         const k = key || tools.uuid()
         this.intervals[k] = setInterval(callback, interval)
     }
@@ -214,8 +219,7 @@ export default class World {
     }
 
     unregisterEvent(key: string) {
-        if (this.events[key])
-            this.events[key].unregister()
+        if (this.events[key]) this.events[key].unregister()
     }
 
     unregisterEventsLike(wildcard: string) {
@@ -232,14 +236,22 @@ export default class World {
         }
     }
 
-    private _registerPlayerRegionEvent(type, regionName, handler, player?: any) {
+    private _registerPlayerRegionEvent(
+        type,
+        regionName,
+        handler,
+        player?: any
+    ) {
         let region
-        this.regions.forEach(r => {  // use forEach as find pollyfill may not be loaded...
+        this.regions.forEach(r => {
+            // use forEach as find pollyfill may not be loaded...
             if (r.name === regionName) region = r
         })
         if (region) {
-            if (type === 'enter') region.enterEventHandlers.push({ handler, player })
-            if (type === 'exit') region.exitEventHandlers.push({ handler, player })
+            if (type === 'enter')
+                region.enterEventHandlers.push({ handler, player })
+            if (type === 'exit')
+                region.exitEventHandlers.push({ handler, player })
         }
     }
 
@@ -284,7 +296,9 @@ export default class World {
 
     private _playerLeftWorld(player) {
         this.log(`player ${player.name} left world ${this.world.name}`)
-        this.worldPlayers = this.worldPlayers.filter(wp => wp.player.name != player.name)
+        this.worldPlayers = this.worldPlayers.filter(
+            wp => wp.player.name != player.name
+        )
         // If no players are left in world. Run stop.
         if (!this.worldPlayers.length) {
             this.stop()
@@ -304,7 +318,9 @@ export default class World {
         this.registerEvent('playerMove', event => {
             if (event.player.world.name !== this.world.name) return
             if (!this.regions.length) return
-            const worldPlayer = this.worldPlayers.find(p => event.player.name === p.player.name)
+            const worldPlayer = this.worldPlayers.find(
+                p => event.player.name === p.player.name
+            )
             if (!worldPlayer) return
             worldPlayer.moveCount++
             if (worldPlayer.moveCount % 3 !== 0) return
@@ -314,23 +330,30 @@ export default class World {
 
     private _playerMove(worldPlayer) {
         // this.log('_playerMove')
-        const player = worldPlayer.player;
+        const player = worldPlayer.player
         // check if player exited any regions.
         worldPlayer.inRegionNames.forEach(regionName => {
             // this.log('exit check');
             const region = this.regions.find(r => r.name === regionName)
             if (region) {
-                if (!this._regionContainsLocation(region, worldPlayer.player.location)) {
+                if (
+                    !this._regionContainsLocation(
+                        region,
+                        worldPlayer.player.location
+                    )
+                ) {
                     // Remove from player.inRegionNames
-                    worldPlayer.inRegionNames = worldPlayer.inRegionNames.filter(name => region.name !== name)
+                    worldPlayer.inRegionNames = worldPlayer.inRegionNames.filter(
+                        name => region.name !== name
+                    )
                     // Log!
-                    log(`${player.name} exited region ${region.name}`);
+                    log(`${player.name} exited region ${region.name}`)
                     // Run handlers
                     region.exitEventHandlers.forEach(handle => {
-                        if (handle.player && handle.player.name != player.name) return;
+                        if (handle.player && handle.player.name != player.name)
+                            return
                         handle.handler({ player })
                     })
-
                 }
             }
         })
@@ -338,15 +361,21 @@ export default class World {
         // check if player entered any regions.
         this.regions.forEach(region => {
             // this.log(`player ${player.name} enter check for region: ${region.name}`);
-            const alreadyInRegion = worldPlayer.inRegionNames.find(rnanme => rnanme === region.name)
-            if (!alreadyInRegion && this._regionContainsLocation(region, player.location)) {
+            const alreadyInRegion = worldPlayer.inRegionNames.find(
+                rnanme => rnanme === region.name
+            )
+            if (
+                !alreadyInRegion &&
+                this._regionContainsLocation(region, player.location)
+            ) {
                 // Add to player.inRegionNames
                 worldPlayer.inRegionNames.push(region.name)
                 // Log!
-                this.log(`${player.name} entered region ${region.name}`);
+                this.log(`${player.name} entered region ${region.name}`)
                 // Run handlers
                 region.enterEventHandlers.forEach(handle => {
-                    if (handle.player && handle.player.name != player.name) return;
+                    if (handle.player && handle.player.name != player.name)
+                        return
                     handle.handler({ player })
                 })
             }
@@ -354,14 +383,22 @@ export default class World {
     }
 
     private _regionContainsLocation(reg: IWorldRegion, loc) {
-        if ((loc.x >= reg.loc1.x && loc.x <= reg.loc2.x) || (loc.x <= reg.loc1.x && loc.x >= reg.loc2.x)) {
-            if ((loc.y >= reg.loc1.y && loc.y <= reg.loc2.y) || (loc.y <= reg.loc1.y && loc.y >= reg.loc2.y)) {
-                if ((loc.z >= reg.loc1.z && loc.z <= reg.loc2.z) || (loc.z <= reg.loc1.z && loc.z >= reg.loc2.z)) {
-                    return true;
+        if (
+            (loc.x >= reg.loc1.x && loc.x <= reg.loc2.x) ||
+            (loc.x <= reg.loc1.x && loc.x >= reg.loc2.x)
+        ) {
+            if (
+                (loc.y >= reg.loc1.y && loc.y <= reg.loc2.y) ||
+                (loc.y <= reg.loc1.y && loc.y >= reg.loc2.y)
+            ) {
+                if (
+                    (loc.z >= reg.loc1.z && loc.z <= reg.loc2.z) ||
+                    (loc.z <= reg.loc1.z && loc.z >= reg.loc2.z)
+                ) {
+                    return true
                 }
             }
         }
-        return false;
+        return false
     }
-
 }

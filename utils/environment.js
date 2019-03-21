@@ -58,7 +58,7 @@ exports.HEALTHCHECKS_IO_URL = java.lang.System.getenv('HEALTHCHECKS_IO_URL');
 // DISABLE_WATCH_RELOAD - don't reload the engine(s) when JS files change on disk
 exports.DISABLE_WATCH_RELOAD = java.lang.System.getenv('DISABLE_WATCH_RELOAD') === 'true';
 global.__engine_name__ = '/mk.io\\';
-exports.ENGINE_ID = (typeof global.__engine_id__ === 'undefined') ? 0 : global.__engine_id__;
+exports.ENGINE_ID = typeof global.__engine_id__ === 'undefined' ? 0 : global.__engine_id__;
 exports.ENGINE_NAME = __engine_name__;
 exports.IS_MASTER_ENGINE = true;
 exports.IS_NOT_MASTER_ENGINE = !exports.IS_MASTER_ENGINE;

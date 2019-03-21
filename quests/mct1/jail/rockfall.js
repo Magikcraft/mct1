@@ -11,7 +11,10 @@ var Rockfall = /** @class */ (function () {
     function Rockfall(region) {
         this.blocks = [];
         this.region = region;
-        this.upperY = (this.region.vectorA.y > this.region.vectorB.y) ? this.region.vectorA.y : this.region.vectorB.y;
+        this.upperY =
+            this.region.vectorA.y > this.region.vectorB.y
+                ? this.region.vectorA.y
+                : this.region.vectorB.y;
         this.saveRegion();
         this.replaceRegion();
     }
@@ -62,7 +65,7 @@ var Rockfall = /** @class */ (function () {
         ];
         var interval = 0;
         this.blocks.forEach(function (block) {
-            interval = (Math.floor(Math.random() * 100) * 5) + (block.layer * 500);
+            interval = Math.floor(Math.random() * 100) * 5 + block.layer * 500;
             var sound = sounds[soundIndex];
             soundIndex++;
             if (soundIndex === sounds.length)

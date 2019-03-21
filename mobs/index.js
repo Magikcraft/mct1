@@ -29,7 +29,7 @@ function targetLocation(mob, targetLoc, attackPlayersOnroute) {
         if (mob.isDead())
             return;
         // Continue loop if mob is still aliave and is more than 16 blocks from target
-        var continueLoop = (targetLoc.distance(mob.getLocation()) > 16);
+        var continueLoop = targetLoc.distance(mob.getLocation()) > 16;
         if (attackPlayersOnroute) {
             // Abort loop if there is a player with 16 block of mob.
             var nearbyEntities = mob.getNearbyEntities(16, 16, 16);

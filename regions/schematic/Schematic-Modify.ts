@@ -1,5 +1,4 @@
 export class Schematic_Modfiy {
-    
     // Rotate Schematic around point (Safe, restricted to 90 degress)
     // Rotate Schematic around point & axis (Safe, restricted to 90 degress)
     // Flip Schematic around axis
@@ -7,5 +6,4 @@ export class Schematic_Modfiy {
     // Scale?
     // Rotate Schematic around point (Unsafe, any angle)
     // Rotate Schematic around point & axis (Unsafe, any angle)
-
 }

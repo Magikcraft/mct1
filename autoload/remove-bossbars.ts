@@ -12,6 +12,6 @@ if (environment.HAS_BOSSBAR) {
         utils.players().forEach(player => {
             log(`Removing Boss Bars for ${player.name}`)
             BossBarAPI.removeAllBars(player)
-        });
+        })
     }
 }

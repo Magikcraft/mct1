@@ -7,7 +7,6 @@ import { Direction } from '@magikcraft/mct1/vector3'
 // }
 
 export class Region_Modify {
-
     /**
      * GetSide
      * @param region - The given region
@@ -18,22 +17,22 @@ export class Region_Modify {
     static GetSide(region: Region, dir: Direction): Region {
         switch (dir) {
             case Direction.UP:
-                break;
+                break
             case Direction.DOWN:
-                break;
+                break
             case Direction.NORTH:
-                break;
+                break
             case Direction.EAST:
-                break;
+                break
             case Direction.SOUTH:
-                break;
+                break
             case Direction.WEST:
-                break;
+                break
             default:
                 // return region;
-                break;
+                break
         }
-        return region;
+        return region
     }
     // Return region edge in 2 directions from center
     // Return region moved in axis & amount
@@ -43,5 +42,4 @@ export class Region_Modify {
     // Return region contracted in axis & amount
 
     // Return overlapping region from 2 regions
-
 }

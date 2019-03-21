@@ -33,15 +33,18 @@ commando('quest', (args, player) => {
 
     // Remaining args should be options.
     const opts: any = {}
-    args.forEach((arg) => {
+    args.forEach(arg => {
         if (!arg.includes(':')) {
-            log(`unknown option '${arg}' in command /quest ${questName} ${method} ${args.join(' ')}`)
+            log(
+                `unknown option '${arg}' in command /quest ${questName} ${method} ${args.join(
+                    ' '
+                )}`
+            )
             return
-        }
-        else {
+        } else {
             opts[arg.split(':')[0]] = arg.split(':')[1]
         }
-    });
+    })
 
     opts.mode = opts.mode || 'single' // single | multi
     opts.verbose = opts.verbose || false

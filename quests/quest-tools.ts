@@ -1,5 +1,5 @@
-import entities = require('entities');
-import MobTools = require('@magikcraft/mct1/mobs');
+import entities = require('entities')
+import MobTools = require('@magikcraft/mct1/mobs')
 const Effect = Java.type('org.bukkit.Effect')
 const Sound = Java.type('org.bukkit.Sound')
 const Particle = Java.type('org.bukkit.Particle')
@@ -7,7 +7,7 @@ const Material = Java.type('org.bukkit.Material')
 const Location = Java.type('org.bukkit.Location')
 const Vector = Java.type('org.bukkit.util.Vector')
 const ItemStack = Java.type('org.bukkit.inventory.ItemStack')
-import items = require('items');
+import items = require('items')
 const Color = Java.type('org.bukkit.Color')
 
 import { Vector3 } from '@magikcraft/mct1/vector3'
@@ -17,73 +17,85 @@ import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)
 
 export function shootFireballAtTarget(entity, targetLoc) {
-    const fb = Java.type("org.bukkit.entity.LargeFireball").class;
+    const fb = Java.type('org.bukkit.entity.LargeFireball').class
 
-    const loc1 = entity.location;
-    const loc2 = targetLoc;
+    const loc1 = entity.location
+    const loc2 = targetLoc
 
-    const vec = new Vector(loc1.x - loc2.x, loc1.y - loc2.y, loc1.z - loc2.z).normalize();
-    entity.launchProjectile(fb, vec);
+    const vec = new Vector(
+        loc1.x - loc2.x,
+        loc1.y - loc2.y,
+        loc1.z - loc2.z
+    ).normalize()
+    entity.launchProjectile(fb, vec)
 }
 
 export function shootDispenser(block, projectileType) {
-    const dispenser = block.getState();
-    dispenser.inventory.addItem(new ItemStack(Material[projectileType], 1));
-    dispenser.dispense();
+    const dispenser = block.getState()
+    dispenser.inventory.addItem(new ItemStack(Material[projectileType], 1))
+    dispenser.dispense()
     if (projectileType.includes('BUCKET')) {
         dispenser.inventory.remove(items.bucket(1))
     }
 }
 
 export function createBook(title: string, author: string, pages: any = []) {
-    var ItemStack = org.bukkit.inventory.ItemStack;
-    var BookMeta = org.bukkit.inventory.meta.BookMeta;
-    var Material = org.bukkit.Material;
-    var book = new ItemStack(Material.WRITTEN_BOOK, 1);
-    var bookMeta = book.getItemMeta();
+    var ItemStack = org.bukkit.inventory.ItemStack
+    var BookMeta = org.bukkit.inventory.meta.BookMeta
+    var Material = org.bukkit.Material
+    var book = new ItemStack(Material.WRITTEN_BOOK, 1)
+    var bookMeta = book.getItemMeta()
     bookMeta.setTitle(title) // << Nothing more than 16 chars
     bookMeta.setAuthor(author) // << Would be player name
-    bookMeta.setPages(pages);
-    book.setItemMeta(bookMeta);
+    bookMeta.setPages(pages)
+    book.setItemMeta(bookMeta)
     return book
 }
 
 export function openDoorAtLocation(loc, playSound = true) {
-    const doorBlock = loc.world.getBlockAt(loc.x, loc.y, loc.z);
+    const doorBlock = loc.world.getBlockAt(loc.x, loc.y, loc.z)
 
-    if (doorBlock.data < 4) { // open door
-        doorBlock.setData(doorBlock.data + 4);
+    if (doorBlock.data < 4) {
+        // open door
+        doorBlock.setData(doorBlock.data + 4)
         if (playSound) {
-            const effect = (String(doorBlock.type).indexOf('IRON') !== -1) ? Effect.IRON_DOOR_TOGGLE : Effect.DOOR_TOGGLE;
-            loc.world.playEffect(loc, effect, 0);
+            const effect =
+                String(doorBlock.type).indexOf('IRON') !== -1
+                    ? Effect.IRON_DOOR_TOGGLE
+                    : Effect.DOOR_TOGGLE
+            loc.world.playEffect(loc, effect, 0)
         }
     }
 }
 
 export function closeDoorAtLocation(loc, playSound = true) {
-    const doorBlock = loc.world.getBlockAt(loc.x, loc.y, loc.z);
-    if (doorBlock.data > 4) { // door is open
-        doorBlock.setData(doorBlock.data - 4); // close door
+    const doorBlock = loc.world.getBlockAt(loc.x, loc.y, loc.z)
+    if (doorBlock.data > 4) {
+        // door is open
+        doorBlock.setData(doorBlock.data - 4) // close door
         if (playSound) {
-            const effect = (String(doorBlock.type).indexOf('IRON') !== -1) ? Effect.IRON_DOOR_CLOSE : Effect.DOOR_CLOSE;
-            loc.world.playEffect(loc, effect, 0);
+            const effect =
+                String(doorBlock.type).indexOf('IRON') !== -1
+                    ? Effect.IRON_DOOR_CLOSE
+                    : Effect.DOOR_CLOSE
+            loc.world.playEffect(loc, effect, 0)
         }
     }
 }
 
 export function showHeartEffectAtLocation(loc) {
-    loc.world.playEffect(loc, Effect.HEART, 100);
+    loc.world.playEffect(loc, Effect.HEART, 100)
 }
 
 export function spawnGlowingSquid(loc) {
-    const mob = MobTools.spawn('squid', loc);
-    applyPotionEffect('GLOWING', mob);
+    const mob = MobTools.spawn('squid', loc)
+    applyPotionEffect('GLOWING', mob)
 }
 
 export function applyPotionEffect(type, entity) {
-    const milliseconds = 100000;
-    const color = 'WHITE';
-    const amplifier = 1;
+    const milliseconds = 100000
+    const color = 'WHITE'
+    const amplifier = 1
     const PotionEffectType = Java.type('org.bukkit.potion.PotionEffectType')
     if (entity && entity.hasPotionEffect(PotionEffectType[type]) == true) {
         // Skip if effect already active!
@@ -91,7 +103,7 @@ export function applyPotionEffect(type, entity) {
     }
     const PotionEffect = Java.type('org.bukkit.potion.PotionEffect')
     const Color = Java.type('org.bukkit.Color')
-    const duration = milliseconds / 1000 * 40 // 20 tick. 1 tick = 0.05 seconds
+    const duration = (milliseconds / 1000) * 40 // 20 tick. 1 tick = 0.05 seconds
     const c = Color[color]
     const l = PotionEffectType[type]
     const effect = new PotionEffect(l, duration, amplifier, true, true, c)
@@ -106,7 +118,7 @@ export function cancelPotionEffect(type, entity) {
 }
 
 export function replaceRegionV1(region, materialType) {
-    const world = utils.world(region.getWorld());
+    const world = utils.world(region.getWorld())
     const startLoc: Vector3 = new Vector3(
         Math.min(...region.xArray()),
         Math.min(...region.yArray()),
@@ -123,13 +135,13 @@ export function replaceRegionV1(region, materialType) {
 }
 
 export function getAllBlocksInRegion(loc1, loc2) {
-    const blocks: any[] = [];
-    let x1 = (loc1.x < loc2.x) ? loc1.x : loc2.x
-    let x2 = (loc1.x > loc2.x) ? loc1.x : loc2.x
-    let y1 = (loc1.y < loc2.y) ? loc1.y : loc2.y
-    let y2 = (loc1.y > loc2.y) ? loc1.y : loc2.y
-    let z1 = (loc1.z < loc2.z) ? loc1.z : loc2.z
-    let z2 = (loc1.z > loc2.z) ? loc1.z : loc2.z
+    const blocks: any[] = []
+    let x1 = loc1.x < loc2.x ? loc1.x : loc2.x
+    let x2 = loc1.x > loc2.x ? loc1.x : loc2.x
+    let y1 = loc1.y < loc2.y ? loc1.y : loc2.y
+    let y2 = loc1.y > loc2.y ? loc1.y : loc2.y
+    let z1 = loc1.z < loc2.z ? loc1.z : loc2.z
+    let z2 = loc1.z > loc2.z ? loc1.z : loc2.z
     for (let x = x1; x <= x2; x++) {
         for (let y = y1; y <= y2; y++) {
             for (let z = z1; z <= z2; z++) {
@@ -140,49 +152,56 @@ export function getAllBlocksInRegion(loc1, loc2) {
     return blocks
 }
 
-export function putItemsInChest(chestBlockLocation, itemStacks, randomSlots = true) {
+export function putItemsInChest(
+    chestBlockLocation,
+    itemStacks,
+    randomSlots = true
+) {
     const chestBlock = chestBlockLocation.block
-    const chest = chestBlock.getState();
+    const chest = chestBlock.getState()
     if (randomSlots) {
-        const shuffleArray = (array) => {
+        const shuffleArray = array => {
             for (let i = array.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                let j = Math.floor(Math.random() * (i + 1))
+                ;[array[i], array[j]] = [array[j], array[i]]
             }
-            return array;
+            return array
         }
-        const slotNums = shuffleArray(Array.apply(null, Array(24)).map((_, i) => i));
-        itemStacks.forEach((itemStack) => {
-            const slotNum = 1;
-            chest.inventory.setItem(slotNums.pop(), itemStack);
+        const slotNums = shuffleArray(
+            Array.apply(null, Array(24)).map((_, i) => i)
+        )
+        itemStacks.forEach(itemStack => {
+            const slotNum = 1
+            chest.inventory.setItem(slotNums.pop(), itemStack)
         })
-    }
-    else {
-        itemStacks.forEach((itemStack) => {
-            chest.inventory.addItem(itemStack);
+    } else {
+        itemStacks.forEach(itemStack => {
+            chest.inventory.addItem(itemStack)
         })
     }
 }
 
 export function makeInsulinStack(num = 1) {
-    const potion = items.potion(num);
-    const potionMeta = potion.getItemMeta();
-    potionMeta.setDisplayName('Insulin');
-    potionMeta.setColor(Color.AQUA);
-    potion.setItemMeta(potionMeta);
+    const potion = items.potion(num)
+    const potionMeta = potion.getItemMeta()
+    potionMeta.setDisplayName('Insulin')
+    potionMeta.setColor(Color.AQUA)
+    potion.setItemMeta(potionMeta)
     return potion
 }
 
 export function makeInvisibleArmourStand(loc) {
     const tmpLoc = new Location(loc.world, 0, 1, 0) // put here while visible
-    const stand = loc.world.spawnEntity(tmpLoc, entities['armor_stand']());
-    stand.setVisible(false);
-    stand.teleport(loc); // now it's invisible move it into location
+    const stand = loc.world.spawnEntity(tmpLoc, entities['armor_stand']())
+    stand.setVisible(false)
+    stand.teleport(loc) // now it's invisible move it into location
     return stand
 }
 
 export function replaceRegion(loc1, loc2, blockType) {
-    getAllBlocksInRegion(loc1, loc2).forEach(block => block.setType(Material[blockType]))
+    getAllBlocksInRegion(loc1, loc2).forEach(block =>
+        block.setType(Material[blockType])
+    )
 }
 
 export function playEffectAtLocation(loc, effectType) {
@@ -190,7 +209,7 @@ export function playEffectAtLocation(loc, effectType) {
 }
 
 export function playSoundAtLocation(loc, soundType) {
-    loc.world.playSound(loc, Sound[soundType], 9, 1);
+    loc.world.playSound(loc, Sound[soundType], 9, 1)
 }
 
 export function playEffectInRegion(loc1, loc2, effectType) {

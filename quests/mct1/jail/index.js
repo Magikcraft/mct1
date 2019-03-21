@@ -73,7 +73,8 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         this.registerEvent('playerInteract', function (event) {
             if (event.player.name != player.name)
                 return;
-            if (event.action == 'RIGHT_CLICK_BLOCK' && event.clickedBlock.type == 'STONE_BUTTON') {
+            if (event.action == 'RIGHT_CLICK_BLOCK' &&
+                event.clickedBlock.type == 'STONE_BUTTON') {
                 if (state.combolockOpen) {
                     event.setCancelled(true);
                 }
@@ -85,7 +86,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
             // chest1 open
             if (event.clickedBlock.y === 82 && !state.hasJournal1) {
                 // Can only open chest after hasJournal1
-                log('Can\'t open chest until hasJournal1!');
+                log("Can't open chest until hasJournal1!");
                 event.setCancelled(true);
             }
         });
@@ -110,7 +111,8 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
             if (event.clickedInventory && event.clickedInventory.type) {
                 log('event.clickedInventory.type', event.clickedInventory.type);
             }
-            if (event.clickedInventory && event.clickedInventory.type != 'PLAYER')
+            if (event.clickedInventory &&
+                event.clickedInventory.type != 'PLAYER')
                 return;
             log('inventoryClick 1');
             // When player moves Insulin from chest to inventory, set insulinSlot and setInfiniteInsulin true.
@@ -118,7 +120,9 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
             log('event.cursor.type', event.cursor.type);
             if (event.cursor && event.cursor.type) {
                 log('inventoryClick 2.1');
-                log('user(player).mct1.isInsulinStack(event.cursor)', user_1.user(player).mct1.isInsulinStack(event.cursor) ? 'true' : 'false');
+                log('user(player).mct1.isInsulinStack(event.cursor)', user_1.user(player).mct1.isInsulinStack(event.cursor)
+                    ? 'true'
+                    : 'false');
                 if (user_1.user(player).mct1.isInsulinStack(event.cursor)) {
                     log('inventoryClick 2.2');
                     if (event.slot === -999 || event.slot > 8) {
@@ -141,7 +145,8 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         this.registerEvent('playerDropItem', function (event) {
             if (event.player.name != player.name)
                 return;
-            if (event.itemDrop.type == 'DROPPED_ITEM' && event.itemDrop.itemStack) {
+            if (event.itemDrop.type == 'DROPPED_ITEM' &&
+                event.itemDrop.itemStack) {
                 // Handle case where Insulin is cursor item and chest closed via esc key
                 if (user_1.user(player).mct1.isInsulinStack(event.itemDrop.itemStack)) {
                     if (!state.hasInfiniteInsulin) {

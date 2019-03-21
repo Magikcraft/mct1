@@ -44,16 +44,16 @@ export default class PlayerEffects {
     }
 
     add(effectType) {
-        const milliseconds = 100000;
-        const color = 'WHITE';
-        const amplifier = 1;
+        const milliseconds = 100000
+        const color = 'WHITE'
+        const amplifier = 1
         const PotionEffectType = Java.type('org.bukkit.potion.PotionEffectType')
         if (this.player.hasPotionEffect(PotionEffectType[effectType]) == true) {
             // Skip if effect already active!
             return
         }
         const Color = Java.type('org.bukkit.Color')
-        const duration = milliseconds / 1000 * 40 // 20 tick. 1 tick = 0.05 seconds
+        const duration = (milliseconds / 1000) * 40 // 20 tick. 1 tick = 0.05 seconds
         const c = Color[color]
         const l = PotionEffectType[effectType]
         const effect = new PotionEffect(l, duration, amplifier, true, true, c)

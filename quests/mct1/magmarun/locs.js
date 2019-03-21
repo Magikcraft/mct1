@@ -41,17 +41,27 @@ exports.getLocations = function (world) {
                     new Location(world, -144, 102, 307),
                 ],
                 saveLocation: new Location(world, -134, 88, 243, -1, -16),
-            }
+            },
         },
         locations: {
             spawn: new Location(world, -177, 46, 148, -177, -1),
             // spawn: new Location(world, -141, 93, 321, 135, 26), // temp
             endChest: new Location(world, -144, 92, 318),
-            run1: run1(world).map(function (rows) { return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); }); }),
-            run2: run2(world).map(function (rows) { return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); }); }),
-            run3: run3(world).map(function (rows) { return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); }); }),
-            run4: run4(world).map(function (rows) { return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); }); }),
-            run5: run5(world).map(function (rows) { return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); }); }),
+            run1: run1(world).map(function (rows) {
+                return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); });
+            }),
+            run2: run2(world).map(function (rows) {
+                return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); });
+            }),
+            run3: run3(world).map(function (rows) {
+                return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); });
+            }),
+            run4: run4(world).map(function (rows) {
+                return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); });
+            }),
+            run5: run5(world).map(function (rows) {
+                return rows.map(function (row) { return new Location(world, row.x, row.y, row.z); });
+            }),
         },
         regions: {
             endPortal: [

@@ -7,11 +7,11 @@
  * Writes the contents of a file to the filesystem.
  */
 export function writeFile(filename: string, content: string) {
-	const FileWriter = Java.type("java.io.FileWriter")
-	const File = Java.type("java.io.File")
-	const path = filename.replace(filename.split('/').pop()!, '')
-	new File(path).mkdirs();
-	const fw = new FileWriter(filename)
-	fw.write(content)
-	fw.close()
+    const FileWriter = Java.type('java.io.FileWriter')
+    const File = Java.type('java.io.File')
+    const path = filename.replace(filename.split('/').pop()!, '')
+    new File(path).mkdirs()
+    const fw = new FileWriter(filename)
+    fw.write(content)
+    fw.close()
 }

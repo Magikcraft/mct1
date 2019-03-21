@@ -1,16 +1,10 @@
-import * as questTools from '../quest-tools';
-import { Journals } from './journals';
-const items = require('items');
+import * as questTools from '../quest-tools'
+import { Journals } from './journals'
+const items = require('items')
 
 export const ChestItems = {
-    jailCell: [
-        questTools.makeInsulinStack(1),
-        items.cookedChicken(5),
-    ],
-    jail: [
-        Journals.jail2,
-        items.cookedChicken(5),
-    ],
+    jailCell: [questTools.makeInsulinStack(1), items.cookedChicken(5)],
+    jail: [Journals.jail2, items.cookedChicken(5)],
     sunken: [
         Journals.sunken,
         items.ironSword(1),

@@ -1,5 +1,5 @@
-import { color, IBossBar, style } from '@magikcraft/mct1/bossbar/bossbar';
-import * as environment from '@magikcraft/mct1/utils/environment';
+import { color, IBossBar, style } from '@magikcraft/mct1/bossbar/bossbar'
+import * as environment from '@magikcraft/mct1/utils/environment'
 
 const hasBukkitBossBar = environment.HAS_BOSSBAR_BUKKIT
 

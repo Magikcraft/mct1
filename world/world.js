@@ -121,7 +121,8 @@ var World = /** @class */ (function () {
             var mobType = event.entity.type.toString();
             if (except.includes(mobType))
                 return;
-            var isMonster = (event.entity instanceof Java.type('org.bukkit.entity.Monster'));
+            var isMonster = event.entity instanceof
+                Java.type('org.bukkit.entity.Monster');
             if (!isMonster)
                 return;
             event.setCancelled(true);
@@ -191,6 +192,7 @@ var World = /** @class */ (function () {
     World.prototype._registerPlayerRegionEvent = function (type, regionName, handler, player) {
         var region;
         this.regions.forEach(function (r) {
+            // use forEach as find pollyfill may not be loaded...
             if (r.name === regionName)
                 region = r;
         });
@@ -300,7 +302,8 @@ var World = /** @class */ (function () {
         this.regions.forEach(function (region) {
             // this.log(`player ${player.name} enter check for region: ${region.name}`);
             var alreadyInRegion = worldPlayer.inRegionNames.find(function (rnanme) { return rnanme === region.name; });
-            if (!alreadyInRegion && _this._regionContainsLocation(region, player.location)) {
+            if (!alreadyInRegion &&
+                _this._regionContainsLocation(region, player.location)) {
                 // Add to player.inRegionNames
                 worldPlayer.inRegionNames.push(region.name);
                 // Log!
@@ -315,9 +318,12 @@ var World = /** @class */ (function () {
         });
     };
     World.prototype._regionContainsLocation = function (reg, loc) {
-        if ((loc.x >= reg.loc1.x && loc.x <= reg.loc2.x) || (loc.x <= reg.loc1.x && loc.x >= reg.loc2.x)) {
-            if ((loc.y >= reg.loc1.y && loc.y <= reg.loc2.y) || (loc.y <= reg.loc1.y && loc.y >= reg.loc2.y)) {
-                if ((loc.z >= reg.loc1.z && loc.z <= reg.loc2.z) || (loc.z <= reg.loc1.z && loc.z >= reg.loc2.z)) {
+        if ((loc.x >= reg.loc1.x && loc.x <= reg.loc2.x) ||
+            (loc.x <= reg.loc1.x && loc.x >= reg.loc2.x)) {
+            if ((loc.y >= reg.loc1.y && loc.y <= reg.loc2.y) ||
+                (loc.y <= reg.loc1.y && loc.y >= reg.loc2.y)) {
+                if ((loc.z >= reg.loc1.z && loc.z <= reg.loc2.z) ||
+                    (loc.z <= reg.loc1.z && loc.z >= reg.loc2.z)) {
                     return true;
                 }
             }

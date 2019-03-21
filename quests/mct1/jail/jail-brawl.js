@@ -36,15 +36,14 @@ var JailBrawl = /** @class */ (function () {
     };
     JailBrawl.prototype.initBrawl = function () {
         var _this = this;
-        Array.from({ length: 20 }, function (x, i) { return i + 1; })
-            .map(function (count) {
+        Array.from({ length: 20 }, function (x, i) { return i + 1; }).map(function (count) {
             _this.queueBrawlSound(count);
         });
     };
     JailBrawl.prototype.queueBrawlSound = function (count) {
         var _this = this;
-        var interval = ((Math.floor(Math.random() * 5) * 400)) + (count * 1000);
-        var soundIndex = (Math.floor(Math.random() * this.brawlSounds.length));
+        var interval = Math.floor(Math.random() * 5) * 400 + count * 1000;
+        var soundIndex = Math.floor(Math.random() * this.brawlSounds.length);
         setTimeout(function () {
             var sound = Sound[_this.brawlSounds[soundIndex]];
             _this.Locs.world.playSound(_this.Locs.locations.jailBrawl, sound, 5, 1);

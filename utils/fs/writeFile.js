@@ -9,8 +9,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Writes the contents of a file to the filesystem.
  */
 function writeFile(filename, content) {
-    var FileWriter = Java.type("java.io.FileWriter");
-    var File = Java.type("java.io.File");
+    var FileWriter = Java.type('java.io.FileWriter');
+    var File = Java.type('java.io.File');
     var path = filename.replace(filename.split('/').pop(), '');
     new File(path).mkdirs();
     var fw = new FileWriter(filename);

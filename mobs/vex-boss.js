@@ -23,7 +23,7 @@ function vexBoss(loc) {
         // Fireball Attack! (when haz target).
         var target = mob.getTarget();
         if (target && target.type == 'PLAYER') {
-            var fb = Java.type("org.bukkit.entity.LargeFireball").class;
+            var fb = Java.type('org.bukkit.entity.LargeFireball').class;
             var pl = target.location;
             var ml = mob.location;
             var vec = new Vector(pl.x - ml.x, pl.y - ml.y, pl.z - ml.z).normalize();

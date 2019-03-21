@@ -16,7 +16,7 @@ var utils = require('utils');
 var log_1 = require("@magikcraft/mct1/log");
 var log = log_1.Logger(__filename);
 function shootFireballAtTarget(entity, targetLoc) {
-    var fb = Java.type("org.bukkit.entity.LargeFireball").class;
+    var fb = Java.type('org.bukkit.entity.LargeFireball').class;
     var loc1 = entity.location;
     var loc2 = targetLoc;
     var vec = new Vector(loc1.x - loc2.x, loc1.y - loc2.y, loc1.z - loc2.z).normalize();
@@ -49,10 +49,13 @@ exports.createBook = createBook;
 function openDoorAtLocation(loc, playSound) {
     if (playSound === void 0) { playSound = true; }
     var doorBlock = loc.world.getBlockAt(loc.x, loc.y, loc.z);
-    if (doorBlock.data < 4) { // open door
+    if (doorBlock.data < 4) {
+        // open door
         doorBlock.setData(doorBlock.data + 4);
         if (playSound) {
-            var effect = (String(doorBlock.type).indexOf('IRON') !== -1) ? Effect.IRON_DOOR_TOGGLE : Effect.DOOR_TOGGLE;
+            var effect = String(doorBlock.type).indexOf('IRON') !== -1
+                ? Effect.IRON_DOOR_TOGGLE
+                : Effect.DOOR_TOGGLE;
             loc.world.playEffect(loc, effect, 0);
         }
     }
@@ -61,10 +64,13 @@ exports.openDoorAtLocation = openDoorAtLocation;
 function closeDoorAtLocation(loc, playSound) {
     if (playSound === void 0) { playSound = true; }
     var doorBlock = loc.world.getBlockAt(loc.x, loc.y, loc.z);
-    if (doorBlock.data > 4) { // door is open
+    if (doorBlock.data > 4) {
+        // door is open
         doorBlock.setData(doorBlock.data - 4); // close door
         if (playSound) {
-            var effect = (String(doorBlock.type).indexOf('IRON') !== -1) ? Effect.IRON_DOOR_CLOSE : Effect.DOOR_CLOSE;
+            var effect = String(doorBlock.type).indexOf('IRON') !== -1
+                ? Effect.IRON_DOOR_CLOSE
+                : Effect.DOOR_CLOSE;
             loc.world.playEffect(loc, effect, 0);
         }
     }
@@ -90,7 +96,7 @@ function applyPotionEffect(type, entity) {
     }
     var PotionEffect = Java.type('org.bukkit.potion.PotionEffect');
     var Color = Java.type('org.bukkit.Color');
-    var duration = milliseconds / 1000 * 40; // 20 tick. 1 tick = 0.05 seconds
+    var duration = (milliseconds / 1000) * 40; // 20 tick. 1 tick = 0.05 seconds
     var c = Color[color];
     var l = PotionEffectType[type];
     var effect = new PotionEffect(l, duration, amplifier, true, true, c);
@@ -119,12 +125,12 @@ function replaceRegionV1(region, materialType) {
 exports.replaceRegionV1 = replaceRegionV1;
 function getAllBlocksInRegion(loc1, loc2) {
     var blocks = [];
-    var x1 = (loc1.x < loc2.x) ? loc1.x : loc2.x;
-    var x2 = (loc1.x > loc2.x) ? loc1.x : loc2.x;
-    var y1 = (loc1.y < loc2.y) ? loc1.y : loc2.y;
-    var y2 = (loc1.y > loc2.y) ? loc1.y : loc2.y;
-    var z1 = (loc1.z < loc2.z) ? loc1.z : loc2.z;
-    var z2 = (loc1.z > loc2.z) ? loc1.z : loc2.z;
+    var x1 = loc1.x < loc2.x ? loc1.x : loc2.x;
+    var x2 = loc1.x > loc2.x ? loc1.x : loc2.x;
+    var y1 = loc1.y < loc2.y ? loc1.y : loc2.y;
+    var y2 = loc1.y > loc2.y ? loc1.y : loc2.y;
+    var z1 = loc1.z < loc2.z ? loc1.z : loc2.z;
+    var z2 = loc1.z > loc2.z ? loc1.z : loc2.z;
     for (var x = x1; x <= x2; x++) {
         for (var y = y1; y <= y2; y++) {
             for (var z = z1; z <= z2; z++) {
@@ -180,7 +186,9 @@ function makeInvisibleArmourStand(loc) {
 }
 exports.makeInvisibleArmourStand = makeInvisibleArmourStand;
 function replaceRegion(loc1, loc2, blockType) {
-    getAllBlocksInRegion(loc1, loc2).forEach(function (block) { return block.setType(Material[blockType]); });
+    getAllBlocksInRegion(loc1, loc2).forEach(function (block) {
+        return block.setType(Material[blockType]);
+    });
 }
 exports.replaceRegion = replaceRegion;
 function playEffectAtLocation(loc, effectType) {

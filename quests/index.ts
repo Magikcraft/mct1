@@ -1,15 +1,16 @@
-import { Multiverse } from '@magikcraft/mct1/world/multiverse';
+import { Multiverse } from '@magikcraft/mct1/world/multiverse'
 import * as fs from '@magikcraft/mct1/utils/fs'
 import { Logger } from '@magikcraft/mct1/log'
 import * as server from '@magikcraft/mct1/utils/server'
 import { QuestConfig } from 'quests/Quest'
 
-import utils = require('utils'); // tslint:disable-line
+import utils = require('utils') // tslint:disable-line
 
 const log = Logger(__filename)
 
 const quests = {
-    'mct1': { // alias for mct1-prologue
+    mct1: {
+        // alias for mct1-prologue
         filePath: '@magikcraft/mct1/quests/mct1/prologue',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-jail',
@@ -56,7 +57,9 @@ const quests = {
     },
 }
 
-const availableQuests = Object.keys(quests).sort().reduce((prev, current) => `${prev}, ${current}`)
+const availableQuests = Object.keys(quests)
+    .sort()
+    .reduce((prev, current) => `${prev}, ${current}`)
 
 export function questCommand(questName, method, player, opts) {
     const quest = quests[questName]
@@ -66,13 +69,13 @@ export function questCommand(questName, method, player, opts) {
         return echo(player, `Available quests: ${availableQuests}`)
     }
     const templateWorldName = quests[questName].worldName
-    const worldName = opts.mode === 'single'
-        ? `${templateWorldName}--${player.name}`
-        : `${templateWorldName}-multi`
+    const worldName =
+        opts.mode === 'single'
+            ? `${templateWorldName}--${player.name}`
+            : `${templateWorldName}-multi`
 
     doCommand(worldName, templateWorldName, questName, player, method, opts)
 }
-
 
 function importWorld(templateWorldName: string) {
     server.executeCommand(`mv import ${templateWorldName} normal`)
@@ -80,46 +83,58 @@ function importWorld(templateWorldName: string) {
 
 async function deleteWorld(worldName: string) {
     log(`Deleting ./${worldName}`)
-    const w = utils.world(worldName);
-    const worldFilePath = w ? w.getWorldFolder().getPath() : `worlds/${worldName}`;
+    const w = utils.world(worldName)
+    const worldFilePath = w
+        ? w.getWorldFolder().getPath()
+        : `worlds/${worldName}`
     Multiverse().deleteWorld(worldName)
     if (fs.exists(worldFilePath)) {
         log(`Removing file ${worldFilePath}...`)
         fs.remove(worldFilePath)
     }
-    return worldName;
+    return worldName
 }
 
 async function cloneWorld(worldName: string, templateWorldName: string) {
-    await deleteWorld(worldName);
+    await deleteWorld(worldName)
     log(`Cloning ${worldName}`)
     server.executeCommand(`mv import ${templateWorldName} normal`)
-    const success = Multiverse().cloneWorld(templateWorldName, worldName, 'normal')
+    const success = Multiverse().cloneWorld(
+        templateWorldName,
+        worldName,
+        'normal'
+    )
     if (!success) {
         return log(`Failed to clone world ${templateWorldName}`)
     }
     const world = utils.world(worldName)
     log(`World clone complete for ${worldName}`)
     return world
-
 }
 
 function createQuest({ questName, player, world, opts }) {
-    const QuestClass = require(quests[questName].filePath).default;
+    const QuestClass = require(quests[questName].filePath).default
 
     const questConfig: QuestConfig = {
         name: questName,
         nextQuestName: quests[questName].nextQuestName,
         player,
         world,
-        options: opts
+        options: opts,
     }
 
     const quest = new QuestClass(questConfig)
     return quest
 }
 
-async function doCommand(worldName, templateWorldName, questName, player, method, opts) {
+async function doCommand(
+    worldName,
+    templateWorldName,
+    questName,
+    player,
+    method,
+    opts
+) {
     switch (method) {
         case 'start':
             echo(player, `Starting quest ${questName}...`)

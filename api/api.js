@@ -12,18 +12,19 @@ function get(path, payload, callback) {
     if (!environment_1.ENDPOINT_URL)
         return;
     var url = environment_1.ENDPOINT_URL + "/scriptcraft/get";
-    return http.request(// must return else lots errors
+    return http.request(
+    // must return else lots errors
     {
         url: url,
         method: 'GET',
         params: {
             path: path,
             payload: JSON.stringify(payload),
-        }
+        },
     }, function (_, responseJSON) {
         var response = JSON.parse(responseJSON);
-        var res = (response && response.code === 200) ? responseJSON : undefined;
-        var err = (!response || response.code !== 200) ? responseJSON : undefined;
+        var res = response && response.code === 200 ? responseJSON : undefined;
+        var err = !response || response.code !== 200 ? responseJSON : undefined;
         if (err)
             log(err);
         callback(err, res);
@@ -34,18 +35,19 @@ function post(path, payload, callback) {
     if (!environment_1.ENDPOINT_URL)
         return;
     var url = environment_1.ENDPOINT_URL + "/scriptcraft/post";
-    http.request(// must return else lots errors
+    http.request(
+    // must return else lots errors
     {
         url: url,
         method: 'POST',
         params: {
             path: path,
             payload: JSON.stringify(payload),
-        }
+        },
     }, function (_, responseJSON) {
         var response = JSON.parse(responseJSON);
-        var res = (response && response.code === 200) ? responseJSON : undefined;
-        var err = (!response || response.code !== 200) ? responseJSON : undefined;
+        var res = response && response.code === 200 ? responseJSON : undefined;
+        var err = !response || response.code !== 200 ? responseJSON : undefined;
         if (err)
             log(err);
         callback(err, res);

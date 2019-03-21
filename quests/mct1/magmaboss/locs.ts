@@ -1,18 +1,18 @@
-import { Region } from '@magikcraft/mct1/regions';
-import { Vector3 } from '@magikcraft/mct1/vector3';
-const Location = Java.type('org.bukkit.Location');
+import { Region } from '@magikcraft/mct1/regions'
+import { Vector3 } from '@magikcraft/mct1/vector3'
+const Location = Java.type('org.bukkit.Location')
 
 import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)
 
-export const getLocations = (world) => {
+export const getLocations = world => {
     return {
         world: world,
         waypoints: {
             arenaThreshold: {
                 region: [
                     new Location(world, 3, 66, -54),
-                    new Location(world, -3, 68, -31)
+                    new Location(world, -3, 68, -31),
                 ],
                 saveLocation: new Location(world, -1, 66, -29, 1, 12),
             },
@@ -260,7 +260,7 @@ export const getLocations = (world) => {
             arenaStairs: new Region(
                 new Vector3(3, 67, 28, world.name),
                 new Vector3(-3, 62, 24, world.name),
-                world.name,
+                world.name
             ),
             endPortal: [
                 new Location(world, 3, 73, 105),

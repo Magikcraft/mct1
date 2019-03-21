@@ -1,10 +1,9 @@
-
 import { Vector3 } from '@magikcraft/mct1/vector3'
 import { Vector3World } from '@magikcraft/mct1/vector3/Vector3-WorldUtil'
 import * as Mobs from '@magikcraft/mct1/mobs'
 const teleport = require('teleport')
-import { Logger } from "@magikcraft/mct1/log"
-const log = Logger(__filename);
+import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
 export default class Wither {
     region
@@ -18,8 +17,8 @@ export default class Wither {
 
     start() {
         // Spawn wither
-        this.mob = Mobs.spawn('wither', this.region.randomPoint().toLocation());
-        this.setTarget();
+        this.mob = Mobs.spawn('wither', this.region.randomPoint().toLocation())
+        this.setTarget()
     }
 
     stop() {
@@ -35,18 +34,22 @@ export default class Wither {
         switch (phase) {
             case 1: // attack random
                 if (this.target) this.target.remove()
-                const loc = region.randomPoint();
-                this.target = Mobs.spawn('armor_stand', Vector3World.GetSunPos(loc).toLocation())
+                const loc = region.randomPoint()
+                this.target = Mobs.spawn(
+                    'armor_stand',
+                    Vector3World.GetSunPos(loc).toLocation()
+                )
                 this.target.setVisible(false)
                 mob.setTarget(this.target)
                 break
             case 2:
-            default: // Hunt players
-                let nearbyPlayer;
-                mob.getNearbyEntities(40, 40, 40).forEach(function (entity) {
+            default:
+                // Hunt players
+                let nearbyPlayer
+                mob.getNearbyEntities(40, 40, 40).forEach(function(entity) {
                     if (nearbyPlayer) return
                     if (entity.type == 'PLAYER') nearbyPlayer = entity
-                });
+                })
 
                 if (nearbyPlayer) {
                     log(`Make wither hunt nearby player ${nearbyPlayer.name}!`)
@@ -55,16 +58,23 @@ export default class Wither {
                 }
 
                 // No Players near mob! Look for playerInWorld...
-                let playerInWorld;
-                mob.world.players.forEach((player) => {
+                let playerInWorld
+                mob.world.players.forEach(player => {
                     if (playerInWorld) return
                     playerInWorld = player
                 })
 
                 if (playerInWorld) {
                     // Teleport wither near playerInWorld and attack!
-                    log(`Make wither teleport to and hunt player ${playerInWorld.name}!`)
-                    const randPointNearPlayer = Vector3.GetRandomPointAround(Vector3.FromLocation(playerInWorld.location), 16).toLocation()
+                    log(
+                        `Make wither teleport to and hunt player ${
+                            playerInWorld.name
+                        }!`
+                    )
+                    const randPointNearPlayer = Vector3.GetRandomPointAround(
+                        Vector3.FromLocation(playerInWorld.location),
+                        16
+                    ).toLocation()
                     teleport(mob, randPointNearPlayer)
                     mob.setTarget(playerInWorld)
                 }
@@ -74,8 +84,8 @@ export default class Wither {
 
         if (!mob.isDead()) {
             setTimeout(() => {
-                this.setTarget();
-            }, 5000);
+                this.setTarget()
+            }, 5000)
         }
     }
 }

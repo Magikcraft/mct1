@@ -53,7 +53,7 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
                 var dispenseType = 'ARROW';
                 _this.activateRun(Locs.locations["run" + key], dispenseType, interval);
             });
-        }, (35 * interval));
+        }, 35 * interval);
         interval = 170;
         this.setInterval(function () {
             _this.activeRuns.forEach(function (key) {
@@ -62,7 +62,7 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
                 var dispenseType = 'FIREBALL';
                 _this.activateRun(Locs.locations["run" + key], dispenseType, interval);
             });
-        }, (35 * interval));
+        }, 35 * interval);
     };
     QuestMCT1Magmarun.prototype.activateRun = function (rows, dispenseType, interval) {
         var _this = this;
@@ -79,17 +79,21 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
                         var targetLoc = new Location(loc.world, loc.x, loc.y - 11, loc.z);
                         if (dispenseType == 'FIREBALL') {
                             if (j % 4 === 0) {
-                                _this.getBlocksInRadius(targetLoc, 5, ['FIRE'])
-                                    .forEach(function (block) {
+                                _this.getBlocksInRadius(targetLoc, 5, [
+                                    'FIRE',
+                                ]).forEach(function (block) {
                                     block.setType(Material.AIR);
                                 });
                             }
                         }
                         if (dispenseType == 'ARROW') {
                             if (j % 4 === 0) {
-                                _this.Locs.world.getNearbyEntities(targetLoc, 5, 10, 5)
-                                    .forEach(function (e) { if (e.type == 'ARROW')
-                                    e.remove(); });
+                                _this.Locs.world
+                                    .getNearbyEntities(targetLoc, 5, 10, 5)
+                                    .forEach(function (e) {
+                                    if (e.type == 'ARROW')
+                                        e.remove();
+                                });
                             }
                         }
                     }, interval * 25);
@@ -114,9 +118,9 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
     QuestMCT1Magmarun.prototype.getBlocksInRadius = function (loc, radius, filterTypes) {
         if (radius === void 0) { radius = 2; }
         var blocks = [];
-        for (var x = -(radius); x <= radius; x++) {
-            for (var y = -(radius); y <= radius; y++) {
-                for (var z = -(radius); z <= radius; z++) {
+        for (var x = -radius; x <= radius; x++) {
+            for (var y = -radius; y <= radius; y++) {
+                for (var z = -radius; z <= radius; z++) {
                     var block = loc.block.getRelative(x, y, z);
                     if (filterTypes) {
                         if (filterTypes.includes(block.type.toString())) {

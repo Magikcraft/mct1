@@ -2,7 +2,7 @@
 // We log out the environment settings in engines.ts
 
 // __engine_name__ is set to the player by the Java plugin when an engine is created in multi-engine mode.
-declare const __engine_name__: string;
+declare const __engine_name__: string
 
 // The various plugins
 const pluginManager = __plugin.server.pluginManager
@@ -65,16 +65,18 @@ export const HAS_BOSSBAR_BUKKIT = bossBarBukkit
 export const HAS_BOSSBAR_NUKKIT = bossBarNukkit
 
 // Healthchecks.io
-export const HEALTHCHECKS_IO_URL = java.lang.System.getenv('HEALTHCHECKS_IO_URL')
+export const HEALTHCHECKS_IO_URL = java.lang.System.getenv(
+    'HEALTHCHECKS_IO_URL'
+)
 
 // DISABLE_WATCH_RELOAD - don't reload the engine(s) when JS files change on disk
 export const DISABLE_WATCH_RELOAD =
     java.lang.System.getenv('DISABLE_WATCH_RELOAD') === 'true'
 
-
 global.__engine_name__ = '/mk.io\\'
 
-export const ENGINE_ID = (typeof global.__engine_id__ === 'undefined') ? 0 : global.__engine_id__
+export const ENGINE_ID =
+    typeof global.__engine_id__ === 'undefined' ? 0 : global.__engine_id__
 
 export const ENGINE_NAME = __engine_name__
 
@@ -84,4 +86,3 @@ export const IS_NOT_MASTER_ENGINE = !IS_MASTER_ENGINE
 
 // ENDPOINT_URL
 export const ENDPOINT_URL = java.lang.System.getenv('ENDPOINT_URL')
-

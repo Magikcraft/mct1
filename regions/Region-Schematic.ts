@@ -1,11 +1,10 @@
-import { Vector3 } from "@magikcraft/mct1/vector3";
-import { Region } from "@magikcraft/mct1/regions";
-import { Schematic } from "@magikcraft/mct1/regions/schematic";
-import { EditCore } from "@magikcraft/mct1/regions/worldedit";
-import util = require('utils');
+import { Vector3 } from '@magikcraft/mct1/vector3'
+import { Region } from '@magikcraft/mct1/regions'
+import { Schematic } from '@magikcraft/mct1/regions/schematic'
+import { EditCore } from '@magikcraft/mct1/regions/worldedit'
+import util = require('utils')
 
 export class Region_Schematic {
-
     /**
      * saveRegion
      * @param region - Selected region to save
@@ -15,25 +14,29 @@ export class Region_Schematic {
      */
     static saveRegion(region: Region): Schematic {
         // Make schematic
-        const schematic: Schematic = new Schematic(region);
+        const schematic: Schematic = new Schematic(region)
         const startLoc: Vector3 = new Vector3(
             Math.min(...region.xArray()),
             Math.min(...region.yArray()),
             Math.min(...region.zArray())
         )
-        const world = util.getWorld(schematic.region.getWorld());
+        const world = util.getWorld(schematic.region.getWorld())
         for (let x = startLoc.x; x < startLoc.x + region.xLength(); x++) {
             for (let y = startLoc.y; y < startLoc.y + region.yLength(); y++) {
-                for (let z = startLoc.z; z < startLoc.z + region.zLength(); z++) {
+                for (
+                    let z = startLoc.z;
+                    z < startLoc.z + region.zLength();
+                    z++
+                ) {
                     schematic.addBlock({
                         block: world.getBlockAt(x, y, z),
                         meta: 0, // CHANGE THIS TO HAVE META DATA COMING FROM THE BLOCK!
-                        locationRelative: startLoc
-                    });
+                        locationRelative: startLoc,
+                    })
                 }
             }
         }
-        return schematic;
+        return schematic
     }
 
     /**
@@ -44,9 +47,14 @@ export class Region_Schematic {
      *
      * Will place a schematic block data, relative to the location vector, on the world given
      */
-    static writeSchematic(schematic: Schematic, world: string, location: Vector3, physics = false) {
-        const worldActual = util.getWorld(world);
-        schematic.blocks.forEach((block) => {
+    static writeSchematic(
+        schematic: Schematic,
+        world: string,
+        location: Vector3,
+        physics = false
+    ) {
+        const worldActual = util.getWorld(world)
+        schematic.blocks.forEach(block => {
             EditCore.putBlock(
                 block.locationRelative.x + location.x, // x
                 block.locationRelative.y + location.y, // y
@@ -55,8 +63,7 @@ export class Region_Schematic {
                 block.meta,
                 worldActual,
                 physics
-            );
-        });
+            )
+        })
     }
 }
-

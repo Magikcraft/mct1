@@ -11,7 +11,10 @@ var Metadatable = /** @class */ (function () {
     Metadatable.prototype.get = function (key) {
         if (!this.has(key))
             return undefined;
-        return JSON.parse(this.metadatable.getMetadata(key).get(0).value());
+        return JSON.parse(this.metadatable
+            .getMetadata(key)
+            .get(0)
+            .value());
     };
     Metadatable.prototype.set = function (key, value) {
         this.metadatable.setMetadata(key, new FixedMetadataValue(__plugin, JSON.stringify(value)));

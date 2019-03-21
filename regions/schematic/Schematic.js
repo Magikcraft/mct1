@@ -6,7 +6,7 @@ var regions_1 = require("@magikcraft/mct1/regions");
  * @class Schematic
  *
  * Stores all of the block data, names, IDs, locations etc of the saved region
-*/
+ */
 var Schematic = /** @class */ (function () {
     function Schematic(region) {
         // Main storage array

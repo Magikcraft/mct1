@@ -7,7 +7,7 @@ var ItemStack = Java.type('org.bukkit.inventory.ItemStack');
 var Color = Java.type('org.bukkit.Color');
 function uuid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        var r = (Math.random() * 16) | 0, v = c == 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
 }
@@ -41,25 +41,25 @@ function itemStackToJSON(itemStack) {
         amount: itemStack.amount,
         data: itemStack.data || undefined,
         meta: {
-            displayName: (itemStack.itemMeta && itemStack.itemMeta.displayName)
+            displayName: itemStack.itemMeta && itemStack.itemMeta.displayName
                 ? itemStack.itemMeta.displayName
                 : undefined,
             // Potion can have color
-            colorRGB: (itemStack.itemMeta && itemStack.itemMeta.color)
+            colorRGB: itemStack.itemMeta && itemStack.itemMeta.color
                 ? itemStack.itemMeta.color.asRGB()
                 : undefined,
             // Book has title, author, pages
-            title: (itemStack.itemMeta && itemStack.itemMeta.title)
+            title: itemStack.itemMeta && itemStack.itemMeta.title
                 ? itemStack.itemMeta.title
                 : undefined,
-            author: (itemStack.itemMeta && itemStack.itemMeta.author)
+            author: itemStack.itemMeta && itemStack.itemMeta.author
                 ? itemStack.itemMeta.author
                 : undefined,
-            pages: (itemStack.itemMeta && itemStack.itemMeta.pages)
-                // ? itemStack.itemMeta.pages
-                ? _pagestoJSON(itemStack.itemMeta.pages)
+            pages: itemStack.itemMeta && itemStack.itemMeta.pages
+                ? // ? itemStack.itemMeta.pages
+                    _pagestoJSON(itemStack.itemMeta.pages)
                 : undefined,
-        }
+        },
     };
 }
 exports.itemStackToJSON = itemStackToJSON;

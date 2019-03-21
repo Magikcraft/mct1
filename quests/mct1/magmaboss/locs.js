@@ -12,7 +12,7 @@ exports.getLocations = function (world) {
             arenaThreshold: {
                 region: [
                     new Location(world, 3, 66, -54),
-                    new Location(world, -3, 68, -31)
+                    new Location(world, -3, 68, -31),
                 ],
                 saveLocation: new Location(world, -1, 66, -29, 1, 12),
             },

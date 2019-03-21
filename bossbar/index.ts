@@ -1,5 +1,5 @@
-import * as environment from '@magikcraft/mct1/utils/environment';
-import { color, IBossBar, style } from './bossbar';
+import * as environment from '@magikcraft/mct1/utils/environment'
+import { color, IBossBar, style } from './bossbar'
 
 let bar = (msg, player) => ({} as IBossBar)
 
@@ -16,5 +16,5 @@ if (environment.HAS_BOSSBAR_NUKKIT) {
 export let BossBar = {
     bar,
     color,
-    style
+    style,
 }

@@ -84,18 +84,18 @@ var QuestBase = /** @class */ (function () {
         var _a = this, player = _a.player, world = _a.world, name = _a.name;
         var inventoryJSON = user_1.user(player).inventory.exportToJSON(user_1.user(player).inventory.getAllitemStacks());
         var inventory = inventoryJSON
-            .map(function (item, i) { return (item) ? __assign({}, item, { slot: i }) : null; })
+            .map(function (item, i) { return (item ? __assign({}, item, { slot: i }) : null); })
             .filter(function (item) { return item; });
-        var mct1 = (user_1.user(player).mct1.isStarted)
+        var mct1 = user_1.user(player).mct1.isStarted
             ? {
                 bgl: user_1.user(player).mct1.bgl,
                 insulin: user_1.user(player).mct1.insulin,
-                digestionQueue: user_1.user(player).mct1.digestionQueue
-                    .map(function (item) { return (__assign({}, item)); }),
+                digestionQueue: user_1.user(player).mct1.digestionQueue.map(function (item) { return (__assign({}, item)); }),
                 isStarted: user_1.user(player).mct1.isStarted,
                 isUSA: user_1.user(player).mct1.isUSA,
                 hasInfiniteInsulin: user_1.user(player).mct1.hasInfiniteInsulin,
-                hasLightningSnowballs: user_1.user(player).mct1.hasLightningSnowballs,
+                hasLightningSnowballs: user_1.user(player).mct1
+                    .hasLightningSnowballs,
                 hasSuperJump: user_1.user(player).mct1.hasSuperJump,
                 hasSuperSpeed: user_1.user(player).mct1.hasSuperSpeed,
                 hasNightVision: user_1.user(player).mct1.hasNightVision,
@@ -124,7 +124,7 @@ var QuestBase = /** @class */ (function () {
             player: player.name,
             world: world.name,
             session: user_1.user(player).sessionId,
-            payload: JSON.stringify(state)
+            payload: JSON.stringify(state),
         };
         api.post('/minecraft/player/state/log', payload, function (err, res) {
             if (err)
@@ -169,7 +169,8 @@ var QuestBase = /** @class */ (function () {
         var _a = this, player = _a.player, world = _a.world, options = _a.options, log = _a.log;
         // playerChangedWorld
         this.registerEvent('playerChangedWorld', function (event) {
-            if (event.player.name == player.name && event.from.name == world.name) {
+            if (event.player.name == player.name &&
+                event.from.name == world.name) {
                 _this.stop();
             }
         });
@@ -299,6 +300,7 @@ var QuestMCT1 = /** @class */ (function (_super) {
         return _this;
     }
     QuestMCT1.prototype.start = function () {
+        // Set defaults for MCT1 quests.
         var _a = this, name = _a.name, player = _a.player, world = _a.world, options = _a.options, log = _a.log, Locs = _a.Locs;
         var locations = Locs.locations, regions = Locs.regions;
         if (chest_items_1.ChestItems[this.mct1QuestName])
@@ -393,7 +395,9 @@ var QuestMCT1 = /** @class */ (function (_super) {
                 // end chest close...
                 var cLoc = event.inventory.location;
                 var ecLoc = _this.endChestLocation;
-                if (cLoc.x === ecLoc.x && cLoc.y === ecLoc.y && cLoc.z === ecLoc.z) {
+                if (cLoc.x === ecLoc.x &&
+                    cLoc.y === ecLoc.y &&
+                    cLoc.z === ecLoc.z) {
                     _this.openEndGate();
                 }
             });

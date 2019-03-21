@@ -12,8 +12,8 @@ export function readFile(filename) {
     let code = ''
     let line
     while ((line = buffered.readLine()) !== null) {
-      code += line + '\n';
+        code += line + '\n'
     }
-    buffered.close();
+    buffered.close()
     return code
 }

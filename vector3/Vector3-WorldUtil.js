@@ -16,15 +16,18 @@ var Vector3World = /** @class */ (function () {
         var priorBlock = null;
         while (!hasFoundBlock) {
             var block = world.getBlockAt(currentPos.x, currentPos.y, currentPos.z);
-            if (blocks.air != block) { // If its registered anything else (ground) move it up
-                if (blocks.air == priorBlock && priorBlock != null) { //
+            if (blocks.air != block) {
+                // If its registered anything else (ground) move it up
+                if (blocks.air == priorBlock && priorBlock != null) {
+                    //
                     return priorPos;
                 }
                 priorPos = currentPos;
                 priorBlock = block;
                 currentPos = new Vector3_1.Vector3(currentPos.x, currentPos.y + 1, currentPos.z);
             }
-            else { // If its registered air, move it down
+            else {
+                // If its registered air, move it down
                 if (blocks.air != priorBlock && priorBlock != null) {
                     return priorPos;
                 }
@@ -67,8 +70,7 @@ var Vector3World = /** @class */ (function () {
         var dy = vectorB.y - vectorA.y;
         var dz = vectorB.z - vectorA.z;
         var iterations = Math.max(dx, dy, dz);
-        for (var i = 0; i < iterations; i++) {
-        }
+        for (var i = 0; i < iterations; i++) { }
         // dx = x2 - x1
         // dy = y2 - y1
         // for x from x1 to x2 {

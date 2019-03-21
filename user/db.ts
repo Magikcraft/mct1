@@ -19,9 +19,7 @@ export default class DB {
     }
 
     get(key: string) {
-        return (this.database[key])
-            ? this.database[key]
-            : undefined
+        return this.database[key] ? this.database[key] : undefined
     }
 
     getAll() {
@@ -39,7 +37,10 @@ export default class DB {
     }
 
     dump() {
-        log(`DB Data for ${this.player.name}:`, JSON.stringify(this.database, null, 2))
+        log(
+            `DB Data for ${this.player.name}:`,
+            JSON.stringify(this.database, null, 2)
+        )
     }
 
     private _save() {

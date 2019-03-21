@@ -1,6 +1,6 @@
-import * as questTools from '../quest-tools';
-import { Journals } from './journals';
-const items = require('items');
+import * as questTools from '../quest-tools'
+import { Journals } from './journals'
+const items = require('items')
 
 export const Inventories = {
     prologue: [
@@ -13,11 +13,7 @@ export const Inventories = {
         items.emerald(1),
     ],
     jail: [],
-    sunken: [
-        items.cookedChicken(10),
-        Journals.jail1,
-        Journals.jail2,
-    ],
+    sunken: [items.cookedChicken(10), Journals.jail1, Journals.jail2],
     magmarun: [
         items.ironSword(1),
         items.shield(1),

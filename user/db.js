@@ -12,9 +12,7 @@ var DB = /** @class */ (function () {
         this.init();
     }
     DB.prototype.get = function (key) {
-        return (this.database[key])
-            ? this.database[key]
-            : undefined;
+        return this.database[key] ? this.database[key] : undefined;
     };
     DB.prototype.getAll = function () {
         return this.database;

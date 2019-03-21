@@ -14,5 +14,5 @@ if (environment.HAS_BOSSBAR_NUKKIT) {
 exports.BossBar = {
     bar: bar,
     color: bossbar_1.color,
-    style: bossbar_1.style
+    style: bossbar_1.style,
 };

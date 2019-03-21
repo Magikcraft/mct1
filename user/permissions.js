@@ -6,8 +6,10 @@ var AdminUsers = [
     // 'RedMoonWT1',
     'Purpsta',
 ];
-var TestUsers = [
-    'Luwak_kopi'
-].concat(AdminUsers);
-exports.isAdminUser = function (player) { return !!AdminUsers.find(function (u) { return u === player.name; }); };
-exports.isTestUser = function (player) { return !!TestUsers.find(function (u) { return u === player.name; }); };
+var TestUsers = ['Luwak_kopi'].concat(AdminUsers);
+exports.isAdminUser = function (player) {
+    return !!AdminUsers.find(function (u) { return u === player.name; });
+};
+exports.isTestUser = function (player) {
+    return !!TestUsers.find(function (u) { return u === player.name; });
+};

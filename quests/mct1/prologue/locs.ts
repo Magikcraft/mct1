@@ -1,11 +1,11 @@
-const utils = require('utils');
-import { Region } from '@magikcraft/mct1/regions';
-import { Vector3 } from '@magikcraft/mct1/vector3';
-const Location = Java.type('org.bukkit.Location');
+const utils = require('utils')
+import { Region } from '@magikcraft/mct1/regions'
+import { Vector3 } from '@magikcraft/mct1/vector3'
+const Location = Java.type('org.bukkit.Location')
 import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)
 
-export const getLocations = (world) => {
+export const getLocations = world => {
     return {
         world: world,
         locations: {
@@ -30,7 +30,7 @@ export const getLocations = (world) => {
             lightning: new Region(
                 new Vector3(170, 50, -250, world.name),
                 new Vector3(300, 100, -400, world.name),
-                world.name,
+                world.name
             ),
             wither: new Region(
                 new Vector3(200, 100, -280, world.name),
@@ -51,8 +51,7 @@ export const getLocations = (world) => {
                 new Vector3(352, 65, -301, world.name),
                 new Vector3(346, 65, -319, world.name),
                 world.name
-            )
+            ),
         },
-
     }
 }

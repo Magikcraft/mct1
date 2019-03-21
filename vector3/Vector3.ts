@@ -26,10 +26,10 @@ export interface iVector3 {
     toArray(): Array<number|string>,    // Vector3 -> Array
 
     // Methods ----------------------------------------------------------------
-    magnitude(): number, 
+    magnitude(): number,
         // Will return hypotenuse of vector
         // Uses Pythagorean Theorem to calculate this
-    normalized(): Vector3, 
+    normalized(): Vector3,
         // Will scale the vector so that its magnitude is 1.
         // Clamps the vector into a unit circle
     getWorld(worldObj? :boolean): string|any,
@@ -55,7 +55,7 @@ export interface iVector3 {
     Multiply(number :number): Vector3,  // this * number
     Divide(number :number): Vector3,    // this / number
     Add(vector :Vector3): Vector3,      // this + vector
-    Equals(vector :Vector3): Boolean 
+    Equals(vector :Vector3): Boolean
         // Compares this and vector to see if they are identical
         // x,y,z,world are used in this calculation
     NotEquals(vector :Vector3): Boolean // !equals()
@@ -333,8 +333,8 @@ export class Vector3 {
      */
     magnitude(): number {
         return Math.sqrt(
-            Math.pow(this.x,2) + 
-            Math.pow(this.y,2) + 
+            Math.pow(this.x,2) +
+            Math.pow(this.y,2) +
             Math.pow(this.z,2)
         );
     }
@@ -353,8 +353,8 @@ export class Vector3 {
 
     /**
      * getWorld
-     * @param {boolean} worldObj 
-     * 
+     * @param {boolean} worldObj
+     *
      * Will return various instances of the world
      * If given: worldObj = true,       then returns a bukkit world object
      *           worldObj = false/null, then returns a string
@@ -386,7 +386,7 @@ export class Vector3 {
     /**
      * toString
      * @return {string} - Stringified vector object
-     * 
+     *
      * A custom function that outputs a string
      * Will ommit world if this.world is not set
      */
@@ -411,7 +411,7 @@ export class Vector3 {
     /**
      * setWorldHeight
      * @return {Vector3}
-     * 
+     *
      * Will set the vector.y to world top (128)
      */
     setWorldHeight(): Vector3 {
@@ -425,7 +425,7 @@ export class Vector3 {
     /**
      * setWorldBottom
      * @return {Vector3}
-     * 
+     *
      * Will set the vector.y to world bottom (0)
      */
     setWorldBottom(): Vector3 {
@@ -445,7 +445,7 @@ export class Vector3 {
     //  * @alias Minus
     //  * @param {Vector3} vector - Vector to subtract with
     //  * @return {Vector3} - Subtracted vector
-    //  * 
+    //  *
     //  * Minus one vector from another
     //  */
     // subtract(vector :Vector3): Vector3 {
@@ -458,7 +458,7 @@ export class Vector3 {
      * @param {Vector3} vectorA - Vector to be subtracted
      * @param {Vector3} vectorB - Vector to subtract with
      * @return {Vector3} - Subtracted vector
-     * 
+     *
      * Minus one vector from another
      */
     static Subtract(vectorA :Vector3, vectorB: Vector3): Vector3 {
@@ -820,7 +820,7 @@ export class Vector3 {
     // SmoothDamp TODO
 
     // --------------------------------------
-    
+
     static Average(vectors: Array<Vector3>): Vector3 {
         if(vectors.length == 0) { return vectors[0]; } else {
             var vector = new Vector3(0,0,0, this.GetWorldsArray(vectors));
@@ -875,7 +875,7 @@ export class Vector3 {
                 finalWorlds.push(uniqueWorlds[k]);
             }
         }
-        
+
         if(uniqueWorlds.length == 0) { // No worlds were in the array
             return '';
         } else if(uniqueWorlds.length == 1) { // Only one world was found

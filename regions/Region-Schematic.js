@@ -25,7 +25,7 @@ var Region_Schematic = /** @class */ (function () {
                     schematic.addBlock({
                         block: world.getBlockAt(x, y, z),
                         meta: 0,
-                        locationRelative: startLoc
+                        locationRelative: startLoc,
                     });
                 }
             }

@@ -4,12 +4,14 @@ console.log('MCT1 is loaded!');
 var environment = require("@magikcraft/mct1/utils/environment");
 var log_1 = require("@magikcraft/mct1/log");
 var log = log_1.Logger('bootstrap');
-var WATCH_RELOAD_STATE = environment.DISABLE_WATCH_RELOAD ? 'disabled' : 'enabled';
+var WATCH_RELOAD_STATE = environment.DISABLE_WATCH_RELOAD
+    ? 'disabled'
+    : 'enabled';
 var ENGINE_MODE = environment.SINGLE_ENGINE_MODE
     ? 'Single Engine Mode'
     : 'Multi Engine Mode';
 var server = __plugin.server;
-log("=== Configuration");
+log('=== Configuration');
 log('Server: ', server.getName() + ' ' + server.getVersion());
 if (environment.IS_NUKKIT) {
     log('Pocket Edition Minecraft server');
@@ -22,7 +24,7 @@ if (environment.IS_SCRIPTCRAFT_MULTI_ENGINE) {
     log("|--- running in " + ENGINE_MODE);
 }
 log('JavaScript watch reload is ' + WATCH_RELOAD_STATE);
-var durableMapIsLoaded = (environment.HAS_DURABLEMAP) ? '' : 'not ';
+var durableMapIsLoaded = environment.HAS_DURABLEMAP ? '' : 'not ';
 log("Durable Map plugin " + durableMapIsLoaded + "loaded");
 var BossBarMsg = 'No BossBarAPI loaded';
 if (environment.HAS_BOSSBAR_BUKKIT) {

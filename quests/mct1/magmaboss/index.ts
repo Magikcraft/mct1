@@ -13,7 +13,7 @@ export default class QuestMCT1Magmaboss extends QuestMCT1 {
 
     constructor(conf: QuestConfig) {
         super(conf)
-        this.Locs = Locations.getLocations(this.world);
+        this.Locs = Locations.getLocations(this.world)
         this.state = {
             bossSceneStarted: false,
             magmaboss: undefined,
@@ -21,10 +21,10 @@ export default class QuestMCT1Magmaboss extends QuestMCT1 {
     }
 
     start() {
-        super.start();
+        super.start()
         super.registerEvents()
-        const { player, world, log, options, Locs, state } = this;
-        const { regions, locations, waypoints } = Locs;
+        const { player, world, log, options, Locs, state } = this
+        const { regions, locations, waypoints } = Locs
 
         // Setup arenaStairs
         this.arenaStairs = new ArenaStairs(Locs.regions.arenaStairs)
@@ -32,10 +32,17 @@ export default class QuestMCT1Magmaboss extends QuestMCT1 {
         this.arenaStairs.hideRegion()
 
         // Region: complete
-        worldly(world).registerRegion('arenaThreshold', waypoints.arenaThreshold.region[0], waypoints.arenaThreshold.region[1]);
-        worldly(world).registerPlayerEnterRegionEvent('arenaThreshold', (event) => {
-            this.startBossScene()
-        })
+        worldly(world).registerRegion(
+            'arenaThreshold',
+            waypoints.arenaThreshold.region[0],
+            waypoints.arenaThreshold.region[1]
+        )
+        worldly(world).registerPlayerEnterRegionEvent(
+            'arenaThreshold',
+            event => {
+                this.startBossScene()
+            }
+        )
 
         this.setTimeout(() => {
             Locs.locations.dispensers.forEach(loc => {
@@ -46,13 +53,18 @@ export default class QuestMCT1Magmaboss extends QuestMCT1 {
     }
 
     startBossScene() {
-        const { player, world, log, options, Locs, state } = this;
+        const { player, world, log, options, Locs, state } = this
         if (state.bossSceneStarted) return
         state.bossSceneStarted = true
 
-        state.magmaboss = world.spawnEntity(Locs.locations.magmabossSpawn, EntityType.MAGMA_CUBE)
+        state.magmaboss = world.spawnEntity(
+            Locs.locations.magmabossSpawn,
+            EntityType.MAGMA_CUBE
+        )
         state.magmaboss.setSize(5)
-        const marker = questTools.makeInvisibleArmourStand(Locs.locations.magmabossSpawn)
+        const marker = questTools.makeInvisibleArmourStand(
+            Locs.locations.magmabossSpawn
+        )
 
         // Reveal arena stairs once the magmaboss is dead.
         this.setInterval(() => {
@@ -66,12 +78,12 @@ export default class QuestMCT1Magmaboss extends QuestMCT1 {
         }, 3000)
 
         // ## helper
-        const dispenseLava = (loc) => {
-            if (loc.block.type != 'DISPENSER') return;
-            questTools.shootDispenser(loc.block, 'LAVA_BUCKET');
+        const dispenseLava = loc => {
+            if (loc.block.type != 'DISPENSER') return
+            questTools.shootDispenser(loc.block, 'LAVA_BUCKET')
             const lavaLoc = new Location(loc.world, loc.x, loc.y + 1, loc.z)
             this.setTimeout(() => {
-                lavaLoc.block.setType(Material.AIR);
+                lavaLoc.block.setType(Material.AIR)
             }, 7500)
         }
 
@@ -83,5 +95,4 @@ export default class QuestMCT1Magmaboss extends QuestMCT1 {
             }, 25000)
         })
     }
-
 }

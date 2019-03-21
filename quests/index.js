@@ -42,7 +42,8 @@ var server = require("@magikcraft/mct1/utils/server");
 var utils = require("utils"); // tslint:disable-line
 var log = log_1.Logger(__filename);
 var quests = {
-    'mct1': {
+    mct1: {
+        // alias for mct1-prologue
         filePath: '@magikcraft/mct1/quests/mct1/prologue',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-jail',
@@ -88,7 +89,9 @@ var quests = {
         nextQuestName: 'mct1-village',
     },
 };
-var availableQuests = Object.keys(quests).sort().reduce(function (prev, current) { return prev + ", " + current; });
+var availableQuests = Object.keys(quests)
+    .sort()
+    .reduce(function (prev, current) { return prev + ", " + current; });
 function questCommand(questName, method, player, opts) {
     var quest = quests[questName];
     if (!questName || !quest) {
@@ -111,7 +114,9 @@ function deleteWorld(worldName) {
         return __generator(this, function (_a) {
             log("Deleting ./" + worldName);
             w = utils.world(worldName);
-            worldFilePath = w ? w.getWorldFolder().getPath() : "worlds/" + worldName;
+            worldFilePath = w
+                ? w.getWorldFolder().getPath()
+                : "worlds/" + worldName;
             multiverse_1.Multiverse().deleteWorld(worldName);
             if (fs.exists(worldFilePath)) {
                 log("Removing file " + worldFilePath + "...");
@@ -150,7 +155,7 @@ function createQuest(_a) {
         nextQuestName: quests[questName].nextQuestName,
         player: player,
         world: world,
-        options: opts
+        options: opts,
     };
     var quest = new QuestClass(questConfig);
     return quest;

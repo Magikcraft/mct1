@@ -283,7 +283,7 @@ var Vector3 = /** @class */ (function () {
     //  * @alias Minus
     //  * @param {Vector3} vector - Vector to subtract with
     //  * @return {Vector3} - Subtracted vector
-    //  * 
+    //  *
     //  * Minus one vector from another
     //  */
     // subtract(vector :Vector3): Vector3 {

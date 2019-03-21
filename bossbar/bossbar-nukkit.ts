@@ -1,7 +1,7 @@
-import * as environment from '@magikcraft/mct1/utils/environment';
-import { Logger } from '@magikcraft/mct1/log';
+import * as environment from '@magikcraft/mct1/utils/environment'
+import { Logger } from '@magikcraft/mct1/log'
 
-import { IBossBar } from './bossbar';
+import { IBossBar } from './bossbar'
 
 const log = Logger('NukkitBossBar')
 
@@ -18,7 +18,8 @@ try {
 
 const toNukkitPlayer = player => PokkitPlayer.toNukkit(player)
 
-export const bar = (msg = '', player: BukkitPlayer) => new NukkitBossBar(msg, player)
+export const bar = (msg = '', player: BukkitPlayer) =>
+    new NukkitBossBar(msg, player)
 
 export class NukkitBossBar implements IBossBar {
     private static BossBar = Java.type(environment.NUKKIT_BOSSBAR_TYPE)
@@ -29,7 +30,12 @@ export class NukkitBossBar implements IBossBar {
     constructor(msg: string, player: BukkitPlayer) {
         this.id = barID
         barID++
-        this.bar = new NukkitBossBar.BossBar(player.getName() + this.id, msg, 0, 100)
+        this.bar = new NukkitBossBar.BossBar(
+            player.getName() + this.id,
+            msg,
+            0,
+            100
+        )
         this.player = toNukkitPlayer(player)
         return this
     }

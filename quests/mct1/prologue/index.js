@@ -31,7 +31,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         _this.Locs = Locations.getLocations(_this.world);
         _this.state = {
             hasMCT1: false,
-            completed: false
+            completed: false,
         };
         _this.wither = new wither_1.default(_this.Locs.regions.wither);
         return _this;

@@ -10,10 +10,10 @@ exports.getLocations = function (world) {
             combolock: {
                 region: [
                     new Location(world, 211, 66, 231),
-                    new Location(world, 217, 61, 224)
+                    new Location(world, 217, 61, 224),
                 ],
                 saveLocation: new Location(world, 212, 61, 230, -122.7, -5.4),
-            }
+            },
         },
         locations: {
             spawn: new Location(world, 215, 84, 319, 124, 7),
@@ -29,7 +29,7 @@ exports.getLocations = function (world) {
         regions: {
             jailHall: [
                 new Location(world, 205, 83, 304),
-                new Location(world, 209, 87, 324)
+                new Location(world, 209, 87, 324),
             ],
             endPortal: [
                 new Location(world, 214, 55, 136),

@@ -33,7 +33,7 @@ function _lightningStrike() {
     var _region = region.randomPoint();
     var _location = _region.toLocation();
     _location.world.strikeLightning(_location);
-    var interval = delayMin + (Math.random() * delayAvg);
+    var interval = delayMin + Math.random() * delayAvg;
     var players = _location.world.getPlayers();
     if (players.length >= 1 && count < cap) {
         count++;

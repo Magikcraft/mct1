@@ -90,7 +90,8 @@ var User = /** @class */ (function () {
                         event.setRespawnLocation(_this.player.world.getSpawnLocation());
                     }
                     else {
-                        if (!teleportBetweenWorlds && _this.player.world.name !== spawn.world.name) {
+                        if (!teleportBetweenWorlds &&
+                            _this.player.world.name !== spawn.world.name) {
                             return;
                         }
                         event.setRespawnLocation(spawn);

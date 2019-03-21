@@ -172,7 +172,10 @@ var PlayerInventory = /** @class */ (function () {
                     if (event.entity.name !== _this.player.name)
                         return;
                     setTimeout(function () {
-                        event.entity.getNearbyEntities(2, 2, 2).forEach(function (entity) {
+                        // Clean-up dropped items
+                        event.entity
+                            .getNearbyEntities(2, 2, 2)
+                            .forEach(function (entity) {
                             if (entity.type == 'DROPPED_ITEM')
                                 entity.remove();
                         });

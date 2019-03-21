@@ -1,11 +1,9 @@
-
 import { Logger } from '@magikcraft/mct1/log'
 const Sound = Java.type('org.bukkit.Sound')
 
-import MobTools = require('@magikcraft/mct1/mobs');
+import MobTools = require('@magikcraft/mct1/mobs')
 
 export default class JailBrawl {
-
     log: any
     jailGuard: any
     jailGuardLure: any
@@ -34,7 +32,10 @@ export default class JailBrawl {
         this.timers.push(
             setTimeout(() => {
                 this.log('Lure away guard')
-                this.jailGuardLure = MobTools.spawn('armor_stand', this.Locs.locations.jailGuardLure)
+                this.jailGuardLure = MobTools.spawn(
+                    'armor_stand',
+                    this.Locs.locations.jailGuardLure
+                )
                 // jailGuardLure.setVisible(false)
                 this.jailGuard.setTarget(this.jailGuardLure)
             }, 3000)
@@ -46,22 +47,26 @@ export default class JailBrawl {
     }
 
     initBrawl() {
-        Array.from({ length: 20 }, (x, i) => i + 1)
-            .map((count) => {
-                this.queueBrawlSound(count)
-            })
+        Array.from({ length: 20 }, (x, i) => i + 1).map(count => {
+            this.queueBrawlSound(count)
+        })
     }
 
     queueBrawlSound(count) {
-        const interval = ((Math.floor(Math.random() * 5) * 400)) + (count * 1000);
-        const soundIndex = (Math.floor(Math.random() * this.brawlSounds.length))
+        const interval = Math.floor(Math.random() * 5) * 400 + count * 1000
+        const soundIndex = Math.floor(Math.random() * this.brawlSounds.length)
 
         setTimeout(() => {
             const sound = Sound[this.brawlSounds[soundIndex]]
-            this.Locs.world.playSound(this.Locs.locations.jailBrawl, sound, 5, 1)
+            this.Locs.world.playSound(
+                this.Locs.locations.jailBrawl,
+                sound,
+                5,
+                1
+            )
 
             if (this.brawlSounds[soundIndex] == 'ENTITY_LIGHTNING_IMPACT') {
-                this.Locs.world.strikeLightning(this.Locs.locations.jailBrawl);
+                this.Locs.world.strikeLightning(this.Locs.locations.jailBrawl)
             }
         }, interval)
     }

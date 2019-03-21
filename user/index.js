@@ -13,7 +13,7 @@ var Users = {};
 // Example usage: `user(player).mct1.start()`
 function user(player) {
     if (!player) {
-        throw (new Error('No Player passed in!'));
+        throw new Error('No Player passed in!');
     }
     if (!Users[player.name]) {
         Users[player.name] = new user_1.default(player);

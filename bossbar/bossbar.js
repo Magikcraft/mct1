@@ -37,7 +37,7 @@ var NukkitColors = {
     GREEN: 3,
     YELLOW: 4,
     PURPLE: 5,
-    WHITE: 6
+    WHITE: 6,
 };
 var BossBarAPI = hasBukkitBossBar
     ? Java.type(environment.BUKKIT_BOSSBAR_TYPE)
@@ -50,11 +50,11 @@ exports.color = {
     PURPLE: BossBarAPI.Color.PURPLE,
     RED: BossBarAPI.Color.RED,
     WHITE: BossBarAPI.Color.WHITE,
-    YELLOW: BossBarAPI.Color.YELLOW
+    YELLOW: BossBarAPI.Color.YELLOW,
 };
 var Style = BossBarAPI.Style;
 exports.style = {
     NOTCHED_10: BossBarAPI.Style.NOTCHED_10,
     NOTCHED_12: BossBarAPI.Style.NOTCHED_12,
-    NOTCHED_20: BossBarAPI.Style.NOTCHED_20
+    NOTCHED_20: BossBarAPI.Style.NOTCHED_20,
 };

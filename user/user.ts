@@ -8,7 +8,7 @@ import * as tools from '@magikcraft/mct1/tools'
 import DB from './db'
 import PlayerInventory from './inventory'
 import PlayerEffects from './effects'
-import { user } from '@magikcraft/mct1/user';
+import { user } from '@magikcraft/mct1/user'
 import Follower from './follower'
 
 const GameMode = Java.type('org.bukkit.GameMode')
@@ -101,15 +101,21 @@ export default class User {
         const key = 'setRespawnAtSpawn'
         if (bool) {
             if (!this.events[key]) {
-                this.registerEvent('playerRespawn',
-                    (event) => {
+                this.registerEvent(
+                    'playerRespawn',
+                    event => {
                         if (event.player.name !== this.player.name) return
                         const spawn = this.getSpawn()
                         if (!spawn) {
                             // return
-                            event.setRespawnLocation(this.player.world.getSpawnLocation())
+                            event.setRespawnLocation(
+                                this.player.world.getSpawnLocation()
+                            )
                         } else {
-                            if (!teleportBetweenWorlds && this.player.world.name !== spawn.world.name) {
+                            if (
+                                !teleportBetweenWorlds &&
+                                this.player.world.name !== spawn.world.name
+                            ) {
                                 return
                             }
                             event.setRespawnLocation(spawn)
@@ -118,8 +124,7 @@ export default class User {
                     key
                 )
             }
-        }
-        else {
+        } else {
             if (this.events[key]) {
                 this.unregisterEvent(key)
             }
@@ -130,8 +135,9 @@ export default class User {
         const key = 'setGodMode'
         if (bool) {
             if (!this.events[key]) {
-                this.registerEvent('entityDamage',
-                    (event) => {
+                this.registerEvent(
+                    'entityDamage',
+                    event => {
                         if (event.entity.type != 'PLAYER') return
                         if (event.entity.name !== this.player.name) return
                         event.setCancelled(true)
@@ -139,8 +145,7 @@ export default class User {
                     key
                 )
             }
-        }
-        else {
+        } else {
             if (this.events[key]) {
                 this.unregisterEvent(key)
             }
@@ -174,7 +179,7 @@ export default class User {
         }
     }
 
-    setInterval = function (callback: any, interval: number, key?: string) {
+    setInterval = function(callback: any, interval: number, key?: string) {
         const k = key || tools.uuid()
         this.intervals[k] = setInterval(callback, interval)
     }

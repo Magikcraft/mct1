@@ -1,4 +1,4 @@
-import * as environment from '@magikcraft/mct1/utils/environment';
+import * as environment from '@magikcraft/mct1/utils/environment'
 
 export interface IBossBar {
     render()
@@ -38,7 +38,7 @@ export enum ChatColor {
     'STRIKETHROUGH' = JavaChatColor.STRIKETHROUGH,
     'UNDERLINE' = JavaChatColor.UNDERLINE,
     'WHITE' = JavaChatColor.WHITE,
-    'YELLOW' = JavaChatColor.YELLOW
+    'YELLOW' = JavaChatColor.YELLOW,
 }
 
 const NukkitColors = {
@@ -48,7 +48,7 @@ const NukkitColors = {
     GREEN: 3,
     YELLOW: 4,
     PURPLE: 5,
-    WHITE: 6
+    WHITE: 6,
 }
 
 const BossBarAPI = hasBukkitBossBar
@@ -63,12 +63,12 @@ export const color = {
     PURPLE: BossBarAPI.Color.PURPLE,
     RED: BossBarAPI.Color.RED,
     WHITE: BossBarAPI.Color.WHITE,
-    YELLOW: BossBarAPI.Color.YELLOW
+    YELLOW: BossBarAPI.Color.YELLOW,
 }
 
 const Style = BossBarAPI.Style
 export const style = {
     NOTCHED_10: BossBarAPI.Style.NOTCHED_10,
     NOTCHED_12: BossBarAPI.Style.NOTCHED_12,
-    NOTCHED_20: BossBarAPI.Style.NOTCHED_20
+    NOTCHED_20: BossBarAPI.Style.NOTCHED_20,
 }
