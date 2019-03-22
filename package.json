@@ -1,6 +1,6 @@
 {
     "name": "@magikcraft/mct1",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "Minecraft for Type 1 Diabetes",
     "main": "index.js",
     "scripts": {
@@ -41,7 +41,11 @@
     "lint-staged": {
         "*.{ts,js,json,css,md}": [
             "prettier --write",
+            "tsc",
             "git add"
         ]
+    },
+    "dependencies": {
+        "@scriptcraft/types": "^1.0.0"
     }
 }
