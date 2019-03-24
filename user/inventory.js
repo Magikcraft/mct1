@@ -79,8 +79,8 @@ var PlayerInventory = /** @class */ (function () {
     };
     PlayerInventory.prototype.getAllitemStacks = function () {
         var itemStacks = [];
-        for (var i_1 = 0; i_1 <= 40; i_1++) {
-            var itemStack = this.getItem(i_1) || undefined;
+        for (var i = 0; i <= 40; i++) {
+            var itemStack = this.getItem(i) || undefined;
             itemStacks.push(itemStack);
         }
         return itemStacks;

@@ -617,8 +617,8 @@ var Vector3 = /** @class */ (function () {
         }
         else {
             var vector = new Vector3(0, 0, 0, this.GetWorldsArray(vectors));
-            for (var i_1 = 0; i_1 < vectors.length; i_1++) {
-                vector = Vector3.Add(vector, vectors[i_1]);
+            for (var i = 0; i < vectors.length; i++) {
+                vector = Vector3.Add(vector, vectors[i]);
             }
             return Vector3.Divide(vector, vectors.length);
         }
