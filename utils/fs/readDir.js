@@ -8,9 +8,9 @@ function readDir(path) {
     var listOfFiles = folder.listFiles();
     var files = [];
     if (listOfFiles && listOfFiles.length) {
-        for (var i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                files.push(listOfFiles[i].getName());
+        for (var i_1 = 0; i_1 < listOfFiles.length; i_1++) {
+            if (listOfFiles[i_1].isFile()) {
+                files.push(listOfFiles[i_1].getName());
             }
         }
     }

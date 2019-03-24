@@ -145,9 +145,9 @@ function putItemsInChest(chestBlockLocation, itemStacks, randomSlots) {
     if (randomSlots) {
         var shuffleArray = function (array) {
             var _a;
-            for (var i = array.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                _a = [array[j], array[i]], array[i] = _a[0], array[j] = _a[1];
+            for (var i_1 = array.length - 1; i_1 > 0; i_1--) {
+                var j = Math.floor(Math.random() * (i_1 + 1));
+                _a = [array[j], array[i_1]], array[i_1] = _a[0], array[j] = _a[1];
             }
             return array;
         };
