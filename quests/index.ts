@@ -94,7 +94,7 @@ async function cloneWorld(worldName: string, templateWorldName: string) {
     }
     const world = utils.world(worldName)
     log(`World clone complete for ${worldName}`)
-    return new Promise(resolve => setTimeout(() => resolve(world), 1))
+    return new Promise(resolve => setTimeout(() => resolve(world), 100))
 }
 
 function createQuest({ questName, player, world, opts }) {
