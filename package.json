@@ -36,9 +36,7 @@
         "lint-staged": "^8.1.5"
     },
     "husky": {
-        "hooks": {
-            "pre-commit": "tsc && lint-staged && git add"
-        }
+        "hooks": {}
     },
     "lint-staged": {
         "*.{ts,js,json,css,md}": [
