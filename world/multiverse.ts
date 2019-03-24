@@ -1,12 +1,5 @@
 import { Logger } from '../log'
 const log = Logger(__filename)
-// export function Multiverse() {
-
-// }
-
-// const Multiverse = __plugin.server
-//         .getPluginManager()
-//         .getPlugin('Multiverse-Core')
 
 interface MultiverseCore {
     cloneWorld(
@@ -14,22 +7,22 @@ interface MultiverseCore {
         worldName: string,
         mode: 'normal'
     ): BukkitWorld
-    deleteWorld(worldName: string)
     getMVWorldManager(): WorldManager
 }
 
 interface WorldManager {
-    cloneWorld(source: string, target: string)
     deleteWorld(
         worldName: string,
         removeFromConfig: boolean,
         deleteWorldFolder: boolean
     )
-    unloadWorld(name: string)
 }
 
-export const Multiverse = (): MultiverseCore =>
+const Multiverse = (): MultiverseCore =>
     __plugin.server.getPluginManager().getPlugin('Multiverse-Core')
+
+export const cloneWorld = (source: string, target: string) =>
+    Multiverse().cloneWorld(source, target, 'normal')
 
 export const destroyWorld = (name: string) =>
     new Promise(resolve => {

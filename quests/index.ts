@@ -1,9 +1,8 @@
 import { Logger } from '@magikcraft/mct1/log'
 import * as server from '@magikcraft/mct1/utils/server'
-import { Multiverse } from '@magikcraft/mct1/world/multiverse'
+import * as Multiverse from '@magikcraft/mct1/world/multiverse'
 import { QuestConfig } from 'quests/Quest'
 import * as utils from 'utils'
-import { destroyWorld } from './../world/multiverse'
 
 const log = Logger(__filename)
 
@@ -82,18 +81,14 @@ function importWorld(templateWorldName: string) {
 
 async function deleteWorld(worldName: string) {
     log(`Deleting ./${worldName}`)
-    await destroyWorld(worldName)
+    await Multiverse.destroyWorld(worldName)
 }
 
 async function cloneWorld(worldName: string, templateWorldName: string) {
     await deleteWorld(worldName)
     log(`Cloning ${worldName}`)
     server.executeCommand(`mv import ${templateWorldName} normal`)
-    const success = Multiverse().cloneWorld(
-        templateWorldName,
-        worldName,
-        'normal'
-    )
+    const success = Multiverse.cloneWorld(templateWorldName, worldName)
     if (!success) {
         return log(`Failed to clone world ${templateWorldName}`)
     }

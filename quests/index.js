@@ -37,9 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("@magikcraft/mct1/log");
 var server = require("@magikcraft/mct1/utils/server");
-var multiverse_1 = require("@magikcraft/mct1/world/multiverse");
+var Multiverse = require("@magikcraft/mct1/world/multiverse");
 var utils = require("utils");
-var multiverse_2 = require("./../world/multiverse");
 var log = log_1.Logger(__filename);
 var quests = {
     mct1: {
@@ -114,7 +113,7 @@ function deleteWorld(worldName) {
             switch (_a.label) {
                 case 0:
                     log("Deleting ./" + worldName);
-                    return [4 /*yield*/, multiverse_2.destroyWorld(worldName)];
+                    return [4 /*yield*/, Multiverse.destroyWorld(worldName)];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];
@@ -132,7 +131,7 @@ function cloneWorld(worldName, templateWorldName) {
                     _a.sent();
                     log("Cloning " + worldName);
                     server.executeCommand("mv import " + templateWorldName + " normal");
-                    success = multiverse_1.Multiverse().cloneWorld(templateWorldName, worldName, 'normal');
+                    success = Multiverse.cloneWorld(templateWorldName, worldName);
                     if (!success) {
                         return [2 /*return*/, log("Failed to clone world " + templateWorldName)];
                     }
