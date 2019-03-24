@@ -35,18 +35,19 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint-staged"
+            "pre-commit": "tsc && lint-staged && git add"
         }
     },
     "lint-staged": {
         "*.{ts,js,json,css,md}": [
             "prettier --write",
-            "tsc",
             "git add"
         ]
     },
     "dependencies": {
-        "@scriptcraft/types": "^1.0.0"
+        "@scriptcraft/types": "^1.0.0",
+        "lint-staged": "^8.1.5",
+        "save-dev": "^2.0.0"
     },
     "config": {
         "access": "public"

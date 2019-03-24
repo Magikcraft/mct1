@@ -26,7 +26,7 @@ git clone https://github.com/Magikcraft/mct1-worlds.git
 1. Start them in docker:
 
 ```bash
-docker run -it -p 25565:25565 \
+docker run -it -p 25565:25565 --name mct1 \
 --mount type=bind,src=$(pwd)/mct1-worlds,dst=/server/worlds \
 --mount source=scriptcraft-cache,target=/server/cache \
 --mount type=bind,src=$(pwd)/mct1,dst=/server/scriptcraft-plugins/@magikcraft/mct1 \

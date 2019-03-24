@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("@magikcraft/mct1/log");
+var MobTools = require("@magikcraft/mct1/mobs");
 var log = log_1.Logger(__filename);
 var Sound = Java.type('org.bukkit.Sound');
-var MobTools = require("@magikcraft/mct1/mobs");
 var JailBrawl = /** @class */ (function () {
     function JailBrawl(Locs, jailGuard) {
         this.brawlSounds = [
-            'ENTITY_LIGHTNING_IMPACT',
-            'ENTITY_LIGHTNING_IMPACT',
-            'ENTITY_LIGHTNING_IMPACT',
-            'ENTITY_ENDERDRAGON_FIREBALL_EXPLODE',
+            'ENTITY_LIGHTNING_BOLT_IMPACT',
+            'ENTITY_LIGHTNING_BOLT_IMPACT',
+            'ENTITY_LIGHTNING_BOLT_IMPACT',
+            'ENTITY_DRAGON_FIREBALL_EXPLODE',
             'ENTITY_WITHER_SKELETON_HURT',
             'ENTITY_WOLF_GROWL',
             'ENTITY_WOLF_GROWL',
