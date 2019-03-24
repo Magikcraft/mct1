@@ -1,19 +1,18 @@
 import { Logger } from '@magikcraft/mct1/log'
+import * as MobTools from '@magikcraft/mct1/mobs'
 const log = Logger(__filename)
 
 const Sound = Java.type('org.bukkit.Sound')
-
-import * as MobTools from '@magikcraft/mct1/mobs'
 
 export default class JailBrawl {
     log: any
     jailGuard: any
     jailGuardLure: any
     brawlSounds = [
-        'ENTITY_LIGHTNING_IMPACT',
-        'ENTITY_LIGHTNING_IMPACT',
-        'ENTITY_LIGHTNING_IMPACT',
-        'ENTITY_ENDERDRAGON_FIREBALL_EXPLODE',
+        'ENTITY_LIGHTNING_BOLT_IMPACT',
+        'ENTITY_LIGHTNING_BOLT_IMPACT',
+        'ENTITY_LIGHTNING_BOLT_IMPACT',
+        'ENTITY_DRAGON_FIREBALL_EXPLODE',
         'ENTITY_WITHER_SKELETON_HURT',
         'ENTITY_WOLF_GROWL',
         'ENTITY_WOLF_GROWL',

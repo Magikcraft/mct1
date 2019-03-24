@@ -32,7 +32,7 @@ Start your TypeScript watch compile in the `mct1` directory:
 
 Now compose the worlds and the MCT1 SMA plugin using docker:
 
-    docker run -it -p 25565:25565 \
+    docker run -it -p 25565:25565 --name mct1 \
         --mount type=bind,src=$(pwd)/mct1-worlds,dst=/server/worlds \
         --mount source=scriptcraft-cache,target=/server/cache \
         --mount type=bind,src=$(pwd)/mct1,dst=/server/scriptcraft-plugins/@magikcraft/mct1 \
@@ -40,14 +40,22 @@ Now compose the worlds and the MCT1 SMA plugin using docker:
 
 ## Scriptcraft Typings
 
-As you require Scriptcraft modules that have not been used before, TS will complain that they cannot be found.
-
-Have a look in `__types__/typings` for examples of declarations that bring it in as `any` (like `items.d.ts`) and strongly typed (like `events.d.ts` or `utils.d.ts`).
-
-Eventually will make refactor these out and make a `@types/scriptcraft` module that can be reused in any SMA plugin.
+Scriptcraft typings are via the @scriptcraft/types package.
 
 ## Code Style
 
 The project has prettier configured to automatically format code on commit.
+
+Make sure that you run `npm i` to get these tools.
+
+Also, if you use VS Code, we recommend adding this to your `settings.json`:
+
+```json
+"editor.codeActionsOnSave": {
+    "source.organizeImports": true
+}
+```
+
+### Guidelines
 
 Always use `import`, and only ever use `require` if it has a side-effect. This allows TypeScript to reason about the code.
