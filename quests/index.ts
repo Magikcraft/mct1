@@ -1,9 +1,7 @@
-import { Multiverse } from '@magikcraft/mct1/world/multiverse'
-import * as fs from '@magikcraft/mct1/utils/fs'
 import { Logger } from '@magikcraft/mct1/log'
 import * as server from '@magikcraft/mct1/utils/server'
+import * as Multiverse from '@magikcraft/mct1/world/multiverse'
 import { QuestConfig } from 'quests/Quest'
-
 import * as utils from 'utils'
 
 const log = Logger(__filename)
@@ -83,33 +81,20 @@ function importWorld(templateWorldName: string) {
 
 async function deleteWorld(worldName: string) {
     log(`Deleting ./${worldName}`)
-    const w = utils.world(worldName)
-    const worldFilePath = w
-        ? w.getWorldFolder().getPath()
-        : `worlds/${worldName}`
-    Multiverse().deleteWorld(worldName)
-    if (fs.exists(worldFilePath)) {
-        log(`Removing file ${worldFilePath}...`)
-        fs.remove(worldFilePath)
-    }
-    return worldName
+    await Multiverse.destroyWorld(worldName)
 }
 
 async function cloneWorld(worldName: string, templateWorldName: string) {
     await deleteWorld(worldName)
     log(`Cloning ${worldName}`)
     server.executeCommand(`mv import ${templateWorldName} normal`)
-    const success = Multiverse().cloneWorld(
-        templateWorldName,
-        worldName,
-        'normal'
-    )
+    const success = Multiverse.cloneWorld(templateWorldName, worldName)
     if (!success) {
         return log(`Failed to clone world ${templateWorldName}`)
     }
     const world = utils.world(worldName)
     log(`World clone complete for ${worldName}`)
-    return world
+    return new Promise(resolve => setTimeout(() => resolve(world), 1))
 }
 
 function createQuest({ questName, player, world, opts }) {
