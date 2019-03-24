@@ -35,10 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var multiverse_1 = require("@magikcraft/mct1/world/multiverse");
-var fs = require("@magikcraft/mct1/utils/fs");
 var log_1 = require("@magikcraft/mct1/log");
 var server = require("@magikcraft/mct1/utils/server");
+var Multiverse = require("@magikcraft/mct1/world/multiverse");
 var utils = require("utils");
 var log = log_1.Logger(__filename);
 var quests = {
@@ -110,19 +109,15 @@ function importWorld(templateWorldName) {
 }
 function deleteWorld(worldName) {
     return __awaiter(this, void 0, void 0, function () {
-        var w, worldFilePath;
         return __generator(this, function (_a) {
-            log("Deleting ./" + worldName);
-            w = utils.world(worldName);
-            worldFilePath = w
-                ? w.getWorldFolder().getPath()
-                : "worlds/" + worldName;
-            multiverse_1.Multiverse().deleteWorld(worldName);
-            if (fs.exists(worldFilePath)) {
-                log("Removing file " + worldFilePath + "...");
-                fs.remove(worldFilePath);
+            switch (_a.label) {
+                case 0:
+                    log("Deleting ./" + worldName);
+                    return [4 /*yield*/, Multiverse.destroyWorld(worldName)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
             }
-            return [2 /*return*/, worldName];
         });
     });
 }
@@ -136,13 +131,13 @@ function cloneWorld(worldName, templateWorldName) {
                     _a.sent();
                     log("Cloning " + worldName);
                     server.executeCommand("mv import " + templateWorldName + " normal");
-                    success = multiverse_1.Multiverse().cloneWorld(templateWorldName, worldName, 'normal');
+                    success = Multiverse.cloneWorld(templateWorldName, worldName);
                     if (!success) {
                         return [2 /*return*/, log("Failed to clone world " + templateWorldName)];
                     }
                     world = utils.world(worldName);
                     log("World clone complete for " + worldName);
-                    return [2 /*return*/, world];
+                    return [2 /*return*/, new Promise(function (resolve) { return setTimeout(function () { return resolve(world); }, 1); })];
             }
         });
     });
