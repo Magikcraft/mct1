@@ -305,6 +305,7 @@ var QuestMCT1 = /** @class */ (function (_super) {
         user_1.user(player).mct1.start();
         user_1.user(player).mct1.setInfiniteInsulin(true);
         log('setInfiniteInsulin');
+        world_1.worldly(world).killAllMobs();
         world_1.worldly(world).setNight();
         world_1.worldly(world).setStorm();
         world_1.worldly(world).preventMobSpawning(['HUSK']);

@@ -80,6 +80,14 @@ export default class World {
     setStorm = () => this.world.setThundering(true) || this.world.setStorm(true)
     setRain = () => this.world.setStorm(true)
 
+    killAllMobs() {
+        this.world.getEntities().forEach(e => {
+            if (e.type != 'PLAYER') {
+                e.remove()
+            }
+        })
+    }
+
     setChunkBiome(loc, biome: string) {
         const chunk = this.world.getChunkAt(loc)
         for (let x = 0; x < 16; x++) {
@@ -146,13 +154,22 @@ export default class World {
         this.registerEvent(
             'creatureSpawn',
             event => {
-                if (event.entity.world.name !== this.world.name) return
+                if (event.entity.world.name !== this.world.name) {
+                    return
+                }
                 const mobType = event.entity.type.toString()
-                if (except.includes(mobType)) return
-                const isMonster =
-                    event.entity instanceof
-                    Java.type('org.bukkit.entity.Monster')
-                if (!isMonster) return
+                if (except.includes(mobType)) {
+                    return
+                }
+
+                const isMonster = event.entity instanceof Java.type('org.bukkit.entity.Monster')
+                const otherMonsterTypes = [
+                    'SLIME',
+                ]
+                
+                if (!isMonster && !otherMonsterTypes.includes(event.entity.type.toString())) {
+                    return
+                }
                 event.setCancelled(true)
             },
             'preventMobSpawning'

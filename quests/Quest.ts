@@ -351,6 +351,7 @@ export class QuestMCT1 extends QuestBase {
         user(player).mct1.setInfiniteInsulin(true)
         log('setInfiniteInsulin')
 
+        worldly(world).killAllMobs()
         worldly(world).setNight()
         worldly(world).setStorm()
         worldly(world).preventMobSpawning(['HUSK'])
