@@ -411,9 +411,9 @@ export class QuestMCT1 extends QuestBase {
             const reg = this.endGateRegion
             questTools.replaceRegion(reg[0], reg[1], 'AIR')
             questTools.playEffectInRegion(reg[0], reg[1], 'DRAGON_BREATH')
-            this.setInterval(() => {
-                questTools.playEffectInRegion(reg[0], reg[1], 'PORTAL')
-            }, 500)
+            // this.setInterval(() => {
+            //     questTools.playEffectInRegion(reg[0], reg[1], 'PORTAL')
+            // }, 500)
         }
     }
 
