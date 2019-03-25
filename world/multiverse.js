@@ -37,43 +37,75 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils = require("utils");
 var log_1 = require("../log");
+var fs = require("../utils/fs");
 var log = log_1.Logger(__filename);
 var server = __plugin.server;
-var Multiverse = function () {
-    return server.getPluginManager().getPlugin('Multiverse-Core');
-};
-exports.destroyWorld = function (name) {
-    return new Promise(function (resolve) {
+var MultiverseInterface = /** @class */ (function () {
+    function MultiverseInterface() {
+        this.multiversePlugin = server
+            .getPluginManager()
+            .getPlugin('Multiverse-Core');
+        if (!this.multiversePlugin) {
+            throw new Error('Multiverse-Core plugin not found! Is it installed on this server?');
+        }
+        this.worldmanager = this.multiversePlugin.getMVWorldManager();
+    }
+    MultiverseInterface.prototype.destroyWorld = function (name) {
         log("Time I Am, Destroyer of Worlds: destroying " + name);
-        Multiverse()
-            .getMVWorldManager()
-            .deleteWorld(name, true, true);
-        resolve();
-    });
-};
-function importWorld(templateWorldName) {
-    server.executeCommand("mv import " + templateWorldName + " normal");
-}
-exports.importWorld = importWorld;
-function cloneWorld(worldName, templateWorldName) {
-    return __awaiter(this, void 0, void 0, function () {
-        var success, world;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, exports.destroyWorld(worldName)];
-                case 1:
-                    _a.sent();
-                    log("Cloning " + worldName);
-                    server.executeCommand("mv import " + templateWorldName + " normal");
-                    success = Multiverse().cloneWorld(templateWorldName, worldName, 'normal');
-                    if (!success) {
-                        return [2 /*return*/, log("Failed to clone world " + templateWorldName)];
-                    }
-                    world = utils.world(worldName);
-                    log("World clone complete for " + worldName);
-                    return [2 /*return*/, new Promise(function (resolve) { return setTimeout(function () { return resolve(world); }, 1); })];
-            }
+        if (this.worldmanager.getMVWorld(name)) {
+            this.worldmanager.deleteWorld(name, true, true);
+        }
+        if (this.worldExistsOnDisk(name)) {
+            fs.remove(this.getWorldPath(name));
+        }
+    };
+    MultiverseInterface.prototype.importWorld = function (worldName) {
+        var worldAlreadyImported = this.worldmanager.getMVWorld(worldName);
+        if (worldAlreadyImported) {
+            return utils.world(worldName);
+        }
+        if (!this.worldExistsOnDisk(worldName)) {
+            log("Cannot import world " + worldName + ": file not found");
+            return;
+        }
+        server.executeCommand("mv import " + worldName + " normal");
+        return utils.world(worldName);
+    };
+    MultiverseInterface.prototype.cloneWorld = function (worldName, templateWorldName) {
+        return __awaiter(this, void 0, void 0, function () {
+            var imported, cloned, world;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.destroyWorld(worldName)];
+                    case 1:
+                        _a.sent();
+                        log("Cloning " + worldName);
+                        imported = this.importWorld(templateWorldName);
+                        if (!imported) {
+                            log("Cannot clone " + worldName + ". " + templateWorldName + " not found.");
+                            return [2 /*return*/];
+                        }
+                        cloned = this.multiversePlugin.cloneWorld(templateWorldName, worldName, 'normal');
+                        if (!cloned) {
+                            log("Failed to clone world " + templateWorldName);
+                            return [2 /*return*/];
+                        }
+                        world = utils.world(worldName);
+                        log("World clone complete for " + worldName);
+                        return [2 /*return*/, new Promise(function (resolve) { return setTimeout(function () { return resolve(world); }, 1); })];
+                }
+            });
         });
-    });
-}
-exports.cloneWorld = cloneWorld;
+    };
+    MultiverseInterface.prototype.worldExistsOnDisk = function (worldName) {
+        var path = this.getWorldPath(worldName);
+        return fs.exists(path);
+    };
+    MultiverseInterface.prototype.getWorldPath = function (worldName) {
+        var worldDir = server.getWorldContainer();
+        var path = worldDir + "/" + worldName;
+        return path;
+    };
+    return MultiverseInterface;
+}());
+exports.multiverse = new MultiverseInterface();

@@ -1,5 +1,5 @@
 import { Logger } from '@magikcraft/mct1/log'
-import * as Multiverse from '@magikcraft/mct1/world/multiverse'
+import { multiverse } from '@magikcraft/mct1/world/multiverse'
 import { QuestConfig } from 'quests/Quest'
 
 const log = Logger(__filename)
@@ -99,20 +99,21 @@ async function doCommand(
     switch (method) {
         case 'start':
             echo(player, `Starting quest ${questName}...`)
-            const world = await Multiverse.cloneWorld(
+            log(`Starting quest ${questName} for ${player}`)
+            const world = await multiverse.cloneWorld(
                 worldName,
                 templateWorldName
             )
             createQuest({ opts, player, questName, world }).start()
             break
         case 'import':
-            Multiverse.importWorld(templateWorldName)
+            multiverse.importWorld(templateWorldName)
             break
         case 'stop':
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.
-            await Multiverse.destroyWorld(worldName)
+            await multiverse.destroyWorld(worldName)
             break
     }
 }

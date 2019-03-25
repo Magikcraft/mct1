@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("@magikcraft/mct1/log");
-var Multiverse = require("@magikcraft/mct1/world/multiverse");
+var multiverse_1 = require("@magikcraft/mct1/world/multiverse");
 var log = log_1.Logger(__filename);
 var quests = {
     mct1: {
@@ -130,19 +130,20 @@ function doCommand(worldName, templateWorldName, questName, player, method, opts
                     return [3 /*break*/, 6];
                 case 1:
                     echo(player, "Starting quest " + questName + "...");
-                    return [4 /*yield*/, Multiverse.cloneWorld(worldName, templateWorldName)];
+                    log("Starting quest " + questName + " for " + player);
+                    return [4 /*yield*/, multiverse_1.multiverse.cloneWorld(worldName, templateWorldName)];
                 case 2:
                     world = _b.sent();
                     createQuest({ opts: opts, player: player, questName: questName, world: world }).start();
                     return [3 /*break*/, 6];
                 case 3:
-                    Multiverse.importWorld(templateWorldName);
+                    multiverse_1.multiverse.importWorld(templateWorldName);
                     return [3 /*break*/, 6];
                 case 4: 
                 // Deleting the world kicks the player from the world
                 // This triggers the playerChangedWorld event, which calls the stop() method
                 // of the quest object, doing quest cleanup.
-                return [4 /*yield*/, Multiverse.destroyWorld(worldName)];
+                return [4 /*yield*/, multiverse_1.multiverse.destroyWorld(worldName)];
                 case 5:
                     // Deleting the world kicks the player from the world
                     // This triggers the playerChangedWorld event, which calls the stop() method
