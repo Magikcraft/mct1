@@ -1,8 +1,8 @@
+import { worldDelete } from '@magikcraft/mct1/world/index'
 import * as utils from 'utils'
 import { Logger } from '../log'
 import * as fs from '../utils/fs'
 import { executeCommand } from './../utils/server'
-
 const log = Logger(__filename)
 
 const server = __plugin.server
@@ -32,6 +32,7 @@ class MultiverseInterface {
         } else {
             setTimeout(() => log('Oh yeah, it was deleted.'), 5000)
         }
+        worldDelete(name)
     }
 
     public importWorld(worldName: string) {

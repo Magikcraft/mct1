@@ -35,6 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var index_1 = require("@magikcraft/mct1/world/index");
 var utils = require("utils");
 var log_1 = require("../log");
 var fs = require("../utils/fs");
@@ -62,6 +63,7 @@ var MultiverseInterface = /** @class */ (function () {
         else {
             setTimeout(function () { return log('Oh yeah, it was deleted.'); }, 5000);
         }
+        index_1.worldDelete(name);
     };
     MultiverseInterface.prototype.importWorld = function (worldName) {
         log('Checking if world already imported', worldName);
