@@ -13,9 +13,11 @@ const intervalModifier = 60000 // Useful for testing!
 
 export default class QuestMCT1Prologue extends QuestMCT1 {
     wither: any
+    isUSA: boolean = false
 
     constructor(conf: QuestConfig) {
         super(conf)
+        this.isUSA = (conf.options.units || 'mmolL').toLowerCase() === 'mgdl'
         this.Locs = Locations.getLocations(this.world)
         this.state = {
             hasMCT1: false,
@@ -35,6 +37,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         user(player).mct1.setInfiniteInsulin(false)
         user(player).mct1.setFoodLevel(20)
         user(player).mct1.setHealth(20)
+        user(player).mct1.isUSA = this.isUSA
         user(player).mct1.stop()
 
         worldly(world).setDawn()

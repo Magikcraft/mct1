@@ -1,14 +1,14 @@
-import * as events from 'events'
-import * as inventory from 'inventory'
-import * as items from 'items'
-
 import { BossBar } from '@magikcraft/mct1/bossbar'
 import { IBossBar } from '@magikcraft/mct1/bossbar/bossbar'
 import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
-
+import { user } from '@magikcraft/mct1/user'
+import * as events from 'events'
+import * as inventory from 'inventory'
+import * as items from 'items'
 import { activityCosts, activityTypes } from './activities'
 import foods from './foods'
+
+const log = Logger(__filename)
 
 const Color = Java.type('org.bukkit.Color')
 
@@ -16,8 +16,6 @@ const Food: any = {}
 foods.forEach(item => (Food[item.type] = item))
 
 let _bar: IBossBar
-
-import { user } from '@magikcraft/mct1/user'
 
 export class MCT1 {
     player: BukkitPlayer
@@ -147,9 +145,6 @@ export class MCT1 {
     }
 
     setSuperCharged(bool: boolean) {
-        const server = __plugin.server
-        const sender = __plugin.server.consoleSender
-
         if (bool) {
             // this.cancelNegativeEffects()
             // this.cancelSuperPowers()

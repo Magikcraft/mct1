@@ -1,12 +1,12 @@
-import { questCommand } from '@magikcraft/mct1/quests'
 import { Logger } from '@magikcraft/mct1/log'
-import { worldly } from '@magikcraft/mct1/world'
-import { user } from '@magikcraft/mct1/user'
-import { Inventories } from '@magikcraft/mct1/quests/mct1/inventories'
+import { questCommand } from '@magikcraft/mct1/quests'
 import { ChestItems } from '@magikcraft/mct1/quests/mct1/chest-items'
-import * as tools from '@magikcraft/mct1/tools'
-import * as events from 'events'
+import { Inventories } from '@magikcraft/mct1/quests/mct1/inventories'
 import * as questTools from '@magikcraft/mct1/quests/quest-tools'
+import * as tools from '@magikcraft/mct1/tools'
+import { user } from '@magikcraft/mct1/user'
+import { worldly } from '@magikcraft/mct1/world'
+import * as events from 'events'
 import DB from './db'
 
 export type QuestMode = 'single' | 'multi'
@@ -14,6 +14,7 @@ export interface QuestOptions {
     mode: QuestMode
     /** When set to true, this.debug will print to log */
     verbose?: boolean
+    units: 'mgdL' | 'mmolL'
 }
 export interface QuestConfig {
     name: string
