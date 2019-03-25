@@ -1,6 +1,7 @@
 import * as utils from 'utils'
 import { Logger } from '../log'
 import * as fs from '../utils/fs'
+import { executeCommand } from './../utils/server'
 
 const log = Logger(__filename)
 
@@ -28,10 +29,13 @@ class MultiverseInterface {
         }
         if (this.worldExistsOnDisk(name)) {
             fs.remove(this.getWorldPath(name))
+        } else {
+            setTimeout(() => log('Oh yeah, it was deleted.'), 5000)
         }
     }
 
     public importWorld(worldName: string) {
+        log('Checking if world already imported', worldName)
         const worldAlreadyImported = this.worldmanager.getMVWorld(worldName)
         if (worldAlreadyImported) {
             return utils.world(worldName)
@@ -39,7 +43,7 @@ class MultiverseInterface {
         if (!this.worldExistsOnDisk(worldName)) {
             throw new Error(`Cannot import world ${worldName}: file not found`)
         }
-        server.executeCommand(`mv import ${worldName} normal`)
+        executeCommand(`mv import ${worldName} normal`)
         return utils.world(worldName)
     }
 
@@ -72,7 +76,7 @@ class MultiverseInterface {
 
     private getWorldPath(worldName: string) {
         const worldDir = server.getWorldContainer()
-        const path = `${worldDir}/${worldName}`
+        const path = `./${worldDir}/${worldName}`
         return path
     }
 }

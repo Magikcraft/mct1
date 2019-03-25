@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var utils = require("utils");
 var log_1 = require("../log");
 var fs = require("../utils/fs");
+var server_1 = require("./../utils/server");
 var log = log_1.Logger(__filename);
 var server = __plugin.server;
 var MultiverseInterface = /** @class */ (function () {
@@ -58,8 +59,12 @@ var MultiverseInterface = /** @class */ (function () {
         if (this.worldExistsOnDisk(name)) {
             fs.remove(this.getWorldPath(name));
         }
+        else {
+            setTimeout(function () { return log('Oh yeah, it was deleted.'); }, 5000);
+        }
     };
     MultiverseInterface.prototype.importWorld = function (worldName) {
+        log('Checking if world already imported', worldName);
         var worldAlreadyImported = this.worldmanager.getMVWorld(worldName);
         if (worldAlreadyImported) {
             return utils.world(worldName);
@@ -67,7 +72,7 @@ var MultiverseInterface = /** @class */ (function () {
         if (!this.worldExistsOnDisk(worldName)) {
             throw new Error("Cannot import world " + worldName + ": file not found");
         }
-        server.executeCommand("mv import " + worldName + " normal");
+        server_1.executeCommand("mv import " + worldName + " normal");
         return utils.world(worldName);
     };
     MultiverseInterface.prototype.cloneWorld = function (worldName, templateWorldName) {
@@ -102,7 +107,7 @@ var MultiverseInterface = /** @class */ (function () {
     };
     MultiverseInterface.prototype.getWorldPath = function (worldName) {
         var worldDir = server.getWorldContainer();
-        var path = worldDir + "/" + worldName;
+        var path = "./" + worldDir + "/" + worldName;
         return path;
     };
     return MultiverseInterface;
