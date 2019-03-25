@@ -2,7 +2,6 @@ import * as utils from 'utils'
 import { Logger } from '../log'
 import * as fs from '../utils/fs'
 import * as server from '../utils/server'
-import { worldlyDelete, worldly } from './index'
 
 const log = Logger(__filename)
 
@@ -26,7 +25,6 @@ class MultiverseClass {
         const world = utils.world(worldName)
         if (world) {
             log(`Deleting world ${worldName} from registry...`)
-            worldlyDelete(world)
             this.worldmanager.deleteWorld(worldName, true, true)
             log(`Done.`)
         }

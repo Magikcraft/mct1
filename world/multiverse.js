@@ -39,7 +39,6 @@ var utils = require("utils");
 var log_1 = require("../log");
 var fs = require("../utils/fs");
 var server = require("../utils/server");
-var index_1 = require("./index");
 var log = log_1.Logger(__filename);
 // https://github.com/Multiverse/Multiverse-Core
 var MultiverseClass = /** @class */ (function () {
@@ -58,7 +57,6 @@ var MultiverseClass = /** @class */ (function () {
                 world = utils.world(worldName);
                 if (world) {
                     log("Deleting world " + worldName + " from registry...");
-                    index_1.worldlyDelete(world);
                     this.worldmanager.deleteWorld(worldName, true, true);
                     log("Done.");
                 }
