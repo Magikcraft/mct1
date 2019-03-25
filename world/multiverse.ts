@@ -37,8 +37,7 @@ class MultiverseInterface {
             return utils.world(worldName)
         }
         if (!this.worldExistsOnDisk(worldName)) {
-            log(`Cannot import world ${worldName}: file not found`)
-            return
+            throw new Error(`Cannot import world ${worldName}: file not found`)
         }
         server.executeCommand(`mv import ${worldName} normal`)
         return utils.world(worldName)
