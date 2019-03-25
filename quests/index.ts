@@ -1,8 +1,6 @@
 import { Logger } from '@magikcraft/mct1/log'
-import * as server from '@magikcraft/mct1/utils/server'
 import * as Multiverse from '@magikcraft/mct1/world/multiverse'
 import { QuestConfig } from 'quests/Quest'
-import * as utils from 'utils'
 
 const log = Logger(__filename)
 
@@ -75,28 +73,6 @@ export function questCommand(questName, method, player, opts) {
     doCommand(worldName, templateWorldName, questName, player, method, opts)
 }
 
-function importWorld(templateWorldName: string) {
-    server.executeCommand(`mv import ${templateWorldName} normal`)
-}
-
-async function deleteWorld(worldName: string) {
-    log(`Deleting ./${worldName}`)
-    await Multiverse.destroyWorld(worldName)
-}
-
-async function cloneWorld(worldName: string, templateWorldName: string) {
-    await deleteWorld(worldName)
-    log(`Cloning ${worldName}`)
-    server.executeCommand(`mv import ${templateWorldName} normal`)
-    const success = Multiverse.cloneWorld(templateWorldName, worldName)
-    if (!success) {
-        return log(`Failed to clone world ${templateWorldName}`)
-    }
-    const world = utils.world(worldName)
-    log(`World clone complete for ${worldName}`)
-    return new Promise(resolve => setTimeout(() => resolve(world), 100))
-}
-
 function createQuest({ questName, player, world, opts }) {
     const QuestClass = require(quests[questName].filePath).default
 
@@ -123,17 +99,20 @@ async function doCommand(
     switch (method) {
         case 'start':
             echo(player, `Starting quest ${questName}...`)
-            const world = await cloneWorld(worldName, templateWorldName)
+            const world = await Multiverse.cloneWorld(
+                worldName,
+                templateWorldName
+            )
             createQuest({ opts, player, questName, world }).start()
             break
         case 'import':
-            importWorld(templateWorldName)
+            Multiverse.importWorld(templateWorldName)
             break
         case 'stop':
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.
-            await deleteWorld(worldName)
+            await Multiverse.destroyWorld(worldName)
             break
     }
 }

@@ -1,6 +1,41 @@
+import * as utils from 'utils'
 import { Logger } from '../log'
-import * as fs from '../utils/fs'
 const log = Logger(__filename)
+
+const server = __plugin.server
+
+const Multiverse = (): MultiverseCore =>
+    server.getPluginManager().getPlugin('Multiverse-Core')
+
+export const destroyWorld = (name: string) =>
+    new Promise(resolve => {
+        log(`Time I Am, Destroyer of Worlds: destroying ${name}`)
+        Multiverse()
+            .getMVWorldManager()
+            .deleteWorld(name, true, true)
+        resolve()
+    })
+
+export function importWorld(templateWorldName: string) {
+    server.executeCommand(`mv import ${templateWorldName} normal`)
+}
+
+export async function cloneWorld(worldName: string, templateWorldName: string) {
+    await destroyWorld(worldName)
+    log(`Cloning ${worldName}`)
+    server.executeCommand(`mv import ${templateWorldName} normal`)
+    const success = Multiverse().cloneWorld(
+        templateWorldName,
+        worldName,
+        'normal'
+    )
+    if (!success) {
+        return log(`Failed to clone world ${templateWorldName}`)
+    }
+    const world = utils.world(worldName)
+    log(`World clone complete for ${worldName}`)
+    return new Promise(resolve => setTimeout(() => resolve(world), 1))
+}
 
 interface MultiverseCore {
     cloneWorld(
@@ -18,25 +53,3 @@ interface WorldManager {
         deleteWorldFolder: boolean
     )
 }
-
-const Multiverse = (): MultiverseCore =>
-    __plugin.server.getPluginManager().getPlugin('Multiverse-Core')
-
-const getWorldContainer = () => __plugin.server.getWorldContainer()
-
-export const cloneWorld = (source: string, target: string) =>
-    Multiverse().cloneWorld(source, target, 'normal')
-
-export const destroyWorld = (name: string) =>
-    new Promise(resolve => {
-        log('Time I Am, Destroyer of Worlds')
-        Multiverse()
-            .getMVWorldManager()
-            .deleteWorld(name, true, true)
-        const worldFilePath = getWorldContainer() + `/${name}`
-        if (fs.exists(worldFilePath)) {
-            log(`Removing folder ${worldFilePath}...`)
-            fs.remove(worldFilePath)
-        }
-        resolve()
-    })
