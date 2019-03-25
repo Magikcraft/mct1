@@ -36,9 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("@magikcraft/mct1/log");
-var server = require("@magikcraft/mct1/utils/server");
-var Multiverse = require("@magikcraft/mct1/world/multiverse");
-var utils = require("utils");
+var multiverse_1 = require("@magikcraft/mct1/world/multiverse");
 var log = log_1.Logger(__filename);
 var quests = {
     mct1: {
@@ -104,44 +102,6 @@ function questCommand(questName, method, player, opts) {
     doCommand(worldName, templateWorldName, questName, player, method, opts);
 }
 exports.questCommand = questCommand;
-function importWorld(templateWorldName) {
-    server.executeCommand("mv import " + templateWorldName + " normal");
-}
-function deleteWorld(worldName) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    log("Deleting ./" + worldName);
-                    return [4 /*yield*/, Multiverse.destroyWorld(worldName)];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
-function cloneWorld(worldName, templateWorldName) {
-    return __awaiter(this, void 0, void 0, function () {
-        var success, world;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, deleteWorld(worldName)];
-                case 1:
-                    _a.sent();
-                    log("Cloning " + worldName);
-                    server.executeCommand("mv import " + templateWorldName + " normal");
-                    success = Multiverse.cloneWorld(templateWorldName, worldName);
-                    if (!success) {
-                        return [2 /*return*/, log("Failed to clone world " + templateWorldName)];
-                    }
-                    world = utils.world(worldName);
-                    log("World clone complete for " + worldName);
-                    return [2 /*return*/, new Promise(function (resolve) { return setTimeout(function () { return resolve(world); }, 1); })];
-            }
-        });
-    });
-}
 function createQuest(_a) {
     var questName = _a.questName, player = _a.player, world = _a.world, opts = _a.opts;
     var QuestClass = require(quests[questName].filePath).default;
@@ -170,19 +130,20 @@ function doCommand(worldName, templateWorldName, questName, player, method, opts
                     return [3 /*break*/, 6];
                 case 1:
                     echo(player, "Starting quest " + questName + "...");
-                    return [4 /*yield*/, cloneWorld(worldName, templateWorldName)];
+                    log("Starting quest " + questName + " for " + player);
+                    return [4 /*yield*/, multiverse_1.multiverse.cloneWorld(worldName, templateWorldName)];
                 case 2:
                     world = _b.sent();
                     createQuest({ opts: opts, player: player, questName: questName, world: world }).start();
                     return [3 /*break*/, 6];
                 case 3:
-                    importWorld(templateWorldName);
+                    multiverse_1.multiverse.importWorld(templateWorldName);
                     return [3 /*break*/, 6];
                 case 4: 
                 // Deleting the world kicks the player from the world
                 // This triggers the playerChangedWorld event, which calls the stop() method
                 // of the quest object, doing quest cleanup.
-                return [4 /*yield*/, deleteWorld(worldName)];
+                return [4 /*yield*/, multiverse_1.multiverse.destroyWorld(worldName)];
                 case 5:
                     // Deleting the world kicks the player from the world
                     // This triggers the playerChangedWorld event, which calls the stop() method
