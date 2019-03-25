@@ -59,7 +59,7 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
             _this.activeRuns.forEach(function (key) {
                 if (key != '4' && key != '5')
                     return;
-                var dispenseType = 'FIREBALL';
+                var dispenseType = 'LEGACY_FIREBALL';
                 _this.activateRun(Locs.locations["run" + key], dispenseType, interval);
             });
         }, 35 * interval);
@@ -77,7 +77,7 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
                     // clean-up
                     setTimeout(function () {
                         var targetLoc = new Location(loc.world, loc.x, loc.y - 11, loc.z);
-                        if (dispenseType == 'FIREBALL') {
+                        if (dispenseType == 'LEGACY_FIREBALL') {
                             if (j % 4 === 0) {
                                 _this.getBlocksInRadius(targetLoc, 5, [
                                     'FIRE',

@@ -1,16 +1,16 @@
 export * from './biome'
 export * from './multiverse'
-import { Logger } from '@magikcraft/mct1/log'
+import { Logger } from '../log'
 const log = Logger(__filename)
-import World from '@magikcraft/mct1/world/world'
+import World from './world'
 
-// We have used the "world" namespace for this to distinguish it from the "world".
+// We have used the "worldly" namespace for this to distinguish it from the "world".
 
 // Stores all world instances by world names.
 export const Worlds: any = {}
 
 // Main getter method for a world.
-// Example usage: `world(world).preventBlockBreak()`
+// Example usage: `worldly(world).preventBlockBreak()`
 export function worldly(world): World {
     if (!Worlds[world.name]) {
         log(`######## worldly: ${world.name}`)
@@ -20,7 +20,8 @@ export function worldly(world): World {
 }
 
 // Deletes the world.
-export function worldDelete(world) {
+export function worldlyDelete(world) {
+    log(`######## worldlyDelete: ${world.name}`)
     if (Worlds[world.name]) {
         Worlds[world.name].cleanse()
         delete Worlds[world.name]

@@ -90,68 +90,61 @@ var availableQuests = Object.keys(quests)
     .sort()
     .reduce(function (prev, current) { return prev + ", " + current; });
 function questCommand(questName, method, player, opts) {
-    var quest = quests[questName];
-    if (!questName || !quest) {
-        echo(player, "Usage: /quest <quest-name> <command> <player>");
-        return echo(player, "Available quests: " + availableQuests);
-    }
-    var templateWorldName = quests[questName].worldName;
-    var worldName = opts.mode === 'single'
-        ? templateWorldName + "--" + player.name
-        : templateWorldName + "-multi";
-    doCommand(worldName, templateWorldName, questName, player, method, opts);
-}
-exports.questCommand = questCommand;
-function createQuest(_a) {
-    var questName = _a.questName, player = _a.player, world = _a.world, opts = _a.opts;
-    var QuestClass = require(quests[questName].filePath).default;
-    var questConfig = {
-        name: questName,
-        nextQuestName: quests[questName].nextQuestName,
-        player: player,
-        world: world,
-        options: opts,
-    };
-    var quest = new QuestClass(questConfig);
-    return quest;
-}
-function doCommand(worldName, templateWorldName, questName, player, method, opts) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, world;
+        var quest, templateWorldName, worldName, _a, world, QuestClass, questConfig, quest_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
+                    quest = quests[questName];
+                    if (!questName || !quest) {
+                        echo(player, "Usage: /quest <quest-name> <command> <player>");
+                        return [2 /*return*/, echo(player, "Available quests: " + availableQuests)];
+                    }
+                    templateWorldName = quests[questName].worldName;
+                    worldName = opts.mode === 'single'
+                        ? templateWorldName + "--" + player.name
+                        : templateWorldName + "-multi";
                     _a = method;
                     switch (_a) {
                         case 'start': return [3 /*break*/, 1];
                         case 'import': return [3 /*break*/, 3];
                         case 'stop': return [3 /*break*/, 4];
                     }
-                    return [3 /*break*/, 6];
+                    return [3 /*break*/, 5];
                 case 1:
                     echo(player, "Starting quest " + questName + "...");
                     log("Starting quest " + questName + " for " + player);
-                    return [4 /*yield*/, multiverse_1.multiverse.cloneWorld(worldName, templateWorldName)];
+                    return [4 /*yield*/, multiverse_1.Multiverse.cloneWorld(worldName, templateWorldName)];
                 case 2:
                     world = _b.sent();
-                    createQuest({ opts: opts, player: player, questName: questName, world: world }).start();
-                    return [3 /*break*/, 6];
+                    if (!world) {
+                        log("Failed to setup world " + worldName + ". Aborting.");
+                        return [2 /*return*/];
+                    }
+                    log("Quest world " + worldName + " intialized.");
+                    QuestClass = require(quests[questName].filePath).default;
+                    questConfig = {
+                        name: questName,
+                        nextQuestName: quests[questName].nextQuestName,
+                        player: player,
+                        world: world,
+                        options: opts,
+                    };
+                    quest_1 = new QuestClass(questConfig);
+                    quest_1.start();
+                    return [3 /*break*/, 5];
                 case 3:
-                    multiverse_1.multiverse.importWorld(templateWorldName);
-                    return [3 /*break*/, 6];
-                case 4: 
-                // Deleting the world kicks the player from the world
-                // This triggers the playerChangedWorld event, which calls the stop() method
-                // of the quest object, doing quest cleanup.
-                return [4 /*yield*/, multiverse_1.multiverse.destroyWorld(worldName)];
-                case 5:
+                    multiverse_1.Multiverse.importWorld(templateWorldName);
+                    return [3 /*break*/, 5];
+                case 4:
                     // Deleting the world kicks the player from the world
                     // This triggers the playerChangedWorld event, which calls the stop() method
                     // of the quest object, doing quest cleanup.
-                    _b.sent();
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    multiverse_1.Multiverse.destroyWorld(worldName);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
 }
+exports.questCommand = questCommand;
