@@ -23,12 +23,13 @@ var world_1 = require("@magikcraft/mct1/world");
 var questTools = require("../../quest-tools");
 var Locations = require("./locs");
 var wither_1 = require("./wither");
-// const intervalModifier = 60000 // Useful for testing!
-var intervalModifier = 0;
+var intervalModifier = 60000; // Useful for testing!
 var QuestMCT1Prologue = /** @class */ (function (_super) {
     __extends(QuestMCT1Prologue, _super);
     function QuestMCT1Prologue(conf) {
         var _this = _super.call(this, conf) || this;
+        _this.isUSA = false;
+        _this.isUSA = (conf.options.units || 'mmolL').toLowerCase() === 'mgdl';
         _this.Locs = Locations.getLocations(_this.world);
         _this.state = {
             hasMCT1: false,
@@ -46,6 +47,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         user_1.user(player).mct1.setInfiniteInsulin(false);
         user_1.user(player).mct1.setFoodLevel(20);
         user_1.user(player).mct1.setHealth(20);
+        user_1.user(player).mct1.isUSA = this.isUSA;
         user_1.user(player).mct1.stop();
         world_1.worldly(world).setDawn();
         world_1.worldly(world).setSun();
@@ -93,8 +95,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
             log("Turn off God mode");
             user_1.user(player).mct1.setSuperCharged(false);
             user_1.user(player).mct1.setNightVision(false);
-            // }, Math.max(135000 + intervalModifier, 0))
-        }, Math.max(70000 + intervalModifier, 0));
+        }, Math.max(135000 + intervalModifier, 0));
         this.setTimeout(function () {
             log("Make Wither hunt Player!");
             _this.wither.setPhase(2);

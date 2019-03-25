@@ -6,6 +6,4 @@ exports.executeCommand = function (command) {
 exports.getPlugin = function (pluginName) {
     return __plugin.server.getPluginManager().getPlugin(pluginName);
 };
-exports.getWorldDir = function () {
-    return __plugin.server.getWorldContainer();
-};
+exports.getWorldDir = function () { return __plugin.server.getWorldContainer(); };
