@@ -54,7 +54,7 @@ export default class QuestMCT1Magmarun extends QuestMCT1 {
         this.setInterval(() => {
             this.activeRuns.forEach(key => {
                 if (key != '4' && key != '5') return
-                let dispenseType = 'FIREBALL'
+                let dispenseType = 'LEGACY_FIREBALL'
                 this.activateRun(
                     Locs.locations[`run${key}`],
                     dispenseType,
@@ -83,7 +83,7 @@ export default class QuestMCT1Magmarun extends QuestMCT1 {
                             loc.y - 11,
                             loc.z
                         )
-                        if (dispenseType == 'FIREBALL') {
+                        if (dispenseType == 'LEGACY_FIREBALL') {
                             if (j % 4 === 0) {
                                 this.getBlocksInRadius(targetLoc, 5, [
                                     'FIRE',

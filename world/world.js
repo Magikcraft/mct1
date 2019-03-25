@@ -59,12 +59,8 @@ var World = /** @class */ (function () {
         this.clearAllTimeouts();
         this.clearAllIntervals();
     };
-    World.prototype.killAllMobs = function () {
-        this.world.getEntities().forEach(function (e) {
-            if (e.type != 'PLAYER') {
-                e.remove();
-            }
-        });
+    World.prototype.killAll = function (type) {
+        server.executeCommand("killall " + type + " " + this.world.name);
     };
     World.prototype.setChunkBiome = function (loc, biome) {
         var chunk = this.world.getChunkAt(loc);
@@ -130,13 +126,14 @@ var World = /** @class */ (function () {
             if (except.includes(mobType)) {
                 return;
             }
-            var isMonster = event.entity instanceof Java.type('org.bukkit.entity.Monster');
-            var otherMonsterTypes = [
-                'SLIME',
-            ];
-            if (!isMonster && !otherMonsterTypes.includes(event.entity.type.toString())) {
+            var isMonster = event.entity instanceof
+                Java.type('org.bukkit.entity.Monster');
+            var otherMonsterTypes = ['SLIME'];
+            if (!isMonster &&
+                !otherMonsterTypes.includes(event.entity.type.toString())) {
                 return;
             }
+            // log(`Cancel spawn ${event.entity.type}`);
             event.setCancelled(true);
         }, 'preventMobSpawning');
     };
@@ -263,7 +260,7 @@ var World = /** @class */ (function () {
             if (this.destroyWorldIfEmpty) {
                 this.setTimeout(function () {
                     if (!_this.worldPlayers.length) {
-                        index_1.worldDelete(_this.world);
+                        index_1.worldlyDelete(_this.world);
                         server.executeCommand("mv delete " + _this.world.name);
                         server.executeCommand("mvconfirm");
                     }

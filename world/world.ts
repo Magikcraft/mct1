@@ -1,7 +1,7 @@
 import * as events from 'events'
 import { Logger } from '@magikcraft/mct1/log'
 import * as tools from '@magikcraft/mct1/tools'
-import { worldDelete } from '@magikcraft/mct1/world/index'
+import { worldlyDelete } from '@magikcraft/mct1/world/index'
 import * as server from '@magikcraft/mct1/utils/server'
 
 const Biome = Java.type('org.bukkit.block.Biome')
@@ -80,12 +80,8 @@ export default class World {
     setStorm = () => this.world.setThundering(true) || this.world.setStorm(true)
     setRain = () => this.world.setStorm(true)
 
-    killAllMobs() {
-        this.world.getEntities().forEach(e => {
-            if (e.type != 'PLAYER') {
-                e.remove()
-            }
-        })
+    killAll(type: '*' | 'mobs' | 'monsters') {
+        server.executeCommand(`killall ${type} ${this.world.name}`)
     }
 
     setChunkBiome(loc, biome: string) {
@@ -162,14 +158,18 @@ export default class World {
                     return
                 }
 
-                const isMonster = event.entity instanceof Java.type('org.bukkit.entity.Monster')
-                const otherMonsterTypes = [
-                    'SLIME',
-                ]
-                
-                if (!isMonster && !otherMonsterTypes.includes(event.entity.type.toString())) {
+                const isMonster =
+                    event.entity instanceof
+                    Java.type('org.bukkit.entity.Monster')
+                const otherMonsterTypes = ['SLIME']
+
+                if (
+                    !isMonster &&
+                    !otherMonsterTypes.includes(event.entity.type.toString())
+                ) {
                     return
                 }
+                // log(`Cancel spawn ${event.entity.type}`);
                 event.setCancelled(true)
             },
             'preventMobSpawning'
@@ -322,7 +322,7 @@ export default class World {
             if (this.destroyWorldIfEmpty) {
                 this.setTimeout(() => {
                     if (!this.worldPlayers.length) {
-                        worldDelete(this.world)
+                        worldlyDelete(this.world)
                         server.executeCommand(`mv delete ${this.world.name}`)
                         server.executeCommand(`mvconfirm`)
                     }

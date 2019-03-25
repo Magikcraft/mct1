@@ -1,0 +1,22 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var events = require("events");
+var utils = require("utils");
+var server = require("../utils/server");
+var log_1 = require("../log");
+var log = log_1.Logger('plugins/magikcraft/users');
+var administrators = ['triyuga', 'sitapati'];
+// Create all users when Scriptcraft starts.
+var players = utils.players();
+players.forEach(opPlayer);
+// Op admins on join
+events.playerJoin(function (_a) {
+    var player = _a.player;
+    return setTimeout(function () { return opPlayer(player); }, 100);
+});
+function opPlayer(player) {
+    if (administrators.includes(player.name)) {
+        log("opped " + player.name);
+        server.executeCommand("op " + player.name);
+    }
+}

@@ -1,11 +1,13 @@
-import { Logger } from '@magikcraft/mct1/log'
-import { questCommand } from '@magikcraft/mct1/quests'
-import { ChestItems } from '@magikcraft/mct1/quests/mct1/chest-items'
-import { Inventories } from '@magikcraft/mct1/quests/mct1/inventories'
-import * as questTools from '@magikcraft/mct1/quests/quest-tools'
-import * as tools from '@magikcraft/mct1/tools'
-import { user } from '@magikcraft/mct1/user'
-import { worldly } from '@magikcraft/mct1/world'
+import { Logger } from '../log'
+import { questCommand } from './index'
+import { ChestItems } from './mct1/chest-items'
+import { Inventories } from './mct1/inventories'
+import * as questTools from './quest-tools'
+import * as tools from '../tools'
+import { user } from '../user'
+import { worldly } from '../world'
+
+import * as server from '../utils/server'
 import * as events from 'events'
 import DB from './db'
 
@@ -61,7 +63,7 @@ export class QuestBase {
         this.registerEvents()
         this.setupWayPoints()
         this.setupEndPortal()
-        this.doTracking()
+        // this.doTracking()
         worldly(world).setDestroyWorldIfEmpty(true, 5000)
     }
 
@@ -142,12 +144,8 @@ export class QuestBase {
     }
 
     stop() {
-        // Remove all mobs!
-        this.world.getEntities().forEach(e => {
-            if (e.type != 'PLAYER') {
-                e.remove()
-            }
-        })
+        const { world } = this
+        worldly(world).killAll('*')
         this.unregisterAllEvents()
         this.clearAllIntervals()
         this.clearAllTimeouts()
@@ -351,8 +349,9 @@ export class QuestMCT1 extends QuestBase {
         user(player).mct1.start()
         user(player).mct1.setInfiniteInsulin(true)
         log('setInfiniteInsulin')
+        worldly(world).killAll('mobs')
+        // world.setSpawnFlags(false, true)
 
-        worldly(world).killAllMobs()
         worldly(world).setNight()
         worldly(world).setStorm()
         worldly(world).preventMobSpawning(['HUSK'])
@@ -412,9 +411,9 @@ export class QuestMCT1 extends QuestBase {
             const reg = this.endGateRegion
             questTools.replaceRegion(reg[0], reg[1], 'AIR')
             questTools.playEffectInRegion(reg[0], reg[1], 'DRAGON_BREATH')
-            this.setInterval(() => {
-                questTools.playEffectInRegion(reg[0], reg[1], 'PORTAL')
-            }, 500)
+            // this.setInterval(() => {
+            //     questTools.playEffectInRegion(reg[0], reg[1], 'PORTAL')
+            // }, 500)
         }
     }
 
