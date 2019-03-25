@@ -5,9 +5,9 @@ var events = require("events");
 var log_1 = require("../log");
 var log = log_1.Logger('plugins/magikcraft/worlds');
 var world_1 = require("../world");
-// Create all worlds when Scriptcraft starts.
 var worlds = utils['worlds']();
-worlds.forEach(unloadIfUnused);
+// maybeCleanUpWorld(s)
+worlds.forEach(maybeCleanUpWorld);
 // Init world event listeners
 worlds.forEach(onWorldLoad);
 events.worldUnload(function (event) { return onWorldUnload(event.world); });
@@ -20,6 +20,12 @@ function onWorldLoad(world) {
 function onWorldUnload(world) {
     world_1.worldlyDelete(world);
 }
-function unloadIfUnused(world) {
-    // Multiverse.
+function maybeCleanUpWorld(world) {
+    // @TODO if its an abandoned player quest world, delete it
+    var isQuestWorld = world.name.includes('--');
+    var containsPlayers = world.getPlayers().length > 0;
+    if (isQuestWorld && !containsPlayers) {
+        log("Deleting abandoned quest world " + world.name);
+        world_1.Multiverse.destroyWorld(world.name);
+    }
 }
