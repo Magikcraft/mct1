@@ -4,11 +4,12 @@ import events = require('events')
 import { Logger } from '../log'
 const log = Logger('plugins/magikcraft/worlds')
 
-import { worldly, worldlyDelete, Worlds, Multiverse } from '../world'
+import { worldly, worldlyDelete, Multiverse } from '../world'
 
-// Create all worlds when Scriptcraft starts.
 const worlds = utils['worlds']()
-worlds.forEach(unloadIfUnused)
+
+// maybeCleanUpWorld(s)
+worlds.forEach(maybeCleanUpWorld)
 
 // Init world event listeners
 worlds.forEach(onWorldLoad)
@@ -24,6 +25,12 @@ function onWorldUnload(world) {
     worldlyDelete(world)
 }
 
-function unloadIfUnused(world) {
-    // Multiverse.
+function maybeCleanUpWorld(world) {
+    // @TODO if its an abandoned player quest world, delete it
+    const isQuestWorld = world.name.includes('--')
+    const containsPlayers = world.getPlayers().length > 0
+    if (isQuestWorld && !containsPlayers) {
+        log(`Deleting abandoned quest world ${world.name}`)
+        Multiverse.destroyWorld(world.name)
+    }
 }
