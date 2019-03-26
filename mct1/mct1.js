@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var bossbar_1 = require("@magikcraft/mct1/bossbar");
-var log_1 = require("@magikcraft/mct1/log");
+var log_1 = require("../log");
 var user_1 = require("@magikcraft/mct1/user");
 var events = require("events");
 var inventory = require("inventory");
@@ -57,9 +57,9 @@ var MCT1 = /** @class */ (function () {
             // Skip if not this.player
             if (event.player.name != _this.player.name)
                 return;
+            log(_this.player.name + " ate a " + event.item.type + "!");
             // Act on know FOOD eat...
             if (Food[event.item.type]) {
-                log(_this.player + " ate a " + event.item.type + "!");
                 var item = {
                     timestamp: Math.floor(Date.now() / 1000),
                     food: Food[event.item.type],
@@ -786,7 +786,10 @@ var MCT1 = /** @class */ (function () {
         var sender = __plugin.server.consoleSender;
         server.dispatchCommand(sender, "clear " + this.player.name);
         foods_1.default.forEach(function (item) {
-            // server.dispatchCommand(sender, `give ${this.player.name} ${item.type}`)
+            // server.dispatchCommand(
+            //     sender,
+            //     `give ${this.player.name} ${item.type}`
+            // )
         });
         server.dispatchCommand(sender, "give " + this.player.name + " cooked_chicken 1");
         if (this.hasLightningSnowballs)

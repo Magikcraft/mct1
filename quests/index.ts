@@ -1,5 +1,5 @@
-import { Logger } from '@magikcraft/mct1/log'
-import { Multiverse } from '@magikcraft/mct1/world/multiverse'
+import { Logger } from '../log'
+import { Multiverse } from '../world/multiverse'
 import { QuestConfig } from 'quests/Quest'
 
 const log = Logger(__filename)
