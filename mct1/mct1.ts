@@ -721,6 +721,7 @@ export class MCT1 {
         // Make WITHER take projectile damge, snowballs.
         if (event.entity.type == 'WITHER' && event.cause == 'PROJECTILE') {
             event.setDamage(10)
+            event.setDamage(2)
         }
     }
 

@@ -163,6 +163,7 @@ var MCT1 = /** @class */ (function () {
             // Make WITHER take projectile damge, snowballs.
             if (event.entity.type == 'WITHER' && event.cause == 'PROJECTILE') {
                 event.setDamage(10);
+                event.setDamage(2);
             }
         };
         this._projectileLaunch = function (event) {
