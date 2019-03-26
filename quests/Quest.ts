@@ -26,6 +26,8 @@ export interface QuestConfig {
     options: QuestOptions
 }
 
+export type Quest = QuestBase | QuestMCT1
+
 export class QuestBase {
     name: string
     nextQuestName?: string

@@ -3,8 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AdminUsers = [
     'triyuga',
     'sitapati',
-    // 'RedMoonWT1',
-    'Purpsta',
+    'RedMoonWT1',
 ];
 var TestUsers = ['Luwak_kopi'].concat(AdminUsers);
 exports.isAdminUser = function (player) {
