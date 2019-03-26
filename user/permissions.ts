@@ -1,8 +1,8 @@
 const AdminUsers = [
     'triyuga',
     'sitapati',
-    // 'RedMoonWT1',
-    'Purpsta',
+    'RedMoonWT1',
+    // 'Purpsta',
 ]
 
 const TestUsers = ['Luwak_kopi'].concat(AdminUsers)

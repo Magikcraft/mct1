@@ -37,14 +37,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("../log");
 var multiverse_1 = require("../world/multiverse");
+var user_1 = require("../user");
 var log = log_1.Logger(__filename);
 var quests = {
-    mct1: {
-        // alias for mct1-prologue
-        filePath: '@magikcraft/mct1/quests/mct1/prologue',
-        worldName: 'mct1-start',
-        nextQuestName: 'mct1-jail',
-    },
     'mct1-prologue': {
         filePath: '@magikcraft/mct1/quests/mct1/prologue',
         worldName: 'mct1-start',
@@ -91,10 +86,24 @@ var availableQuests = Object.keys(quests)
     .reduce(function (prev, current) { return prev + ", " + current; });
 function questCommand(questName, method, player, opts) {
     return __awaiter(this, void 0, void 0, function () {
-        var quest, templateWorldName, worldName, _a, world, QuestClass, questConfig, quest_1;
+        var userQuest, quest, templateWorldName, worldName, _a, world, QuestClass, questConfig, quest_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
+                    if (questName === 'mct1') {
+                        questName = 'mct1-prologue';
+                    }
+                    if (questName === 'stop') {
+                        userQuest = user_1.user(player).quest;
+                        if (userQuest) {
+                            questName = userQuest.name;
+                            method = 'stop';
+                            echo(player, "Stopping quest " + questName + "...");
+                        }
+                        else {
+                            return [2 /*return*/, echo(player, "No quest is running.")];
+                        }
+                    }
                     quest = quests[questName];
                     if (!questName || !quest) {
                         echo(player, "Usage: /quest <quest-name> <command> <player>");
@@ -131,12 +140,15 @@ function questCommand(questName, method, player, opts) {
                         options: opts,
                     };
                     quest_1 = new QuestClass(questConfig);
+                    user_1.user(player).quest = quest_1;
                     quest_1.start();
                     return [3 /*break*/, 5];
                 case 3:
                     multiverse_1.Multiverse.importWorld(templateWorldName);
                     return [3 /*break*/, 5];
                 case 4:
+                    user_1.user(player).mct1.stop();
+                    user_1.user(player).quest = undefined;
                     // Deleting the world kicks the player from the world
                     // This triggers the playerChangedWorld event, which calls the stop() method
                     // of the quest object, doing quest cleanup.

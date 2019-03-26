@@ -4,7 +4,7 @@ import * as server from '../utils/server'
 import { Logger } from '../log'
 const log = Logger('plugins/magikcraft/users')
 
-const administrators = ['triyuga', 'sitapati']
+import { isAdminUser } from '../user'
 
 // Create all users when Scriptcraft starts.
 const players = utils.players()
@@ -14,7 +14,7 @@ players.forEach(opPlayer)
 events.playerJoin(({ player }) => setTimeout(() => opPlayer(player), 100))
 
 function opPlayer(player) {
-    if (administrators.includes(player.name)) {
+    if (isAdminUser(player)) {
         log(`opped ${player.name}`)
         server.executeCommand(`op ${player.name}`)
     }

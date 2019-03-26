@@ -5,7 +5,7 @@ var utils = require("utils");
 var server = require("../utils/server");
 var log_1 = require("../log");
 var log = log_1.Logger('plugins/magikcraft/users');
-var administrators = ['triyuga', 'sitapati'];
+var user_1 = require("../user");
 // Create all users when Scriptcraft starts.
 var players = utils.players();
 players.forEach(opPlayer);
@@ -15,7 +15,7 @@ events.playerJoin(function (_a) {
     return setTimeout(function () { return opPlayer(player); }, 100);
 });
 function opPlayer(player) {
-    if (administrators.includes(player.name)) {
+    if (user_1.isAdminUser(player)) {
         log("opped " + player.name);
         server.executeCommand("op " + player.name);
     }

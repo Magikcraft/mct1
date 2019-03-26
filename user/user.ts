@@ -11,6 +11,8 @@ import PlayerEffects from './effects'
 import { user } from '@magikcraft/mct1/user'
 import Follower from './follower'
 
+import { Quest } from '../quests/Quest'
+
 const GameMode = Java.type('org.bukkit.GameMode')
 
 // User class
@@ -23,6 +25,7 @@ export default class User {
     inventory: PlayerInventory
     effects: PlayerEffects
     follower: Follower
+    quest: Quest | undefined
     // cube: Follower
 
     private timers
