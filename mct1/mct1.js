@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var bossbar_1 = require("@magikcraft/mct1/bossbar");
-var log_1 = require("@magikcraft/mct1/log");
+var log_1 = require("../log");
 var user_1 = require("@magikcraft/mct1/user");
 var events = require("events");
 var inventory = require("inventory");
@@ -57,9 +57,9 @@ var MCT1 = /** @class */ (function () {
             // Skip if not this.player
             if (event.player.name != _this.player.name)
                 return;
+            log(_this.player + " ate a " + event.item.type + "!");
             // Act on know FOOD eat...
             if (Food[event.item.type]) {
-                log(_this.player + " ate a " + event.item.type + "!");
                 var item = {
                     timestamp: Math.floor(Date.now() / 1000),
                     food: Food[event.item.type],
@@ -544,6 +544,9 @@ var MCT1 = /** @class */ (function () {
         }
     };
     MCT1.prototype.digestion = function (tickCount) {
+        if (this.debugMode) {
+            this.setFoodLevel(Math.min(this.foodLevel, 15));
+        }
         if (tickCount % 5 === 0) {
             var totalActivityCost = this.calculateTotalActivityCost();
             this.resetActivityLogs();
@@ -782,11 +785,12 @@ var MCT1 = /** @class */ (function () {
         return activities;
     };
     MCT1.prototype.setDemoInventory = function () {
+        var _this = this;
         var server = __plugin.server;
         var sender = __plugin.server.consoleSender;
         server.dispatchCommand(sender, "clear " + this.player.name);
         foods_1.default.forEach(function (item) {
-            // server.dispatchCommand(sender, `give ${this.player.name} ${item.type}`)
+            server.dispatchCommand(sender, "give " + _this.player.name + " " + item.type);
         });
         server.dispatchCommand(sender, "give " + this.player.name + " cooked_chicken 1");
         if (this.hasLightningSnowballs)

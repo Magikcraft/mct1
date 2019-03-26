@@ -1,6 +1,6 @@
 import { BossBar } from '@magikcraft/mct1/bossbar'
 import { IBossBar } from '@magikcraft/mct1/bossbar/bossbar'
-import { Logger } from '@magikcraft/mct1/log'
+import { Logger } from '../log'
 import { user } from '@magikcraft/mct1/user'
 import * as events from 'events'
 import * as inventory from 'inventory'
@@ -320,6 +320,10 @@ export class MCT1 {
     }
 
     digestion(tickCount) {
+        if (this.debugMode) {
+            this.setFoodLevel(Math.min(this.foodLevel, 15))
+        }
+
         if (tickCount % 5 === 0) {
             const totalActivityCost = this.calculateTotalActivityCost()
             this.resetActivityLogs()
@@ -597,9 +601,10 @@ export class MCT1 {
         // Skip if not this.player
         if (event.player.name != this.player.name) return
 
+        log(`${this.player} ate a ${event.item.type}!`)
+
         // Act on know FOOD eat...
         if (Food[event.item.type]) {
-            log(`${this.player} ate a ${event.item.type}!`)
             const item = {
                 timestamp: Math.floor(Date.now() / 1000),
                 food: Food[event.item.type],
@@ -907,7 +912,10 @@ export class MCT1 {
         server.dispatchCommand(sender, `clear ${this.player.name}`)
 
         foods.forEach(item => {
-            // server.dispatchCommand(sender, `give ${this.player.name} ${item.type}`)
+            server.dispatchCommand(
+                sender,
+                `give ${this.player.name} ${item.type}`
+            )
         })
         server.dispatchCommand(
             sender,

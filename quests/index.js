@@ -35,8 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var log_1 = require("@magikcraft/mct1/log");
-var multiverse_1 = require("@magikcraft/mct1/world/multiverse");
+var log_1 = require("../log");
+var multiverse_1 = require("../world/multiverse");
 var log = log_1.Logger(__filename);
 var quests = {
     mct1: {
