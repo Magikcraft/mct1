@@ -320,10 +320,6 @@ export class MCT1 {
     }
 
     digestion(tickCount) {
-        if (this.debugMode) {
-            this.setFoodLevel(Math.min(this.foodLevel, 15))
-        }
-
         if (tickCount % 5 === 0) {
             const totalActivityCost = this.calculateTotalActivityCost()
             this.resetActivityLogs()
@@ -601,7 +597,7 @@ export class MCT1 {
         // Skip if not this.player
         if (event.player.name != this.player.name) return
 
-        log(`${this.player} ate a ${event.item.type}!`)
+        log(`${this.player.name} ate a ${event.item.type}!`)
 
         // Act on know FOOD eat...
         if (Food[event.item.type]) {
@@ -912,10 +908,10 @@ export class MCT1 {
         server.dispatchCommand(sender, `clear ${this.player.name}`)
 
         foods.forEach(item => {
-            server.dispatchCommand(
-                sender,
-                `give ${this.player.name} ${item.type}`
-            )
+            // server.dispatchCommand(
+            //     sender,
+            //     `give ${this.player.name} ${item.type}`
+            // )
         })
         server.dispatchCommand(
             sender,
