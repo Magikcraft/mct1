@@ -15,7 +15,7 @@ export type Logger = (namespace: string) => Log
  * @param namespace
  */
 export const Logger = namespace => (msg: string, toLog?: any) => {
-    const ns = `[${namespace}] `
+    const ns = `[${namespace.replace('/server/scriptcraft-plugins/', '')}] `
     const message = toLog ? `${ns} ${msg} ${toLog}` : `${ns} ${msg}`
     console.log(message) // tslint:disable-line
 }
