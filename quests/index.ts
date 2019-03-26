@@ -2,15 +2,11 @@ import { Logger } from '../log'
 import { Multiverse } from '../world/multiverse'
 import { QuestConfig } from 'quests/Quest'
 
+import { user } from '../user'
+
 const log = Logger(__filename)
 
 const quests = {
-    mct1: {
-        // alias for mct1-prologue
-        filePath: '@magikcraft/mct1/quests/mct1/prologue',
-        worldName: 'mct1-start',
-        nextQuestName: 'mct1-jail',
-    },
     'mct1-prologue': {
         filePath: '@magikcraft/mct1/quests/mct1/prologue',
         worldName: 'mct1-start',
@@ -58,12 +54,27 @@ const availableQuests = Object.keys(quests)
     .reduce((prev, current) => `${prev}, ${current}`)
 
 export async function questCommand(questName, method, player, opts) {
-    const quest = quests[questName]
+    if (questName === 'mct1') {
+        questName = 'mct1-prologue'
+    }
 
+    if (questName === 'stop') {
+        const userQuest = user(player).quest
+        if (userQuest) {
+            questName = userQuest.name
+            method = 'stop'
+            echo(player, `Stopping quest ${questName}...`)
+        } else {
+            return echo(player, `No quest is running.`)
+        }
+    }
+
+    const quest = quests[questName]
     if (!questName || !quest) {
         echo(player, `Usage: /quest <quest-name> <command> <player>`)
         return echo(player, `Available quests: ${availableQuests}`)
     }
+
     const templateWorldName = quests[questName].worldName
     const worldName =
         opts.mode === 'single'
@@ -96,12 +107,15 @@ export async function questCommand(questName, method, player, opts) {
             }
 
             const quest = new QuestClass(questConfig)
+            user(player).quest = quest
             quest.start()
             break
         case 'import':
             Multiverse.importWorld(templateWorldName)
             break
         case 'stop':
+            user(player).mct1.stop()
+            user(player).quest = undefined
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.
