@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var bossbar_1 = require("@magikcraft/mct1/bossbar");
-var log_1 = require("../log");
 var user_1 = require("@magikcraft/mct1/user");
 var events = require("events");
 var inventory = require("inventory");
 var items = require("items");
+var log_1 = require("../log");
 var activities_1 = require("./activities");
 var foods_1 = require("./foods");
 var log = log_1.Logger(__filename);
@@ -498,8 +498,8 @@ var MCT1 = /** @class */ (function () {
                     .render();
             }
             var label = _this.debugMode
-                ? "Digesting: " + item.food.type.replace('_', ' ') + ", " + item.food.carbs + " carbs, " + item.food.GI + " GI"
-                : "Digesting: " + item.food.type.replace('_', ' ');
+                ? "Digesting: " + item.food.label + ", " + item.food.carbs + " carbs, " + item.food.GI + " GI"
+                : "Digesting: " + item.food.label;
             _this.bars[index]
                 .text(label)
                 .color(item.food.GI === 'high'
