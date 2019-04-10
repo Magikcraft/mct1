@@ -1,10 +1,10 @@
 import { BossBar } from '@magikcraft/mct1/bossbar'
 import { IBossBar } from '@magikcraft/mct1/bossbar/bossbar'
-import { Logger } from '../log'
 import { user } from '@magikcraft/mct1/user'
 import * as events from 'events'
 import * as inventory from 'inventory'
 import * as items from 'items'
+import { Logger } from '../log'
 import { activityCosts, activityTypes } from './activities'
 import foods from './foods'
 
@@ -266,10 +266,10 @@ export class MCT1 {
             }
 
             const label = this.debugMode
-                ? `Digesting: ${item.food.type.replace('_', ' ')}, ${
-                      item.food.carbs
-                  } carbs, ${item.food.GI} GI`
-                : `Digesting: ${item.food.type.replace('_', ' ')}`
+                ? `Digesting: ${item.food.label}, ${item.food.carbs} carbs, ${
+                      item.food.GI
+                  } GI`
+                : `Digesting: ${item.food.label}`
 
             this.bars[index]
                 .text(label)
