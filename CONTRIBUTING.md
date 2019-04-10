@@ -1,42 +1,45 @@
-## MCT1 dev
+# MCT1 dev
 
-1. Clone this repo:
+-   Clone this repo:
 
 ```bash
 git clone https://github.com/Magikcraft/mct1.git
 ```
 
-1. Install the dependencies:
+-   Install the dependencies:
 
 ```bash
+cd mct1
 npm i
 ```
 
--   Authenticate to Docker to be able to pull the base image. To avoid having to do this, you could alternatively build the image locally, after checking out its repo in the next step.
+-   Start your TypeScript watch compile in the `mct1` directory:
 
--   Check out the image repo in case you need to do something in the base image:
+```
+tsc -w
+```
 
-[Magikcraft/scriptcraft-modular-arch](https://github.com/Magikcraft/scriptcraft-modular-arch)
+## To start a development server:
 
--   Clone the MCT1 Worlds repo:
+-   Install the Scriptcraft Modular Architecture Controller (smac):
 
-[Magikcraft/mct1-worlds](https://github.com/Magikcraft/mct1-worlds)
+```bash
+npm i -g smac
+```
 
--   Clone the MCT1 SMA repo:
+-   Start the controller in the `dev-server` directory. This directory contains a configuration for an MCT1 dev server.
 
-[Magikcraft/mct1](https://github.com/Magikcraft/mct1)
+```bash
+cd dev-server
+npm i
+smac start
+```
 
-Start your TypeScript watch compile in the `mct1` directory:
+Now, as you make changes to the MCT1 source code, you can reload it in the dev server by typing the following in the smac console:
 
-    tsc -w
-
-Now compose the worlds and the MCT1 SMA plugin using docker:
-
-    docker run -it -p 25565:25565 --name mct1 \
-        --mount type=bind,src=$(pwd)/mct1-worlds,dst=/server/worlds \
-        --mount source=scriptcraft-cache,target=/server/cache \
-        --mount type=bind,src=$(pwd)/mct1,dst=/server/scriptcraft-plugins/@magikcraft/mct1 \
-        magikcraft/scriptcraft
+```
+js refresh()
+```
 
 ## Scriptcraft Typings
 
