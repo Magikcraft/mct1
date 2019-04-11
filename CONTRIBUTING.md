@@ -1,5 +1,21 @@
 # MCT1 dev
 
+## Prerequsites
+
+-   [Docker](https://www.docker.com/)
+-   [Node](https://nodejs.org/en/)
+-   [Minecraft Java Edition](https://minecraft.net)
+
+## Install TypeScript
+
+Install the TypeScript compiler:
+
+```bash
+npm i -g typescript
+```
+
+## Check out source code 
+
 -   Clone this repo:
 
 ```bash
