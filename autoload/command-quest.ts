@@ -1,8 +1,8 @@
-import { questCommand } from '@magikcraft/mct1/quests'
 import { Logger } from '@magikcraft/mct1/log'
+import { questCommand } from '@magikcraft/mct1/quests'
+import { commando } from '@magikcraft/mct1/utils/commando'
 import * as utils from 'utils'
 
-import { commando } from '@magikcraft/mct1/utils/commando'
 // import { isAdminUser } from 'magikcraft/user';
 
 const log = Logger(__filename)
@@ -11,7 +11,9 @@ commando('quest', (args, player) => {
     log('/quest - args: ' + args)
 
     const questName = args.shift()
-
+    if (questName == 'mct1') {
+        echo(player, 'You are about to start the MCT1 quest!')
+    }
     let method = 'start'
     if (args[0] && !args[0].includes(':')) {
         method = args.shift()!

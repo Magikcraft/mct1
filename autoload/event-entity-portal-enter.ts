@@ -1,7 +1,7 @@
 import * as events from 'events'
-
-import { questCommand } from '../quests'
 import { Logger } from '../log'
+import { questCommand } from '../quests'
+
 const log = Logger('event-entity-portal-enter')
 
 log('############ register entityPortalEnter')

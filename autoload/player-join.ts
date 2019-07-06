@@ -1,5 +1,5 @@
-import * as events from 'events'
 import { Logger } from '@magikcraft/mct1/log'
+import * as events from 'events'
 const log = Logger(__filename)
 
 log('Registering Player Join event handler')

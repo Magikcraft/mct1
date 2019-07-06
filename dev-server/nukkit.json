@@ -1,17 +1,13 @@
 {
     "name": "mct1-dev",
     "version": "1.0.0",
-    "keywords": [
-        "scriptcraft",
-        "scriptcraft-sma",
-        "server"
-    ],
+    "keywords": ["scriptcraft", "scriptcraft-sma", "server"],
     "author": "",
     "license": "ISC",
     "smaServerConfig": {
         "dockerTag": "latest",
         "serverName": "mct1-dev",
-        "serverType": "bukkit",
+        "serverType": "nukkit",
         "node_modules": true,
         "bind": [
             {

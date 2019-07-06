@@ -6,7 +6,7 @@
  * Checks if file or directory exists.
  */
 export function exists(filename) {
-    var File = java.io.File
+    const File = java.io.File
     const file = new File(filename)
     return file.exists()
 }

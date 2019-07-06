@@ -1,14 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var quests_1 = require("@magikcraft/mct1/quests");
 var log_1 = require("@magikcraft/mct1/log");
-var utils = require("utils");
+var quests_1 = require("@magikcraft/mct1/quests");
 var commando_1 = require("@magikcraft/mct1/utils/commando");
+var utils = require("utils");
 // import { isAdminUser } from 'magikcraft/user';
 var log = log_1.Logger(__filename);
 commando_1.commando('quest', function (args, player) {
     log('/quest - args: ' + args);
     var questName = args.shift();
+    if (questName == 'mct1') {
+        echo(player, 'You are about to start the MCT1 quest!');
+    }
     var method = 'start';
     if (args[0] && !args[0].includes(':')) {
         method = args.shift();

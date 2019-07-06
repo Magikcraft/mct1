@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var events = require("events");
 var log_1 = require("@magikcraft/mct1/log");
+var events = require("events");
 var log = log_1.Logger(__filename);
 log('Registering Player Join event handler');
 events.playerJoin(function (_a) {
