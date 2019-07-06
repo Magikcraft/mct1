@@ -47,7 +47,9 @@
             "git add"
         ]
     },
-    "dependencies": {},
+    "dependencies": {
+        "@magikcraft/commando": "0.0.4"
+    },
     "config": {
         "access": "public"
     }

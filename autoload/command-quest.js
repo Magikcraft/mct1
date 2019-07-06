@@ -6,7 +6,7 @@ var commando_1 = require("@magikcraft/mct1/utils/commando");
 var utils = require("utils");
 // import { isAdminUser } from 'magikcraft/user';
 var log = log_1.Logger(__filename);
-commando_1.commando('quest', function (args, player) {
+commando_1.default('quest', function (args, player) {
     log('/quest - args: ' + args);
     var questName = args.shift();
     if (questName == 'mct1') {

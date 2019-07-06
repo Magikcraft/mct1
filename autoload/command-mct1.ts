@@ -1,6 +1,5 @@
+import commando from '@magikcraft/mct1/utils/commando'
 import { Logger } from '../log'
-import { commando } from '@magikcraft/mct1/utils/commando'
-
 import { user } from '../user'
 
 const log = Logger('plugins/magikcraft/command-mct1')

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var log_1 = require("../log");
 var commando_1 = require("@magikcraft/mct1/utils/commando");
+var log_1 = require("../log");
 var user_1 = require("../user");
 var log = log_1.Logger('plugins/magikcraft/command-mct1');
 // import LightningSuperStrike = require('magikcraft/fx/lightning-super-strike')
-commando_1.commando('mct1', function (args, player) {
+commando_1.default('mct1', function (args, player) {
     var method = args[0] || 'start';
     var level = Number(args[1]) || 1;
     echo(player, "MCT1 command: " + method);
