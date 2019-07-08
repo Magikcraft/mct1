@@ -43,7 +43,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         var regions = Locs.regions;
         user_1.user(player).mct1.setFoodLevel(5);
         user_1.user(player).mct1.setHealth(5);
-        user_1.user(player).mct1.bgl = 5;
+        user_1.user(player).mct1.lungFunction = 5;
         user_1.user(player).mct1.insulin = 0;
         user_1.user(player).inventory.set([]);
         // Region: jailHall.. Save player inventory

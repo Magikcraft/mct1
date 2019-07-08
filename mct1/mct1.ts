@@ -22,7 +22,7 @@ export class MCT1 {
 
     isSprinting: boolean = false
 
-    bgl: number = 4
+    lungFunction: number = 16
     insulin: number = 0
     // this is an abstraction of the native food level which seems to get rounded to nearest 0.5.
     // It is used to gain a more fine grained control of player food level
@@ -70,7 +70,7 @@ export class MCT1 {
     start() {
         this.stop() // first stop, in case already running
 
-        this.bgl = 5
+        this.lungFunction = 5
         this.insulin = 0
         this.setFoodLevel(this.player.foodLevel)
         this.digestionQueue = []
@@ -163,7 +163,7 @@ export class MCT1 {
         }
     }
 
-    inHealthyRange = () => this.bgl >= 4 && this.bgl <= 8
+    inHealthyRange = () => this.lungFunction >= 4 && this.lungFunction <= 8
 
     registerEvents() {
         log('registerEvents')
@@ -197,18 +197,18 @@ export class MCT1 {
     renderBars() {
         // bars.bgl color
         let color = 'GREEN'
-        if (this.bgl >= 4 && this.bgl <= 8) {
+        if (this.lungFunction >= 4 && this.lungFunction <= 8) {
             color = 'GREEN'
         } else if (
-            (this.bgl < 4 && this.bgl > 2) ||
-            (this.bgl > 8 && this.bgl <= 12)
+            (this.lungFunction < 4 && this.lungFunction > 2) ||
+            (this.lungFunction > 8 && this.lungFunction <= 12)
         ) {
             color = 'YELLOW'
         } else {
             color = 'RED'
         }
         // bars.bgl
-        let bgl = Math.round(this.bgl * 10) / 10
+        let bgl = Math.round(this.lungFunction * 10) / 10
         if (this.isUSA) {
             bgl = Math.round(bgl * 18)
         }
@@ -219,25 +219,25 @@ export class MCT1 {
         }
 
         this.bars.bgl
-            .text(`BGL: ${bgl}`) // round to 1 decimal
-            .color(BossBar.color[color])
-            .progress((this.bgl / 20) * 100)
+            .text(`Lung function: ${Math.round((bgl / 20) * 100 * 10) / 10}%`) // round to 1 decimal
+            .color(BossBar.color.BLUE) //BossBar.color[color])
+            .progress((this.lungFunction / 20) * 100)
 
         // bars.insulin
-        if (!this.bars.insulin) {
-            this.bars.insulin = BossBar.bar('', this.player)
-            this.bars.insulin
-                .color(BossBar.color.BLUE)
-                .style(BossBar.style.NOTCHED_20)
-                .render()
-        }
+        // if (!this.bars.insulin) {
+        //     this.bars.insulin = BossBar.bar('', this.player)
+        //     this.bars.insulin
+        //         .color(BossBar.color.BLUE)
+        //         .style(BossBar.style.NOTCHED_20)
+        //         .render()
+        // }
 
-        const insulinLabel = Math.round(this.insulin * 10) / 10
-        const insulinPercent = (this.insulin / 20) * 100
+        // const insulinLabel = Math.round(this.insulin * 10) / 10
+        // const insulinPercent = (this.insulin / 20) * 100
 
-        this.bars.insulin
-            .text(`Insulin: ${insulinLabel}`) // round to 1 decimal
-            .progress(insulinPercent) // insulin as percentage, rounded to 1 decimal
+        // this.bars.insulin
+        //     .text(`Insulin: ${insulinLabel}`) // round to 1 decimal
+        //     .progress(insulinPercent) // insulin as percentage, rounded to 1 decimal
 
         // Bring high GI items to top of digestionQueue
         const highGIItems = this.digestionQueue.filter(
@@ -336,8 +336,8 @@ export class MCT1 {
 
         // Every 10 ticks...
         if (tickCount % 10 === 0) {
-            // bgl rises slowly, even if not digesting...
-            this.bgl += 0.1
+            // lung factor falls slowly, even if not active...
+            this.lungFunction -= 0.1
 
             // If this.player has food in digestionQueue, up foodlevel
             if (this.digestionQueue && this.digestionQueue.length > 0) {
@@ -356,7 +356,7 @@ export class MCT1 {
         // handle insulin in system
         if (this.insulin > 0) {
             this.insulin = Math.max(this.insulin - 0.1, 0)
-            this.bgl -= 0.15 * this.insulinSensitivityMultiplier
+            this.lungFunction -= 0.15 * this.insulinSensitivityMultiplier
             // log('Insulin effect of bgl: ', (0.15 * this.insulinSensitivityMultiplier))
         }
 
@@ -365,11 +365,11 @@ export class MCT1 {
             if (this.digestionQueue[0].food.GI === 'high') {
                 // high GI, digest faster...
                 this.digestionQueue[0].carbsDigested += 1
-                this.bgl += 0.2
+                this.lungFunction += 0.2
             } else {
                 // low GI, digest slower...
                 this.digestionQueue[0].carbsDigested += 0.5
-                this.bgl += 0.1
+                this.lungFunction += 0.1
             }
 
             if (this.insulin > 0) {
@@ -390,12 +390,12 @@ export class MCT1 {
         }
 
         // bgl should never go below 2!
-        if (this.bgl < 2) {
-            this.bgl = 2
+        if (this.lungFunction < 2) {
+            this.lungFunction = 2
         }
         // bgl should never go above 20!
-        if (this.bgl > 20) {
-            this.bgl = 20
+        if (this.lungFunction > 20) {
+            this.lungFunction = 20
         }
 
         this.renderBars()
@@ -408,7 +408,7 @@ export class MCT1 {
     }
 
     doEffects() {
-        if (this.bgl >= 4 && this.bgl <= 8) {
+        if (this.lungFunction >= 4 && this.lungFunction <= 8) {
             // Healthy Range
             this.cancelNegativeEffects()
             this.giveSuperPowers()
@@ -427,17 +427,17 @@ export class MCT1 {
     giveNegativeEffects() {
         // Confusion!
         if (
-            (this.bgl < 4 && this.bgl >= 3) ||
-            (this.bgl > 8 && this.bgl <= 12)
+            (this.lungFunction < 4 && this.lungFunction >= 3) ||
+            (this.lungFunction > 8 && this.lungFunction <= 12)
         ) {
             this._makeEffect('CONFUSION', 3500)
         }
         // More Confusion!
-        else if (this.bgl < 3 || this.bgl > 16) {
+        else if (this.lungFunction < 3 || this.lungFunction > 16) {
             this._makeEffect('CONFUSION', 6000)
         }
         // Layer additional effects.
-        if (this.bgl <= 2 || this.bgl >= 16) {
+        if (this.lungFunction <= 2 || this.lungFunction >= 16) {
             this._makeEffect('BLINDNESS', 5000)
             this._makeEffect('POISON', 5000)
         }

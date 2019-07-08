@@ -17,7 +17,7 @@ var MCT1 = /** @class */ (function () {
     function MCT1(player) {
         var _this = this;
         this.isSprinting = false;
-        this.bgl = 4;
+        this.lungFunction = 16;
         this.insulin = 0;
         this.digestionQueue = [];
         this.insulinSensitivityMultiplier = 1;
@@ -45,7 +45,7 @@ var MCT1 = /** @class */ (function () {
         this.setSuperSpeed = function (bool) { return (_this.hasSuperSpeed = bool); };
         this.setSuperJump = function (bool) { return (_this.hasSuperJump = bool); };
         this.setNightVision = function (bool) { return (_this.hasNightVision = bool); };
-        this.inHealthyRange = function () { return _this.bgl >= 4 && _this.bgl <= 8; };
+        this.inHealthyRange = function () { return _this.lungFunction >= 4 && _this.lungFunction <= 8; };
         this.unregisterEvents = function () {
             log("Unregistering events for " + _this.name);
             _this.eventListeners.forEach(function (listener, i) {
@@ -348,7 +348,7 @@ var MCT1 = /** @class */ (function () {
     }
     MCT1.prototype.start = function () {
         this.stop(); // first stop, in case already running
-        this.bgl = 5;
+        this.lungFunction = 5;
         this.insulin = 0;
         this.setFoodLevel(this.player.foodLevel);
         this.digestionQueue = [];
@@ -443,18 +443,18 @@ var MCT1 = /** @class */ (function () {
         var _this = this;
         // bars.bgl color
         var color = 'GREEN';
-        if (this.bgl >= 4 && this.bgl <= 8) {
+        if (this.lungFunction >= 4 && this.lungFunction <= 8) {
             color = 'GREEN';
         }
-        else if ((this.bgl < 4 && this.bgl > 2) ||
-            (this.bgl > 8 && this.bgl <= 12)) {
+        else if ((this.lungFunction < 4 && this.lungFunction > 2) ||
+            (this.lungFunction > 8 && this.lungFunction <= 12)) {
             color = 'YELLOW';
         }
         else {
             color = 'RED';
         }
         // bars.bgl
-        var bgl = Math.round(this.bgl * 10) / 10;
+        var bgl = Math.round(this.lungFunction * 10) / 10;
         if (this.isUSA) {
             bgl = Math.round(bgl * 18);
         }
@@ -463,22 +463,22 @@ var MCT1 = /** @class */ (function () {
             this.bars.bgl.style(bossbar_1.BossBar.style.NOTCHED_20).render();
         }
         this.bars.bgl
-            .text("BGL: " + bgl) // round to 1 decimal
-            .color(bossbar_1.BossBar.color[color])
-            .progress((this.bgl / 20) * 100);
+            .text("Lung function: " + Math.round((bgl / 20) * 100 * 10) / 10 + "%") // round to 1 decimal
+            .color(bossbar_1.BossBar.color.BLUE) //BossBar.color[color])
+            .progress((this.lungFunction / 20) * 100);
         // bars.insulin
-        if (!this.bars.insulin) {
-            this.bars.insulin = bossbar_1.BossBar.bar('', this.player);
-            this.bars.insulin
-                .color(bossbar_1.BossBar.color.BLUE)
-                .style(bossbar_1.BossBar.style.NOTCHED_20)
-                .render();
-        }
-        var insulinLabel = Math.round(this.insulin * 10) / 10;
-        var insulinPercent = (this.insulin / 20) * 100;
-        this.bars.insulin
-            .text("Insulin: " + insulinLabel) // round to 1 decimal
-            .progress(insulinPercent); // insulin as percentage, rounded to 1 decimal
+        // if (!this.bars.insulin) {
+        //     this.bars.insulin = BossBar.bar('', this.player)
+        //     this.bars.insulin
+        //         .color(BossBar.color.BLUE)
+        //         .style(BossBar.style.NOTCHED_20)
+        //         .render()
+        // }
+        // const insulinLabel = Math.round(this.insulin * 10) / 10
+        // const insulinPercent = (this.insulin / 20) * 100
+        // this.bars.insulin
+        //     .text(`Insulin: ${insulinLabel}`) // round to 1 decimal
+        //     .progress(insulinPercent) // insulin as percentage, rounded to 1 decimal
         // Bring high GI items to top of digestionQueue
         var highGIItems = this.digestionQueue.filter(function (item) { return item.food.GI === 'high'; });
         var lowGIItems = this.digestionQueue.filter(function (item) { return item.food.GI === 'low'; });
@@ -557,8 +557,8 @@ var MCT1 = /** @class */ (function () {
         }
         // Every 10 ticks...
         if (tickCount % 10 === 0) {
-            // bgl rises slowly, even if not digesting...
-            this.bgl += 0.1;
+            // lung factor falls slowly, even if not active...
+            this.lungFunction -= 0.1;
             // If this.player has food in digestionQueue, up foodlevel
             if (this.digestionQueue && this.digestionQueue.length > 0) {
                 this.setFoodLevel(Math.min(this.foodLevel + 1, 20));
@@ -574,7 +574,7 @@ var MCT1 = /** @class */ (function () {
         // handle insulin in system
         if (this.insulin > 0) {
             this.insulin = Math.max(this.insulin - 0.1, 0);
-            this.bgl -= 0.15 * this.insulinSensitivityMultiplier;
+            this.lungFunction -= 0.15 * this.insulinSensitivityMultiplier;
             // log('Insulin effect of bgl: ', (0.15 * this.insulinSensitivityMultiplier))
         }
         // handle digestionQueue
@@ -582,12 +582,12 @@ var MCT1 = /** @class */ (function () {
             if (this.digestionQueue[0].food.GI === 'high') {
                 // high GI, digest faster...
                 this.digestionQueue[0].carbsDigested += 1;
-                this.bgl += 0.2;
+                this.lungFunction += 0.2;
             }
             else {
                 // low GI, digest slower...
                 this.digestionQueue[0].carbsDigested += 0.5;
-                this.bgl += 0.1;
+                this.lungFunction += 0.1;
             }
             if (this.insulin > 0) {
                 // if insulin in system, boost health!
@@ -602,12 +602,12 @@ var MCT1 = /** @class */ (function () {
             }
         }
         // bgl should never go below 2!
-        if (this.bgl < 2) {
-            this.bgl = 2;
+        if (this.lungFunction < 2) {
+            this.lungFunction = 2;
         }
         // bgl should never go above 20!
-        if (this.bgl > 20) {
-            this.bgl = 20;
+        if (this.lungFunction > 20) {
+            this.lungFunction = 20;
         }
         this.renderBars();
         this.doEffects();
@@ -617,7 +617,7 @@ var MCT1 = /** @class */ (function () {
         }
     };
     MCT1.prototype.doEffects = function () {
-        if (this.bgl >= 4 && this.bgl <= 8) {
+        if (this.lungFunction >= 4 && this.lungFunction <= 8) {
             // Healthy Range
             this.cancelNegativeEffects();
             this.giveSuperPowers();
@@ -634,16 +634,16 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.giveNegativeEffects = function () {
         // Confusion!
-        if ((this.bgl < 4 && this.bgl >= 3) ||
-            (this.bgl > 8 && this.bgl <= 12)) {
+        if ((this.lungFunction < 4 && this.lungFunction >= 3) ||
+            (this.lungFunction > 8 && this.lungFunction <= 12)) {
             this._makeEffect('CONFUSION', 3500);
         }
         // More Confusion!
-        else if (this.bgl < 3 || this.bgl > 16) {
+        else if (this.lungFunction < 3 || this.lungFunction > 16) {
             this._makeEffect('CONFUSION', 6000);
         }
         // Layer additional effects.
-        if (this.bgl <= 2 || this.bgl >= 16) {
+        if (this.lungFunction <= 2 || this.lungFunction >= 16) {
             this._makeEffect('BLINDNESS', 5000);
             this._makeEffect('POISON', 5000);
         }

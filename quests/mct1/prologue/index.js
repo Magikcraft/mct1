@@ -67,7 +67,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         this.setTimeout(function () {
             log("Strike with Lightning!");
             LightningSuperStrike.kaboom(player.location, 5, 20);
-            user_1.user(player).mct1.bgl = 5;
+            user_1.user(player).mct1.lungFunction = 5;
             user_1.user(player).mct1.insulin = 0;
             user_1.user(player).mct1.setSuperCharged(true);
             user_1.user(player).mct1.setInfiniteInsulin(false);
@@ -124,7 +124,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
                 if (!state.completed) {
                     state.completed = true;
                     user_1.user(player).effects.add('LEVITATION');
-                    user_1.user(player).mct1.bgl = 20; // Make player go blind.
+                    user_1.user(player).mct1.lungFunction = 20; // Make player go blind.
                     setTimeout(function () {
                         _this.complete();
                     }, 5000);

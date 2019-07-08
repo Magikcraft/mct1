@@ -24,16 +24,16 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var events = require("events");
 var log_1 = require("../log");
+var tools = require("../tools");
+var user_1 = require("../user");
+var world_1 = require("../world");
+var db_1 = require("./db");
 var index_1 = require("./index");
 var chest_items_1 = require("./mct1/chest-items");
 var inventories_1 = require("./mct1/inventories");
 var questTools = require("./quest-tools");
-var tools = require("../tools");
-var user_1 = require("../user");
-var world_1 = require("../world");
-var events = require("events");
-var db_1 = require("./db");
 var QuestBase = /** @class */ (function () {
     function QuestBase(conf) {
         this.state = {};
@@ -85,7 +85,7 @@ var QuestBase = /** @class */ (function () {
             .filter(function (item) { return item; });
         var mct1 = user_1.user(player).mct1.isStarted
             ? {
-                bgl: user_1.user(player).mct1.bgl,
+                bgl: user_1.user(player).mct1.lungFunction,
                 insulin: user_1.user(player).mct1.insulin,
                 digestionQueue: user_1.user(player).mct1.digestionQueue.map(function (item) { return (__assign({}, item)); }),
                 isStarted: user_1.user(player).mct1.isStarted,

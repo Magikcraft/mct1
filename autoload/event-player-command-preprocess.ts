@@ -1,8 +1,8 @@
 import * as events from 'events'
 import { Logger } from '../log'
-const log = Logger('player-quit-event')
-import * as server from '../utils/server'
 import { isAdminUser, isTestUser, user } from '../user'
+import * as server from '../utils/server'
+const log = Logger('player-quit-event')
 
 const commandWhitelist = [
     '/jsp quest',
@@ -19,7 +19,7 @@ events.playerCommandPreprocess(event => {
 
     if (command === '/heal') {
         if (user(player).mct1.isStarted) {
-            user(player).mct1.bgl = 5
+            user(player).mct1.lungFunction = 5
             user(player).mct1.insulin = 0
             user(player).mct1.digestionQueue = []
         }

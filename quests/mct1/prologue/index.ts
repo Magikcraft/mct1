@@ -68,7 +68,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
             log(`Strike with Lightning!`)
             LightningSuperStrike.kaboom(player.location, 5, 20)
 
-            user(player).mct1.bgl = 5
+            user(player).mct1.lungFunction = 5
             user(player).mct1.insulin = 0
             user(player).mct1.setSuperCharged(true)
             user(player).mct1.setInfiniteInsulin(false)
@@ -132,7 +132,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
                 if (!state.completed) {
                     state.completed = true
                     user(player).effects.add('LEVITATION')
-                    user(player).mct1.bgl = 20 // Make player go blind.
+                    user(player).mct1.lungFunction = 20 // Make player go blind.
 
                     setTimeout(() => {
                         this.complete()

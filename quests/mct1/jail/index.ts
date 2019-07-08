@@ -32,7 +32,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         user(player).mct1.setFoodLevel(5)
         user(player).mct1.setHealth(5)
-        user(player).mct1.bgl = 5
+        user(player).mct1.lungFunction = 5
         user(player).mct1.insulin = 0
 
         user(player).inventory.set([])

@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
 var log_1 = require("../log");
-var log = log_1.Logger('player-quit-event');
-var server = require("../utils/server");
 var user_1 = require("../user");
+var server = require("../utils/server");
+var log = log_1.Logger('player-quit-event');
 var commandWhitelist = [
     '/jsp quest',
     '/jsp cast',
@@ -18,7 +18,7 @@ events.playerCommandPreprocess(function (event) {
     var commandStr = command.replace('jsp ', '');
     if (command === '/heal') {
         if (user_1.user(player).mct1.isStarted) {
-            user_1.user(player).mct1.bgl = 5;
+            user_1.user(player).mct1.lungFunction = 5;
             user_1.user(player).mct1.insulin = 0;
             user_1.user(player).mct1.digestionQueue = [];
         }

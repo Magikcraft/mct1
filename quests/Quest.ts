@@ -1,15 +1,13 @@
+import * as events from 'events'
 import { Logger } from '../log'
+import * as tools from '../tools'
+import { user } from '../user'
+import { worldly } from '../world'
+import DB from './db'
 import { questCommand } from './index'
 import { ChestItems } from './mct1/chest-items'
 import { Inventories } from './mct1/inventories'
 import * as questTools from './quest-tools'
-import * as tools from '../tools'
-import { user } from '../user'
-import { worldly } from '../world'
-
-import * as server from '../utils/server'
-import * as events from 'events'
-import DB from './db'
 
 export type QuestMode = 'single' | 'multi'
 export interface QuestOptions {
@@ -92,7 +90,7 @@ export class QuestBase {
 
         const mct1 = user(player).mct1.isStarted
             ? {
-                  bgl: user(player).mct1.bgl,
+                  bgl: user(player).mct1.lungFunction,
                   insulin: user(player).mct1.insulin,
                   digestionQueue: user(player).mct1.digestionQueue.map(
                       item => ({ ...item })
