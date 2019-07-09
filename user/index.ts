@@ -1,6 +1,6 @@
-import MCT1PlayerCache from './MCT1PlayerCache'
+import MCT1PlayerManager from './MCT1PlayerManager'
 
 export * from './effects'
 export * from './MCT1Player'
 export * from './permissions'
-export { MCT1PlayerCache }
+export { MCT1PlayerManager as MCT1PlayerCache }

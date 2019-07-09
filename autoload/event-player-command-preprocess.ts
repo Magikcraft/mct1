@@ -44,7 +44,9 @@ events.playerCommandPreprocess(event => {
 
     let allowed = false
     commandWhitelist.forEach(c => {
-        if (command.substring(0, c.length) === c) allowed = true
+        if (command.substring(0, c.length) === c) {
+            allowed = true
+        }
     })
 
     if (!allowed) {
