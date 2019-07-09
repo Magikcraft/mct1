@@ -1,138 +1,138 @@
-import * as LightingStorm from '@magikcraft/mct1/fx/lighting-storm'
-import * as LightningSuperStrike from '@magikcraft/mct1/fx/lightning-super-strike'
-import * as MobTools from '@magikcraft/mct1/mobs'
 // const intervalModifier = -90000 // Useful for testing!
-import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
-import { user } from '@magikcraft/mct1/user'
-import { worldly } from '@magikcraft/mct1/world'
+import * as LightingStorm from '../../../fx/lighting-storm'
+import * as LightningSuperStrike from '../../../fx/lightning-super-strike'
+import * as MobTools from '../../../mobs'
+import { user } from '../../../user'
+import { QuestConfig } from '../../Quest'
 import * as questTools from '../../quest-tools'
+import { QuestMCT1 } from '../../QuestMCT1'
 import * as Locations from './locs'
 import Wither from './wither'
 
 const intervalModifier = 60000 // Useful for testing!
 
 export default class QuestMCT1Prologue extends QuestMCT1 {
-    wither: any
-    isUSA: boolean = false
+    public wither: any
+    public isUSA: boolean = false
 
     constructor(conf: QuestConfig) {
         super(conf)
         this.isUSA = (conf.options.units || 'mmolL').toLowerCase() === 'mgdl'
         this.Locs = Locations.getLocations(this.world)
         this.state = {
-            hasMCT1: false,
             completed: false,
+            hasMCT1: false,
         }
         this.wither = new Wither(this.Locs.regions.wither)
     }
 
-    start() {
+    public start() {
         super.start()
-
-        const { player, world, log, Locs } = this
 
         // this.registerEvents(); // called by parent
 
-        player.setFoodLevel(15)
-        user(player).mct1.setInfiniteInsulin(false)
-        user(player).mct1.setFoodLevel(20)
-        user(player).mct1.setHealth(20)
-        user(player).mct1.isUSA = this.isUSA
-        user(player).mct1.stop()
+        this.player.setFoodLevel(15)
+        user(this.player).mct1.setInfiniteInsulin(false)
+        user(this.player).mct1.setFoodLevel(20)
+        user(this.player).mct1.setHealth(20)
+        user(this.player).mct1.isUSA = this.isUSA
+        user(this.player).mct1.stop()
 
-        worldly(world).setDawn()
-        worldly(world).setSun()
-        worldly(world).preventMobSpawning(['HUSK', 'WITHER'])
+        this.world.setDawn()
+        this.world.setSun()
+        this.world.preventMobSpawning(['HUSK', 'WITHER'])
 
         // Hide portal.
-        questTools.replaceRegionV1(Locs.regions.portalOuter, 'AIR')
-        questTools.replaceRegionV1(Locs.regions.portalGround, 'GRASS')
+        questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR')
+        questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS')
 
-        log(
+        this.log(
             `Started quest mct1-prologue for ${
-                player.name
+                this.player.name
             }, with intervalModifier: ${intervalModifier}`
         )
 
         this.setTimeout(() => {
-            log(`Start Storm!`)
-            worldly(world).setStorm()
+            this.log(`Start Storm!`)
+            this.world.setStorm()
         }, Math.max(15000 + intervalModifier, 0))
 
         this.setTimeout(() => {
-            log(`Start Lightning!`)
-            LightingStorm.start(Locs.regions.lightning)
+            this.log(`Start Lightning!`)
+            LightingStorm.start(this.Locs.regions.lightning)
         }, Math.max(30000 + intervalModifier, 0))
 
         this.setTimeout(() => {
-            log(`Strike with Lightning!`)
-            LightningSuperStrike.kaboom(player.location, 5, 20)
-
-            user(player).mct1.bgl = 5
-            user(player).mct1.insulin = 0
-            user(player).mct1.setSuperCharged(true)
-            user(player).mct1.setInfiniteInsulin(false)
-            user(player).mct1.setInfiniteSnowballs(true)
-            user(player).mct1.setNightVision(true)
-            user(player).mct1.start()
+            this.log(`Strike with Lightning!`)
+            LightningSuperStrike.kaboom(this.player.location, 5, 20)
+            const mct1Player = user(this.player)
+            mct1Player.mct1.bgl = 5
+            mct1Player.mct1.insulin = 0
+            mct1Player.mct1.setSuperCharged(true)
+            mct1Player.mct1.setInfiniteInsulin(false)
+            mct1Player.mct1.setInfiniteSnowballs(true)
+            mct1Player.mct1.setNightVision(true)
+            mct1Player.mct1.start()
             this.state.hasMCT1 = true
 
-            user(player).gms() // SURVIVAL mode so player can interact with blocks and shoot snowballs
-            user(player).inventory.setHeldItemSlot(0)
+            mct1Player.gms() // SURVIVAL mode so player can interact with blocks and shoot snowballs
+            mct1Player.inventory.setHeldItemSlot(0)
 
-            echo(player, 'You got struck by lightning!')
+            echo(this.player, 'You got struck by lightning!')
         }, Math.max(45000 + intervalModifier, 0))
 
         this.setTimeout(() => {
             // first mob wave
-            log(`Spawning mobs!`)
+            this.log(`Spawning mobs!`)
             const mobType = 'husk'
             const spawnNum = 40
-            log(`Spawning ${spawnNum} ${mobType}s!`)
+            this.log(`Spawning ${spawnNum} ${mobType}s!`)
             this.spawnMobGroups(mobType, spawnNum)
         }, Math.max(50000 + intervalModifier, 0))
 
         this.setTimeout(() => {
-            log(`Here comes the Wither!`)
+            this.log(`Here comes the Wither!`)
             this.wither.start()
         }, Math.max(65000 + intervalModifier, 0))
 
         this.setTimeout(() => {
-            log(`Turn off God mode`)
-            user(player).mct1.setSuperCharged(false)
-            user(player).mct1.setNightVision(false)
+            this.log(`Turn off God mode`)
+            user(this.player).mct1.setSuperCharged(false)
+            user(this.player).mct1.setNightVision(false)
         }, Math.max(135000 + intervalModifier, 0))
 
         this.setTimeout(() => {
-            log(`Make Wither hunt Player!`)
+            this.log(`Make Wither hunt Player!`)
             this.wither.setPhase(2)
         }, Math.max(145000 + intervalModifier, 0))
     }
 
-    stop() {
+    public stop() {
         super.stop()
-        const { player, world, log, state } = this
         LightingStorm.stop()
         this.wither.stop()
-        worldly(this.world).setSun()
+        this.world.setSun()
     }
 
-    registerEvents() {
+    public registerEvents() {
         super.registerEvents()
-        const { player, world, log, state } = this
 
         // Cancel death, make player go blind and float up as if captured.
         this.registerEvent('entityDamage', event => {
-            if (event.entity.type != 'PLAYER') return
-            if (event.entity.name != player.name) return
+            if (event.entity.type != 'PLAYER') {
+                return
+            }
+            if (event.entity.name != this.player.name) {
+                return
+            }
 
-            if (event.finalDamage >= player.health) {
-                log('canceled deadly damage!')
+            if (event.finalDamage >= this.player.health) {
+                this.log('canceled deadly damage!')
                 event.setCancelled(true)
-                if (!state.completed) {
-                    state.completed = true
-                    user(player).effects.add('LEVITATION')
-                    user(player).mct1.bgl = 20 // Make player go blind.
+                if (!this.state.completed) {
+                    this.state.completed = true
+                    user(this.player).effects.add('LEVITATION')
+                    user(this.player).mct1.bgl = 20 // Make player go blind.
 
                     setTimeout(() => {
                         this.complete()
@@ -143,14 +143,18 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         // Launch lightning snowballs on all clicks.
         this.registerEvent('playerInteract', event => {
-            if (event.player.name != player.name) return
+            if (event.player.name != this.player.name) {
+                return
+            }
             const actions = [
                 'RIGHT_CLICK_BLOCK',
                 'RIGHT_CLICK_AIR',
                 'LEFT_CLICK_BLOCK',
                 'LEFT_CLICK_AIR',
             ]
-            if (!state.hasMCT1) return
+            if (!this.state.hasMCT1) {
+                return
+            }
             if (actions.includes(event.action.toString())) {
                 event.player.launchProjectile(
                     Java.type('org.bukkit.entity.Snowball').class
@@ -161,7 +165,9 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         this.registerEvent('entityDamageByEntity', event => {
             // When the player hits a mob, shoot lighting snowball.
             if (event.damager && event.damager.type == 'PLAYER') {
-                if (event.damager.name != player.name) return
+                if (event.damager.name != this.player.name) {
+                    return
+                }
                 event.damager.launchProjectile(
                     Java.type('org.bukkit.entity.Snowball').class
                 )
@@ -169,16 +175,14 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         })
     }
 
-    spawnMobGroups(mobType, spawnNum) {
-        const { player, world, log, options, Locs } = this
-
+    public spawnMobGroups(mobType, spawnNum) {
         const attackPlayersOnroute = true
-        const targetLoc = Locs.locations.villageCenter
+        const targetLoc = this.Locs.locations.villageCenter
 
         // Ensure not more than 100 mobs of mobType in world at one time!
         const maxMobs = 40
         let mobCount = 0
-        let bossCount = 0
+        const bossCount = 0
         targetLoc.world.livingEntities.forEach(entity => {
             if (entity.type == mobType.toUpperCase()) {
                 mobCount++
@@ -191,12 +195,12 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         )
 
         if (adjustedSpawnNum > 0) {
-            log(`Summoning ${adjustedSpawnNum} mobs of type ${mobType}`)
-            Locs.locations.mobSpawnPoints.map(function(spawnLoc, i) {
-                const _spawnNum = Math.round(
-                    adjustedSpawnNum / Locs.locations.mobSpawnPoints.length
+            this.log(`Summoning ${adjustedSpawnNum} mobs of type ${mobType}`)
+            this.Locs.locations.mobSpawnPoints.map((spawnLoc, i) => {
+                const spawnNumber = Math.round(
+                    adjustedSpawnNum / this.Locs.locations.mobSpawnPoints.length
                 )
-                for (var j = 0; j < _spawnNum; j++) {
+                for (let j = 0; j < spawnNumber; j++) {
                     const mob = MobTools.spawn(mobType, spawnLoc)
                     MobTools.targetLocation(
                         mob,

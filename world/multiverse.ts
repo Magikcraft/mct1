@@ -40,7 +40,8 @@ class MultiverseClass {
 
     public async importWorld(worldName: string) {
         log(`Importing world ${worldName}...`)
-        let world, err
+        let world: BukkitWorld
+        let err: string | undefined
         world = utils.world(worldName)
         if (world) {
             log(`World ${worldName} already imported.`)
@@ -63,26 +64,34 @@ class MultiverseClass {
         return new Promise(resolve => setTimeout(() => resolve(world), 1))
     }
 
-    public async cloneWorld(worldName: string, templateWorldName: string) {
-        await this.destroyWorld(worldName)
-        log(`Cloning world ${worldName}`)
-        const templateWorld = await this.importWorld(templateWorldName)
+    public async cloneWorld({
+        targetWorldname,
+        templateWorldname,
+    }: {
+        targetWorldname: string
+        templateWorldname: string
+    }): Promise<BukkitWorld | undefined> {
+        await this.destroyWorld(targetWorldname)
+        log(`Cloning world ${targetWorldname}`)
+        const templateWorld = await this.importWorld(templateWorldname)
         if (!templateWorld) {
-            log(`Cannot clone ${worldName}. ${templateWorldName} not found.`)
+            log(
+                `Cannot clone ${targetWorldname}. ${templateWorldname} not found.`
+            )
             return
         }
 
         const cloned = this.multiversePlugin.cloneWorld(
-            templateWorldName,
-            worldName,
+            templateWorldname,
+            targetWorldname,
             'normal'
         )
         if (!cloned) {
-            log(`Failed to clone world ${templateWorldName}`)
+            log(`Failed to clone world ${templateWorldname}`)
             return
         }
-        const world = utils.world(worldName)
-        log(`World clone complete for ${worldName}`)
+        const world = utils.world(targetWorldname)
+        log(`World clone complete for ${targetWorldname}`)
 
         // Have to do this to ensure world fully built.
         return new Promise(resolve => setTimeout(() => resolve(world), 1))

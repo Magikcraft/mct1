@@ -1,150 +1,167 @@
-import * as MobTools from '@magikcraft/mct1/mobs'
-import { ChestItems } from '@magikcraft/mct1/quests/mct1/chest-items'
-import { Journals } from '@magikcraft/mct1/quests/mct1/journals'
-import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
-import { user } from '@magikcraft/mct1/user'
-import { worldly } from '@magikcraft/mct1/world'
 import * as items from 'items'
+import * as MobTools from '../../../mobs'
+import { user } from '../../../user'
+import { QuestConfig } from '../../Quest'
 import * as questTools from '../../quest-tools'
+import { QuestMCT1 } from '../../QuestMCT1'
+import { ChestItems } from '../chest-items'
+import { Journals } from '../journals'
 import JailBrawl from './jail-brawl'
 import * as Locations from './locs'
 import Rockfall from './rockfall'
 
 export default class QuestMCT1Prologue extends QuestMCT1 {
-    jailGuard: any
-    rockfall: any
+    public jailGuard: any
+    public rockfall: any
 
     constructor(conf: QuestConfig) {
         super(conf)
         this.Locs = Locations.getLocations(this.world)
         this.state = {
-            hasJournal1: false,
-            hasInfiniteInsulin: false,
-            jailBreakStarted: false,
             combolockOpen: false,
+            hasInfiniteInsulin: false,
+            hasJournal1: false,
+            jailBreakStarted: false,
         }
     }
 
-    start() {
+    public start() {
         super.start()
-        const { player, world, log, options, Locs, state } = this
-        const { regions } = Locs
+        const { regions } = this.Locs
 
-        user(player).mct1.setFoodLevel(5)
-        user(player).mct1.setHealth(5)
-        user(player).mct1.bgl = 5
-        user(player).mct1.insulin = 0
+        user(this.player).mct1.setFoodLevel(5)
+        user(this.player).mct1.setHealth(5)
+        user(this.player).mct1.bgl = 5
+        user(this.player).mct1.insulin = 0
 
-        user(player).inventory.set([])
+        user(this.player).inventory.set([])
 
         // Region: jailHall.. Save player inventory
-        worldly(world).registerRegion(
+        this.world.registerRegion(
             'jailHall',
-            Locs.regions.jailHall[0],
-            Locs.regions.jailHall[1]
+            this.Locs.regions.jailHall[0],
+            this.Locs.regions.jailHall[1]
         )
-        worldly(world).registerPlayerEnterRegionEvent('jailHall', event => {
-            user(player).inventory.save(
+        this.world.registerPlayerEnterRegionEvent('jailHall', event => {
+            user(this.player).inventory.save(
                 ChestItems.jailCell.concat([Journals.jail1])
             )
         })
 
         // Close jail door
-        questTools.closeDoorAtLocation(Locs.locations.jailDoor, false)
+        questTools.closeDoorAtLocation(this.Locs.locations.jailDoor, false)
 
         // Setup Journal 1
-        const bookDrop = Locs.world.dropItem(
-            Locs.locations.journal,
+        const bookDrop = this.Locs.world.dropItem(
+            this.Locs.locations.journal,
             Journals.jail1
         )
         bookDrop.setVelocity(bookDrop.getVelocity().zero())
 
         // Setup jailGuard
-        this.jailGuard = MobTools.spawn('husk', Locs.locations.jailGuard)
-        this.jailGuard.getEquipment().setItemInHand(items['diamondSword'](1))
-        this.jailGuard.getEquipment().setHelmet(items['diamondHelmet'](1))
+        this.jailGuard = MobTools.spawn('husk', this.Locs.locations.jailGuard)
+        this.jailGuard.getEquipment().setItemInHand(items.diamondSword(1))
+        this.jailGuard.getEquipment().setHelmet(items.diamondHelmet(1))
 
         // Setup rockfall
-        this.rockfall = new Rockfall(Locs.regions.rockfall)
+        this.rockfall = new Rockfall(this.Locs.regions.rockfall)
 
         // Setup chest1
-        questTools.putItemsInChest(Locs.locations.chest1, ChestItems.jailCell)
+        questTools.putItemsInChest(
+            this.Locs.locations.chest1,
+            ChestItems.jailCell
+        )
     }
 
-    registerEvents() {
+    public registerEvents() {
         super.registerEvents()
-        const { player, world, log, options, Locs, state } = this
 
         // playerInteract
         this.registerEvent('playerInteract', event => {
-            if (event.player.name != player.name) return
+            if (event.player.name != this.player.name) {
+                return
+            }
             if (
                 event.action == 'RIGHT_CLICK_BLOCK' &&
                 event.clickedBlock.type == 'STONE_BUTTON'
             ) {
-                if (state.combolockOpen) {
+                if (this.state.combolockOpen) {
                     event.setCancelled(true)
                 }
             }
-            if (event.action != 'RIGHT_CLICK_BLOCK') return
-            if (event.clickedBlock.type != 'CHEST') return
+            if (event.action != 'RIGHT_CLICK_BLOCK') {
+                return
+            }
+            if (event.clickedBlock.type != 'CHEST') {
+                return
+            }
             // chest1 open
-            if (event.clickedBlock.y === 82 && !state.hasJournal1) {
+            if (event.clickedBlock.y === 82 && !this.state.hasJournal1) {
                 // Can only open chest after hasJournal1
-                log("Can't open chest until hasJournal1!")
+                this.log("Can't open chest until hasJournal1!")
                 event.setCancelled(true)
             }
         })
 
         // playerPickupItem
         this.registerEvent('playerPickupItem', event => {
-            if (event.player.name != player.name) return
-            if (event.player.world.name != world.name) return
+            const isThisPlayer = event.player.name == this.player.name
+            const isThisWorld = event.player.world.name == this.world.getName()
+            if (!isThisPlayer || !isThisWorld) {
+                return
+            }
+
             // Set hasJournal1 true on journal1 pickup
             if (event.item.itemStack.type == 'WRITTEN_BOOK') {
-                log('Picked up hasJournal1!')
-                state.hasJournal1 = true
-                this.debug('state', JSON.stringify(state))
+                this.log('Picked up hasJournal1!')
+                this.state.hasJournal1 = true
+                this.debug('state', JSON.stringify(this.state))
             }
         })
 
         // inventoryClick
         this.registerEvent('inventoryClick', event => {
-            if (event.whoClicked.name != player.name) return
-            log('event.clickedInventory', event.clickedInventory)
+            if (event.whoClicked.name != this.player.name) {
+                return
+            }
+            this.log('event.clickedInventory', event.clickedInventory)
             if (event.clickedInventory && event.clickedInventory.type) {
-                log('event.clickedInventory.type', event.clickedInventory.type)
+                this.log(
+                    'event.clickedInventory.type',
+                    event.clickedInventory.type
+                )
             }
             if (
                 event.clickedInventory &&
                 event.clickedInventory.type != 'PLAYER'
-            )
+            ) {
                 return
+            }
 
-            log('inventoryClick 1')
+            this.log('inventoryClick 1')
             // When player moves Insulin from chest to inventory, set insulinSlot and setInfiniteInsulin true.
-            log('event.cursor', event.cursor)
-            log('event.cursor.type', event.cursor.type)
+            this.log('event.cursor', event.cursor)
+            this.log('event.cursor.type', event.cursor.type)
             if (event.cursor && event.cursor.type) {
-                log('inventoryClick 2.1')
-                log(
+                this.log('inventoryClick 2.1')
+                this.log(
                     'user(player).mct1.isInsulinStack(event.cursor)',
-                    user(player).mct1.isInsulinStack(event.cursor)
+                    user(this.player).mct1.isInsulinStack(event.cursor)
                         ? 'true'
                         : 'false'
                 )
-                if (user(player).mct1.isInsulinStack(event.cursor)) {
-                    log('inventoryClick 2.2')
+                if (user(this.player).mct1.isInsulinStack(event.cursor)) {
+                    this.log('inventoryClick 2.2')
                     if (event.slot === -999 || event.slot > 8) {
                         event.setCancelled(true)
                     } else {
-                        user(player).mct1.insulinSlot = event.slot
-                        log('inventoryClick 3')
+                        user(this.player).mct1.insulinSlot = event.slot
+                        this.log('inventoryClick 3')
                         this.setTimeout(() => {
-                            user(player).mct1.setInfiniteInsulin(true)
-                            state.hasInfiniteInsulin = true
-                            log('Enable infinite Insulin!')
-                            log('state', JSON.stringify(state))
+                            user(this.player).mct1.setInfiniteInsulin(true)
+                            this.state.hasInfiniteInsulin = true
+                            this.log('Enable infinite Insulin!')
+                            this.log('state', JSON.stringify(this.state))
                         }, 100)
                     }
                 }
@@ -153,23 +170,27 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         // playerDropItem
         this.registerEvent('playerDropItem', event => {
-            if (event.player.name != player.name) return
+            if (event.player.name != this.player.name) {
+                return
+            }
             if (
                 event.itemDrop.type == 'DROPPED_ITEM' &&
                 event.itemDrop.itemStack
             ) {
                 // Handle case where Insulin is cursor item and chest closed via esc key
                 if (
-                    user(player).mct1.isInsulinStack(event.itemDrop.itemStack)
+                    user(this.player).mct1.isInsulinStack(
+                        event.itemDrop.itemStack
+                    )
                 ) {
-                    if (!state.hasInfiniteInsulin) {
+                    if (!this.state.hasInfiniteInsulin) {
                         // Cancel dropping insulin, instead move to inventory and setInfiniteInsulin(true).
                         event.setCancelled(true)
                         this.setTimeout(() => {
-                            user(player).mct1.setInfiniteInsulin(true)
-                            state.hasInfiniteInsulin = true
-                            log('Enable infinite Insulin!')
-                            log('state', JSON.stringify(state))
+                            user(this.player).mct1.setInfiniteInsulin(true)
+                            this.state.hasInfiniteInsulin = true
+                            this.log('Enable infinite Insulin!')
+                            this.log('state', JSON.stringify(this.state))
                         }, 100)
                     }
                 }
@@ -178,17 +199,21 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         // inventoryClose
         this.registerEvent('inventoryClose', event => {
-            if (event.player.name != player.name) return
-            if (event.inventory.type != 'CHEST') return
+            if (event.player.name != this.player.name) {
+                return
+            }
+            if (event.inventory.type != 'CHEST') {
+                return
+            }
 
             // chest1 close...
             if (event.inventory.location.y === 82) {
                 // if (state.hasInfiniteInsulin && !state.jailBreakStarted) {
-                if (!state.jailBreakStarted) {
-                    log(`startJailBreakSequence`)
+                if (!this.state.jailBreakStarted) {
+                    this.log(`startJailBreakSequence`)
                     this.startJailBreak()
-                    state.jailBreakStarted = true
-                    this.debug('state', JSON.stringify(state))
+                    this.state.jailBreakStarted = true
+                    this.debug('state', JSON.stringify(this.state))
                 }
             }
         })
@@ -210,9 +235,8 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         // })
     }
 
-    startJailBreak() {
-        const { player, world, log, options, Locs, state } = this
-        const jailBrawl = new JailBrawl(Locs, this.jailGuard)
+    public startJailBreak() {
+        const jailBrawl = new JailBrawl(this.Locs, this.jailGuard)
         jailBrawl.start()
 
         this.setTimeout(() => {
@@ -221,7 +245,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         this.setTimeout(() => {
             this.jailGuard.remove()
-            questTools.openDoorAtLocation(Locs.locations.jailDoor)
+            questTools.openDoorAtLocation(this.Locs.locations.jailDoor)
         }, 10000)
     }
 }

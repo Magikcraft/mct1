@@ -9,7 +9,7 @@ export interface JSONloc {
     world: string
 }
 
-export interface iVector3 {
+export interface IVector3 {
     // Vars -------------------------------------------------------------------
     x: number // Def of x variable
     y: number // Def of y variable
@@ -21,7 +21,7 @@ export interface iVector3 {
     toJSON(): JSONloc // Vector3 -> Scriptcraft Location JSON
     FromLocation(location) // bkLocation -> Vector3
     toLocation(): JSONloc // Vector3 -> bkLocation
-    FromArray(array: Array<number>) // Array -> Vector3
+    FromArray(array: number[]) // Array -> Vector3
     toArray(): Array<number | string> // Vector3 -> Array
 
     // Methods ----------------------------------------------------------------
@@ -54,12 +54,12 @@ export interface iVector3 {
     Multiply(number: number): Vector3 // this * number
     Divide(number: number): Vector3 // this / number
     Add(vector: Vector3): Vector3 // this + vector
-    Equals(vector: Vector3): Boolean
+    Equals(vector: Vector3): boolean
     // Compares this and vector to see if they are identical
     // x,y,z,world are used in this calculation
-    NotEquals(vector: Vector3): Boolean // !equals()
-    EqualsComponent(vector: Vector3): Boolean // equals(), but ommits world
-    NotEqualsComponent(vector: Vector3): Boolean // !equals(), but ommits world
+    NotEquals(vector: Vector3): boolean // !equals()
+    EqualsComponent(vector: Vector3): boolean // equals(), but ommits world
+    NotEqualsComponent(vector: Vector3): boolean // !equals(), but ommits world
 
     // Statics (Dont use -> this) ---------------------------------------------
     // return a new Vector3|number|string etc, vs alters -> this
@@ -89,13 +89,13 @@ export interface iVector3 {
     // Clamps the vector into a unit circle
     Scale(vectorA: Vector3, vectorB: Vector3): Vector3
     // Multiplies two vectors component-wise.
-    Average(vectors: Array<Vector3>): Vector3
+    Average(vectors: Vector3[]): Vector3
     // Averages a array of vectors to find the center
     GetWorlds(vectorA: Vector3, vectorB: Vector3)
     // Will come to a consensus on which world to use
     // Then apply that world to the two vectors
     // Used as a precaution of someone makes a vector with no world
-    GetWorldsArray(vectors: Array<Vector3>): string
+    GetWorldsArray(vectors: Vector3[]): string
     // Will come to a consensus on which world to use
     // Then apply that world to all of vectors
     // Used as a precaution of someone makes a vector with no world
@@ -110,17 +110,14 @@ export interface iVector3 {
  * @param {string} [world] - World setter
  */
 export class Vector3 {
-    x: number = 0
-    y: number = 0
-    z: number = 0
-    world: string = ''
-
-    constructor(x = 0, y = 0, z = 0, world = '') {
-        this.x = x
-        this.y = y
-        this.z = z
-        this.world = world
-    }
+    /**
+     * one
+     * @return {Vector3} - Vector3(1,1,1)
+     * @alias unit
+     *
+     * Will return a new Vector3(1,1,1)
+     */
+    public static one = Vector3.unit()
 
     // Inits
     // ----------------------------------------------------------------------------
@@ -132,7 +129,7 @@ export class Vector3 {
      *
      * Will create a Vector3 object based on the JSON Location
      */
-    static FromJSON(JSONlocation: JSONloc): Vector3 {
+    public static FromJSON(JSONlocation: JSONloc): Vector3 {
         return new Vector3(
             JSONlocation.x,
             JSONlocation.y,
@@ -142,52 +139,20 @@ export class Vector3 {
     }
 
     /**
-     * toJSON
-     * @return {object} - JSON Location
-     *
-     * Will return a JSON object based of the objects values
-     * If no world as been assigned previously, it will default to 'world'
-     */
-    toJSON(): JSONloc {
-        var loc: JSONloc = {
-            world: this.world || '',
-            x: this.x,
-            y: this.y,
-            z: this.z,
-            yaw: 0.0,
-            pitch: 0.0,
-        }
-        return loc
-    }
-
-    /**
      * FromLocation
      * @param {object} location - Minecraft/Scriptcrat location object
      * @return {Vector3} - Generated Vector3 from location
      *
      * Will create a Vector3 object based on a location object
      */
-    static FromLocation(location): Vector3 {
-        var JSONloc = utils.locationToJSON(location)
-        return new Vector3(JSONloc.x, JSONloc.y, JSONloc.z, JSONloc.world)
-    }
-
-    /**
-     * toLocation
-     * @return {object} - location
-     *
-     * Will create a location object based from the vector
-     */
-    toLocation() {
-        var loc: JSONloc = {
-            world: this.world,
-            x: this.x,
-            y: this.y,
-            z: this.z,
-            yaw: 0.0,
-            pitch: 0.0,
-        }
-        return utils.locationFromJSON(loc)
+    public static FromLocation(location): Vector3 {
+        const JsonLocation = utils.locationToJSON(location)
+        return new Vector3(
+            JsonLocation.x,
+            JsonLocation.y,
+            JsonLocation.z,
+            JsonLocation.world
+        )
     }
 
     /**
@@ -196,25 +161,11 @@ export class Vector3 {
      *
      * Will take a vector array and return a Vector3
      */
-    static FromArray(array) {
+    public static FromArray(array) {
         if (array[3]) {
             return new Vector3(array[0], array[1], array[2])
         } else {
             return new Vector3(array[0], array[1], array[2])
-        }
-    }
-
-    /**
-     * toArray
-     * @return {Array} - Vector Array
-     *
-     * Will return an array from a Vector3 object
-     */
-    toArray() {
-        if (this.world == '') {
-            return [this.x, this.y, this.z]
-        } else {
-            return [this.x, this.y, this.z, this.world]
         }
     }
 
@@ -224,7 +175,7 @@ export class Vector3 {
      *
      * Will return a new Vector3(0,0,-1)
      */
-    static back() {
+    public static back() {
         return new Vector3(0, 0, -1)
     }
     /**
@@ -233,7 +184,7 @@ export class Vector3 {
      *
      * Will return a new Vector3(0,0,1)
      */
-    static forward() {
+    public static forward() {
         return new Vector3(0, 0, 1)
     }
     /**
@@ -242,7 +193,7 @@ export class Vector3 {
      *
      * Will return a new Vector3(1,0,0)
      */
-    static right() {
+    public static right() {
         return new Vector3(1, 0, 0)
     }
     /**
@@ -251,7 +202,7 @@ export class Vector3 {
      *
      * Will return a new Vector3(-1,0,0)
      */
-    static left() {
+    public static left() {
         return new Vector3(-1, 0, 0)
     }
     /**
@@ -260,7 +211,7 @@ export class Vector3 {
      *
      * Will return a new Vector3(0,1,0)
      */
-    static up() {
+    public static up() {
         return new Vector3(0, 1, 0)
     }
     /**
@@ -269,7 +220,7 @@ export class Vector3 {
      *
      * Will return a new Vector3(0,-1,0)
      */
-    static down() {
+    public static down() {
         return new Vector3(0, -1, 0)
     }
     /**
@@ -279,17 +230,9 @@ export class Vector3 {
      *
      * Will return a new Vector3(1,1,1)
      */
-    static unit() {
+    public static unit() {
         return new Vector3(1, 1, 1)
     }
-    /**
-     * one
-     * @return {Vector3} - Vector3(1,1,1)
-     * @alias unit
-     *
-     * Will return a new Vector3(1,1,1)
-     */
-    static one = Vector3.unit()
     /**
      * zero
      * @return {Vector3} - Vector3(0,0,0)
@@ -297,141 +240,24 @@ export class Vector3 {
      * Will return a new Vector3(0,0,0)
      * Same as calling the constructor without parameters
      */
-    static zero = function() {
-        return new Vector3(0, 0, 0)
-    }
+    public static zero = () => new Vector3(0, 0, 0)
+
     /**
      * negativeInfinity
      * @return {Vector3} - Vector3(-Infinity,-Infinity,-Infinity)
      *
      * Will return a new Vector3(-Infinity,-Infinity,-Infinity)
      */
-    static negativeInfinity = function() {
-        return new Vector3(-Infinity, -Infinity, -Infinity)
-    }
+    public static negativeInfinity = () =>
+        new Vector3(-Infinity, -Infinity, -Infinity)
+
     /**
      * infinity
      * @return {Vector3} - Vector3(Infinity,Infinity,Infinity)
      *
      * Will return a new Vector3(Infinity,Infinity,Infinity)
      */
-    static infinity = function() {
-        return new Vector3(Infinity, Infinity, Infinity)
-    }
-
-    // Properties
-    // ----------------------------------------------------------------------------
-    // If this is made as a class, these will return based on its own values
-
-    /**
-     * magnitude
-     * @return {number} - Magnitude of the vector
-     *
-     * Will calculate the magnitude of the vector using Pythagorean Theorem
-     */
-    magnitude(): number {
-        return Math.sqrt(
-            Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2)
-        )
-    }
-
-    /**
-     * normalized
-     * @return {Vector3} - Normalized Vector
-     *
-     * Will scale the vector so that its magnitude is 1.
-     * Clamps the vector into a unit circle
-     */
-    normalized() {
-        var ratio = 1 / this.magnitude()
-        return new Vector3(this.x * ratio, this.y * ratio, this.z * ratio)
-    }
-
-    /**
-     * getWorld
-     * @param {boolean} worldObj
-     *
-     * Will return various instances of the world
-     * If given: worldObj = true,       then returns a bukkit world object
-     *           worldObj = false/null, then returns a string
-     */
-    getWorld(worldObj?: boolean): string | any {
-        worldObj = worldObj || false
-        if (worldObj) {
-            return utils.world(this.world)
-        } else {
-            return this.world
-        }
-    }
-
-    /**
-     * set
-     * @param {number} x - X axis value
-     * @param {number} y - X axis value
-     * @param {number} z - X axis value
-     * @param {string} [world] - world axis value
-     *
-     * Allows you to reassign the vector from its core components
-     */
-    set(x: number, y: number, z: number, world?: string) {
-        this.x = x
-        this.y = y
-        this.z = z
-        this.world = world || ''
-    }
-    /**
-     * toString
-     * @return {string} - Stringified vector object
-     *
-     * A custom function that outputs a string
-     * Will ommit world if this.world is not set
-     */
-    toString(): string {
-        if (this.world == '') {
-            return '[' + this.x + ', ' + this.y + ', ' + this.z + ']'
-        } else {
-            return (
-                '[' +
-                this.x +
-                ', ' +
-                this.y +
-                ', ' +
-                this.z +
-                ', ' +
-                this.world +
-                ']'
-            )
-        }
-    }
-    /**
-     * exportWorld
-     * @return {string|any}- Returns the world
-     */
-    exportWorld(): any {
-        if (typeof this.world != 'string') {
-            return this.world
-        } else {
-            return utils.world(this.world)
-        }
-    }
-    /**
-     * setWorldHeight
-     * @return {Vector3}
-     *
-     * Will set the vector.y to world top (128)
-     */
-    setWorldHeight(): Vector3 {
-        return new Vector3(this.x || 0, 128, this.z || 0, this.world)
-    }
-    /**
-     * setWorldBottom
-     * @return {Vector3}
-     *
-     * Will set the vector.y to world bottom (0)
-     */
-    setWorldBottom(): Vector3 {
-        return new Vector3(this.x || 0, 0, this.z || 0, this.world)
-    }
+    public static infinity = () => new Vector3(Infinity, Infinity, Infinity)
 
     // Operands
     // ----------------------------------------------------------------------------
@@ -457,7 +283,7 @@ export class Vector3 {
      *
      * Minus one vector from another
      */
-    static Subtract(vectorA: Vector3, vectorB: Vector3): Vector3 {
+    public static Subtract(vectorA: Vector3, vectorB: Vector3): Vector3 {
         return Vector3.Minus(vectorA, vectorB)
     }
     // /**
@@ -477,7 +303,7 @@ export class Vector3 {
      *
      * Times a vector by a number
      */
-    static Times(vectorA: Vector3, number: number): Vector3 {
+    public static Times(vectorA: Vector3, number: number): Vector3 {
         return Vector3.Multiply(vectorA, number)
     }
     // /**
@@ -504,7 +330,7 @@ export class Vector3 {
      *
      * Times a vector by a number
      */
-    static Multiply(vector: Vector3, number: number): Vector3 {
+    public static Multiply(vector: Vector3, number: number): Vector3 {
         return new Vector3(
             vector.x * number,
             vector.y * number,
@@ -536,7 +362,7 @@ export class Vector3 {
      *
      * Divides a vector by a number
      */
-    static Divide(vectorA: Vector3, number: number): Vector3 {
+    public static Divide(vectorA: Vector3, number: number): Vector3 {
         return new Vector3(
             vectorA.x / number,
             vectorA.y / number,
@@ -568,7 +394,7 @@ export class Vector3 {
      *
      * Adds a vector to another vector
      */
-    static Add(vectorA: Vector3, vectorB: Vector3): Vector3 {
+    public static Add(vectorA: Vector3, vectorB: Vector3): Vector3 {
         return new Vector3(
             vectorA.x + vectorB.x,
             vectorA.y + vectorB.y,
@@ -586,7 +412,7 @@ export class Vector3 {
      *
      * Checks if vectorA is the same as vectorB, not including world
      */
-    static EqualsComponent(vectorA: Vector3, vectorB: Vector3): boolean {
+    public static EqualsComponent(vectorA: Vector3, vectorB: Vector3): boolean {
         if (
             vectorA.x == vectorB.x &&
             vectorA.y == vectorB.y &&
@@ -597,7 +423,7 @@ export class Vector3 {
             return false
         }
     }
-    static NotEqualsComponent = (vectorA, vectorB) =>
+    public static NotEqualsComponent = (vectorA, vectorB) =>
         !Vector3.EqualsComponent(vectorA, vectorB)
 
     /**
@@ -609,7 +435,7 @@ export class Vector3 {
      *
      * Checks if vectorA is the same as vectorB, including world
      */
-    static Equals(vectorA: Vector3, vectorB: Vector3): boolean {
+    public static Equals(vectorA: Vector3, vectorB: Vector3): boolean {
         if (
             vectorA.x == vectorB.x &&
             vectorA.y == vectorB.y &&
@@ -621,7 +447,8 @@ export class Vector3 {
             return false
         }
     }
-    static NotEquals = (vectorA, vectorB) => !Vector3.Equals(vectorA, vectorB)
+    public static NotEquals = (vectorA, vectorB) =>
+        !Vector3.Equals(vectorA, vectorB)
 
     // Static Methods
     // ----------------------------------------------------------------------------
@@ -635,7 +462,7 @@ export class Vector3 {
      *
      * Returns the angle between the two vectors
      */
-    static Angle(vectorA, vectorB) {
+    public static Angle(vectorA, vectorB) {
         return (
             Vector3.Dot(vectorA, vectorB) /
             (vectorA.magnitude() * vectorB.magnitude())
@@ -650,7 +477,7 @@ export class Vector3 {
      *
      * Returns a copy of vector with its magnitude clamped to maxLength
      */
-    static ClampMagnitude(vector, maxLength) {
+    public static ClampMagnitude(vector, maxLength) {
         return Math.min(vector.magnitude(), maxLength)
     }
 
@@ -662,7 +489,7 @@ export class Vector3 {
      *
      * Cross Product of two vectors
      */
-    static Cross(vectorA, vectorB) {
+    public static Cross(vectorA, vectorB) {
         return new Vector3(
             vectorA.y * vectorB.z - vectorA.z * vectorB.y,
             vectorA.z * vectorB.x - vectorA.x * vectorB.z,
@@ -678,7 +505,7 @@ export class Vector3 {
      *
      * Minus one vector from another component wise (vectorA - vectorB)
      */
-    static Minus(vectorA, vectorB) {
+    public static Minus(vectorA, vectorB) {
         return new Vector3(
             vectorA.x - vectorB.x,
             vectorA.y - vectorB.y,
@@ -695,8 +522,8 @@ export class Vector3 {
      *
      * Returns the distance between vectorA and vectorB
      */
-    static Distance(vectorA, vectorB) {
-        var vector = new Vector3(
+    public static Distance(vectorA, vectorB) {
+        const vector = new Vector3(
             Math.abs(vectorA.x - vectorB.x),
             Math.abs(vectorA.y - vectorB.y),
             Math.abs(vectorA.z - vectorB.z)
@@ -714,7 +541,7 @@ export class Vector3 {
      *
      * Dot Product of two vectors
      */
-    static Dot(vectorA, vectorB) {
+    public static Dot(vectorA, vectorB) {
         return (
             vectorA.x * vectorB.x +
             vectorA.y * vectorB.y +
@@ -731,7 +558,7 @@ export class Vector3 {
      *
      * Linearly interpolates between two vectors
      */
-    static Lerp(vectorA, vectorB, percent) {
+    public static Lerp(vectorA, vectorB, percent) {
         percent = Math.max(0, Math.min(1, percent || 0.5))
         return this.LerpUnclamped(vectorA, vectorB, percent)
     }
@@ -745,9 +572,9 @@ export class Vector3 {
      *
      * Linearly interpolates between two vectors, without 0-1 percent sample clamp
      */
-    static LerpUnclamped(vectorA, vectorB, percent) {
+    public static LerpUnclamped(vectorA, vectorB, percent) {
         // Gets point inbetween the two vectors based on a float
-        var vectorBetween = Vector3.Subtract(vectorA, vectorB)
+        const vectorBetween = Vector3.Subtract(vectorA, vectorB)
         return vectorA.add(Vector3.Times(vectorBetween, percent || 0.5))
     }
 
@@ -759,7 +586,7 @@ export class Vector3 {
      *
      * Returns a vector that is made from the largest components of two vectors
      */
-    static Max(vectorA, vectorB) {
+    public static Max(vectorA, vectorB) {
         if (vectorA.magnitude() > vectorB.magnitude()) {
             return vectorA
         } else {
@@ -775,7 +602,7 @@ export class Vector3 {
      *
      * Returns a vector that is made from the smallest components of two vectors
      */
-    static Min(vectorA, vectorB) {
+    public static Min(vectorA, vectorB) {
         if (vectorA.magnitude() < vectorB.magnitude()) {
             return vectorA
         } else {
@@ -791,7 +618,7 @@ export class Vector3 {
      *
      * Returns a vector that is made from the smallest components of two vectors
      */
-    static Normalize(vector) {
+    public static Normalize(vector) {
         return vector.normalized()
     }
 
@@ -808,7 +635,7 @@ export class Vector3 {
      *
      * Multiplies two vectors component-wise.
      */
-    static Scale(vectorA, vectorB) {
+    public static Scale(vectorA, vectorB) {
         return new Vector3(
             vectorA.x * vectorB.x,
             vectorA.y * vectorB.y,
@@ -824,20 +651,21 @@ export class Vector3 {
 
     // --------------------------------------
 
-    static Average(vectors: Array<Vector3>): Vector3 {
+    public static Average(vectors: Vector3[]): Vector3 {
         if (vectors.length == 0) {
             return vectors[0]
         } else {
-            var vector = new Vector3(0, 0, 0, this.GetWorldsArray(vectors))
+            let vector = new Vector3(0, 0, 0, this.GetWorldsArray(vectors))
+            // tslint:disable-next-line: prefer-for-of
             for (let i = 0; i < vectors.length; i++) {
                 vector = Vector3.Add(vector, vectors[i])
             }
             return Vector3.Divide(vector, vectors.length)
         }
     }
-    static GetWorlds(vectorA: Vector3, vectorB: Vector3) {
-        var worldA = vectorA.world || ''
-        var worldB = vectorA.world || ''
+    public static GetWorlds(vectorA: Vector3, vectorB: Vector3) {
+        const worldA = vectorA.world || ''
+        const worldB = vectorA.world || ''
         if (worldA == '' && worldB == '') {
             // No world is given
             return ''
@@ -852,7 +680,7 @@ export class Vector3 {
             return worldA
         }
     }
-    static GetWorldsArray(vectors: Array<Vector3>): string {
+    public static GetWorldsArray(vectors: Vector3[]): string {
         // var worlds: Array<string> = [];
         // vectors.forEach(function(v) { worlds.push(v.world) });
         // var uWorlds = worlds.filter(function(item, i, ar){ return ar.indexOf(item) === i; });
@@ -860,14 +688,14 @@ export class Vector3 {
         // return fWorlds.length == 0 ? '' : fWorlds.length == 1 ? fWorlds[0] : fWorlds[Math.round(Math.random() * fWorlds.length)]
 
         // Old code
-        var uniqueWorlds: Array<string> = []
-        for (var i = 0; i < vectors.length; i++) {
+        const uniqueWorlds: string[] = []
+        for (let i = 0; i < vectors.length; i++) {
             if (uniqueWorlds.length == 0) {
                 // If no worlds exist yet
                 uniqueWorlds.push(vectors[i].world || '') // Add it
             } else {
                 // If worlds exist
-                for (var j = 0; j < uniqueWorlds.length; i++) {
+                for (const j = 0; j < uniqueWorlds.length; i++) {
                     // For every unique word
                     if (uniqueWorlds[i] != (vectors[i].world || '')) {
                         // If the dose not exist yet in the array
@@ -878,8 +706,9 @@ export class Vector3 {
             // vectors[i].world || '';
         }
         // Due to the way the logic works, remove blank strings ('')
-        var finalWorlds: Array<string> = []
-        for (var k = 0; k < uniqueWorlds.length; k++) {
+        const finalWorlds: string[] = []
+        // tslint:disable-next-line: prefer-for-of
+        for (let k = 0; k < uniqueWorlds.length; k++) {
             if (uniqueWorlds[k] !== (undefined || null || '')) {
                 finalWorlds.push(uniqueWorlds[k])
             }
@@ -895,7 +724,7 @@ export class Vector3 {
             return uniqueWorlds[Math.round(Math.random() * uniqueWorlds.length)]
         }
     }
-    static GetRandomPointAround(point: Vector3, radius: number) {
+    public static GetRandomPointAround(point: Vector3, radius: number) {
         const randAngleHoz = Math.round(Math.random() * 360)
         const randAngleVert = Math.round(Math.random() * 360)
         const randDist = Math.random() * radius
@@ -904,5 +733,180 @@ export class Vector3 {
         const z = Math.sin(randAngleHoz) * randDist
         const finalPoint = Vector3.Add(point, new Vector3(x, y, z))
         return finalPoint
+    }
+    public x: number = 0
+    public y: number = 0
+    public z: number = 0
+    public world: string = ''
+
+    constructor(x = 0, y = 0, z = 0, world = '') {
+        this.x = x
+        this.y = y
+        this.z = z
+        this.world = world
+    }
+
+    /**
+     * toJSON
+     * @return {object} - JSON Location
+     *
+     * Will return a JSON object based of the objects values
+     * If no world as been assigned previously, it will default to 'world'
+     */
+    public toJSON(): JSONloc {
+        const loc: JSONloc = {
+            pitch: 0.0,
+            world: this.world || '',
+            x: this.x,
+            y: this.y,
+            yaw: 0.0,
+            z: this.z,
+        }
+        return loc
+    }
+
+    /**
+     * toLocation
+     * @return {object} - location
+     *
+     * Will create a location object based from the vector
+     */
+    public toLocation() {
+        const loc: JSONloc = {
+            pitch: 0.0,
+            world: this.world,
+            x: this.x,
+            y: this.y,
+            yaw: 0.0,
+            z: this.z,
+        }
+        return utils.locationFromJSON(loc)
+    }
+    // Properties
+    // ----------------------------------------------------------------------------
+    // If this is made as a class, these will return based on its own values
+
+    /**
+     * toArray
+     * @return {Array} - Vector Array
+     *
+     * Will return an array from a Vector3 object
+     */
+    public toArray() {
+        if (this.world == '') {
+            return [this.x, this.y, this.z]
+        } else {
+            return [this.x, this.y, this.z, this.world]
+        }
+    }
+
+    /**
+     * magnitude
+     * @return {number} - Magnitude of the vector
+     *
+     * Will calculate the magnitude of the vector using Pythagorean Theorem
+     */
+    public magnitude(): number {
+        return Math.sqrt(
+            Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2)
+        )
+    }
+
+    /**
+     * normalized
+     * @return {Vector3} - Normalized Vector
+     *
+     * Will scale the vector so that its magnitude is 1.
+     * Clamps the vector into a unit circle
+     */
+    public normalized() {
+        const ratio = 1 / this.magnitude()
+        return new Vector3(this.x * ratio, this.y * ratio, this.z * ratio)
+    }
+
+    /**
+     * getWorld
+     * @param {boolean} worldObj
+     *
+     * Will return various instances of the world
+     * If given: worldObj = true,       then returns a bukkit world object
+     *           worldObj = false/null, then returns a string
+     */
+    public getWorld(worldObj?: boolean): string | any {
+        worldObj = worldObj || false
+        if (worldObj) {
+            return utils.world(this.world)
+        } else {
+            return this.world
+        }
+    }
+
+    /**
+     * set
+     * @param {number} x - X axis value
+     * @param {number} y - X axis value
+     * @param {number} z - X axis value
+     * @param {string} [world] - world axis value
+     *
+     * Allows you to reassign the vector from its core components
+     */
+    public set(x: number, y: number, z: number, world?: string) {
+        this.x = x
+        this.y = y
+        this.z = z
+        this.world = world || ''
+    }
+    /**
+     * toString
+     * @return {string} - Stringified vector object
+     *
+     * A custom function that outputs a string
+     * Will ommit world if this.world is not set
+     */
+    public toString(): string {
+        if (this.world == '') {
+            return '[' + this.x + ', ' + this.y + ', ' + this.z + ']'
+        } else {
+            return (
+                '[' +
+                this.x +
+                ', ' +
+                this.y +
+                ', ' +
+                this.z +
+                ', ' +
+                this.world +
+                ']'
+            )
+        }
+    }
+    /**
+     * exportWorld
+     * @return {string|any}- Returns the world
+     */
+    public exportWorld(): any {
+        if (typeof this.world != 'string') {
+            return this.world
+        } else {
+            return utils.world(this.world)
+        }
+    }
+    /**
+     * setWorldHeight
+     * @return {Vector3}
+     *
+     * Will set the vector.y to world top (128)
+     */
+    public setWorldHeight(): Vector3 {
+        return new Vector3(this.x || 0, 128, this.z || 0, this.world)
+    }
+    /**
+     * setWorldBottom
+     * @return {Vector3}
+     *
+     * Will set the vector.y to world bottom (0)
+     */
+    public setWorldBottom(): Vector3 {
+        return new Vector3(this.x || 0, 0, this.z || 0, this.world)
     }
 }

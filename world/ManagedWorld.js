@@ -1,15 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
-var log_1 = require("@magikcraft/mct1/log");
-var tools = require("@magikcraft/mct1/tools");
-var index_1 = require("@magikcraft/mct1/world/index");
-var server = require("@magikcraft/mct1/utils/server");
+var log_1 = require("../log");
+var tools = require("../tools");
+var server = require("../utils/server");
 var Biome = Java.type('org.bukkit.block.Biome');
 var log = log_1.Logger(__filename);
-// User class
-var World = /** @class */ (function () {
-    function World(world) {
+var ManagedWorld = /** @class */ (function () {
+    function ManagedWorld(world, playername) {
         var _this = this;
         this.started = false;
         this.regions = [];
@@ -17,15 +15,17 @@ var World = /** @class */ (function () {
         this.events = {};
         this.intervals = {};
         this.timers = {};
-        this.destroyWorldIfEmpty = false;
-        this.destroyWorldIfEmptyDelay = 3000;
         // setTime = (time: 'dawn' | 'day' | 'dusk' | 'night') => server.executeCommand(`time ${time} ${this.world.name}`)
         this.setDawn = function () { return _this.world.setTime(6000); };
         this.setDay = function () { return _this.world.setTime(12000); };
         this.setDusk = function () { return _this.world.setTime(18000); };
         this.setNight = function () { return _this.world.setTime(20000); };
-        this.setSun = function () { return _this.world.setStorm(false) || _this.world.setThundering(false); };
-        this.setStorm = function () { return _this.world.setThundering(true) || _this.world.setStorm(true); };
+        this.setSun = function () {
+            return _this.world.setStorm(false) || _this.world.setThundering(false);
+        };
+        this.setStorm = function () {
+            return _this.world.setThundering(true) || _this.world.setStorm(true);
+        };
         this.setRain = function () { return _this.world.setStorm(true); };
         this.registerPlayerEnterRegionEvent = function (regionName, handler, player) {
             _this._registerPlayerRegionEvent('enter', regionName, handler, player);
@@ -38,15 +38,16 @@ var World = /** @class */ (function () {
             this.intervals[k] = setInterval(callback, interval);
         };
         this.world = world;
+        this.worldname = world.name;
+        this.playername = playername;
         this.logger = log_1.Logger("world--" + this.world.name);
         this._watchPlayersJoinWorld();
     }
-    World.prototype.start = function () {
+    ManagedWorld.prototype.start = function () {
         this._watchPlayersMove();
-        this._watchPlayersLeaveWorld();
         this.started = true;
     };
-    World.prototype.stop = function () {
+    ManagedWorld.prototype.stop = function () {
         this.unregisterAllEvents();
         this.clearAllTimeouts();
         this.clearAllIntervals();
@@ -54,15 +55,21 @@ var World = /** @class */ (function () {
         this._watchPlayersJoinWorld();
         this.started = false;
     };
-    World.prototype.cleanse = function () {
+    ManagedWorld.prototype.cleanse = function () {
         this.unregisterAllEvents();
         this.clearAllTimeouts();
         this.clearAllIntervals();
     };
-    World.prototype.killAll = function (type) {
+    ManagedWorld.prototype.getBukkitWorld = function () {
+        return this.world;
+    };
+    ManagedWorld.prototype.getName = function () {
+        return this.world.name;
+    };
+    ManagedWorld.prototype.killAll = function (type) {
         server.executeCommand("killall " + type + " " + this.world.name);
     };
-    World.prototype.setChunkBiome = function (loc, biome) {
+    ManagedWorld.prototype.setChunkBiome = function (loc, biome) {
         var chunk = this.world.getChunkAt(loc);
         for (var x = 0; x < 16; x++) {
             for (var z = 0; z < 16; z++) {
@@ -73,25 +80,26 @@ var World = /** @class */ (function () {
             }
         }
     };
-    World.prototype.registerRegion = function (regionName, loc1, loc2) {
+    ManagedWorld.prototype.registerRegion = function (regionName, loc1, loc2) {
         this.regions.push({
-            name: regionName,
-            loc1: loc1,
-            loc2: loc2,
             enterEventHandlers: [],
             exitEventHandlers: [],
+            loc1: loc1,
+            loc2: loc2,
+            name: regionName,
         });
     };
-    World.prototype.log = function (label, log) {
-        this.logger(label, log);
+    ManagedWorld.prototype.log = function (label, msg) {
+        this.logger(label, msg);
     };
-    World.prototype.registerPlayerExitRegionEvent = function (regionName, handler, player) {
+    ManagedWorld.prototype.registerPlayerExitRegionEvent = function (regionName, handler, player) {
         this._registerPlayerRegionEvent('exit', regionName, handler, player);
     };
-    World.prototype.preventDeadPlayerDrops = function () {
+    ManagedWorld.prototype.preventDeadPlayerDrops = function () {
         this.registerEvent('playerDeath', function (event) {
-            if (event.entity.type != 'PLAYER')
+            if (event.entity.type != 'PLAYER') {
                 return;
+            }
             // Clean-up dropped items
             setTimeout(function () {
                 event.entity.getNearbyEntities(1, 1, 1).forEach(function (entity) {
@@ -102,19 +110,21 @@ var World = /** @class */ (function () {
             }, 1);
         });
     };
-    World.prototype.preventBlockBreak = function (except) {
+    ManagedWorld.prototype.preventBlockBreak = function (except) {
         var _this = this;
         if (except === void 0) { except = []; }
         this.registerEvent('blockBreak', function (event) {
-            if (event.block.world.name !== _this.world.name)
+            if (event.block.world.name !== _this.world.name) {
                 return;
+            }
             var blockType = event.block.type.toString();
-            if (except.includes(blockType))
+            if (except.includes(blockType)) {
                 return;
+            }
             event.setCancelled(true);
         });
     };
-    World.prototype.preventMobSpawning = function (except) {
+    ManagedWorld.prototype.preventMobSpawning = function (except) {
         var _this = this;
         if (except === void 0) { except = []; }
         this.unregisterEvent('preventMobSpawning');
@@ -137,101 +147,105 @@ var World = /** @class */ (function () {
             event.setCancelled(true);
         }, 'preventMobSpawning');
     };
-    World.prototype.setDestroyWorldIfEmpty = function (bool, delay) {
-        this.destroyWorldIfEmpty = bool;
-        if (delay) {
-            this.destroyWorldIfEmptyDelay = delay;
-        }
-    };
-    World.prototype.setTimeout = function (callback, interval, key) {
+    ManagedWorld.prototype.setTimeout = function (callback, interval, key) {
         var k = key || tools.uuid();
         this.timers[k] = setTimeout(callback, interval);
     };
-    World.prototype.clearTimeout = function (key) {
+    ManagedWorld.prototype.clearTimeout = function (key) {
         clearTimeout(this.timers[key]);
     };
-    World.prototype.clearTimeoutsLike = function (wildcard) {
+    ManagedWorld.prototype.clearTimeoutsLike = function (wildcard) {
         for (var key in this.timers) {
             if (key.includes(wildcard)) {
                 this.clearTimeout(key);
             }
         }
     };
-    World.prototype.clearAllTimeouts = function () {
+    ManagedWorld.prototype.clearAllTimeouts = function () {
+        // tslint:disable-next-line: forin
         for (var key in this.timers) {
             this.clearTimeout(key);
         }
     };
-    World.prototype.clearInterval = function (key) {
+    ManagedWorld.prototype.clearInterval = function (key) {
         clearInterval(this.intervals[key]);
     };
-    World.prototype.clearIntervalsLike = function (wildcard) {
+    ManagedWorld.prototype.clearIntervalsLike = function (wildcard) {
         for (var key in this.timers) {
             if (key.includes(wildcard)) {
                 this.clearInterval(key);
             }
         }
     };
-    World.prototype.clearAllIntervals = function () {
+    ManagedWorld.prototype.clearAllIntervals = function () {
         for (var key in this.intervals) {
             this.clearInterval(key);
         }
     };
-    World.prototype.registerEvent = function (type, callback, key) {
+    ManagedWorld.prototype.registerEvent = function (type, callback, key) {
         var k = key || tools.uuid();
         this.unregisterEvent(k);
         this.events[k] = events[type](callback);
     };
-    World.prototype.unregisterEvent = function (key) {
-        if (this.events[key])
-            this.events[key].unregister();
+    ManagedWorld.prototype.spawnEntity = function (location, entityType) {
+        this.world.spawnEntity(location, entityType);
     };
-    World.prototype.unregisterEventsLike = function (wildcard) {
+    ManagedWorld.prototype.unregisterEvent = function (key) {
+        if (this.events[key]) {
+            this.events[key].unregister();
+        }
+    };
+    ManagedWorld.prototype.unregisterEventsLike = function (wildcard) {
         for (var key in this.events) {
             if (key.includes(wildcard)) {
                 this.unregisterEvent(key);
             }
         }
     };
-    World.prototype.unregisterAllEvents = function () {
+    ManagedWorld.prototype.unregisterAllEvents = function () {
         for (var key in this.events) {
             this.unregisterEvent(key);
         }
     };
-    World.prototype._registerPlayerRegionEvent = function (type, regionName, handler, player) {
+    ManagedWorld.prototype._registerPlayerRegionEvent = function (type, regionName, handler, player) {
         var region;
         this.regions.forEach(function (r) {
             // use forEach as find pollyfill may not be loaded...
-            if (r.name === regionName)
+            if (r.name === regionName) {
                 region = r;
+            }
         });
         if (region) {
-            if (type === 'enter')
+            if (type === 'enter') {
                 region.enterEventHandlers.push({ handler: handler, player: player });
-            if (type === 'exit')
+            }
+            if (type === 'exit') {
                 region.exitEventHandlers.push({ handler: handler, player: player });
+            }
         }
     };
-    World.prototype._watchPlayersJoinWorld = function () {
+    ManagedWorld.prototype._watchPlayersJoinWorld = function () {
         var _this = this;
         this.world.players.forEach(function (player) { return _this._playerJoinedWorld(player); });
         this.registerEvent('playerJoin', function (event) {
-            if (event.player.world.name !== _this.world.name)
+            if (event.player.world.name !== _this.world.name) {
                 return;
+            }
             _this._playerJoinedWorld(event.player);
         });
         this.registerEvent('playerChangedWorld', function (event) {
-            if (event.player.world.name !== _this.world.name)
+            if (event.player.world.name !== _this.world.name) {
                 return;
+            }
             _this._playerJoinedWorld(event.player);
         });
     };
-    World.prototype._playerJoinedWorld = function (player) {
+    ManagedWorld.prototype._playerJoinedWorld = function (player) {
         this.log("player " + player.name + " joined world " + this.world.name);
         var worldPlayer = {
-            player: player,
-            moveCount: 0,
             inRegionNames: [],
+            moveCount: 0,
+            player: player,
         };
         // Ensure clean
         // player.setBedSpawnLocation(this.world.getSpawnLocation())
@@ -242,49 +256,27 @@ var World = /** @class */ (function () {
             this.start();
         }
     };
-    World.prototype._watchPlayersLeaveWorld = function () {
-        var _this = this;
-        this.registerEvent('playerChangedWorld', function (event) {
-            if (event.from.name !== _this.world.name)
-                return;
-            _this._playerLeftWorld(event.player);
-        });
-    };
-    World.prototype._playerLeftWorld = function (player) {
-        var _this = this;
-        this.log("player " + player.name + " left world " + this.world.name);
-        this.worldPlayers = this.worldPlayers.filter(function (wp) { return wp.player.name != player.name; });
-        // If no players are left in world. Run stop.
-        if (!this.worldPlayers.length) {
-            this.stop();
-            if (this.destroyWorldIfEmpty) {
-                this.setTimeout(function () {
-                    if (!_this.worldPlayers.length) {
-                        index_1.worldlyDelete(_this.world);
-                        server.executeCommand("mv delete " + _this.world.name);
-                        server.executeCommand("mvconfirm");
-                    }
-                }, this.destroyWorldIfEmptyDelay);
-            }
-        }
-    };
-    World.prototype._watchPlayersMove = function () {
+    ManagedWorld.prototype._watchPlayersMove = function () {
         var _this = this;
         this.registerEvent('playerMove', function (event) {
-            if (event.player.world.name !== _this.world.name)
+            if (event.player.world.name !== _this.world.name) {
                 return;
-            if (!_this.regions.length)
+            }
+            if (!_this.regions.length) {
                 return;
+            }
             var worldPlayer = _this.worldPlayers.find(function (p) { return event.player.name === p.player.name; });
-            if (!worldPlayer)
+            if (!worldPlayer) {
                 return;
+            }
             worldPlayer.moveCount++;
-            if (worldPlayer.moveCount % 3 !== 0)
+            if (worldPlayer.moveCount % 3 !== 0) {
                 return;
+            }
             _this._playerMove(worldPlayer);
         });
     };
-    World.prototype._playerMove = function (worldPlayer) {
+    ManagedWorld.prototype._playerMove = function (worldPlayer) {
         var _this = this;
         // this.log('_playerMove')
         var player = worldPlayer.player;
@@ -300,8 +292,10 @@ var World = /** @class */ (function () {
                     log(player.name + " exited region " + region.name);
                     // Run handlers
                     region.exitEventHandlers.forEach(function (handle) {
-                        if (handle.player && handle.player.name != player.name)
+                        if (handle.player &&
+                            handle.player.name != player.name) {
                             return;
+                        }
                         handle.handler({ player: player });
                     });
                 }
@@ -319,14 +313,15 @@ var World = /** @class */ (function () {
                 _this.log(player.name + " entered region " + region.name);
                 // Run handlers
                 region.enterEventHandlers.forEach(function (handle) {
-                    if (handle.player && handle.player.name != player.name)
+                    if (handle.player && handle.player.name != player.name) {
                         return;
+                    }
                     handle.handler({ player: player });
                 });
             }
         });
     };
-    World.prototype._regionContainsLocation = function (reg, loc) {
+    ManagedWorld.prototype._regionContainsLocation = function (reg, loc) {
         if ((loc.x >= reg.loc1.x && loc.x <= reg.loc2.x) ||
             (loc.x <= reg.loc1.x && loc.x >= reg.loc2.x)) {
             if ((loc.y >= reg.loc1.y && loc.y <= reg.loc2.y) ||
@@ -339,6 +334,6 @@ var World = /** @class */ (function () {
         }
         return false;
     };
-    return World;
+    return ManagedWorld;
 }());
-exports.default = World;
+exports.default = ManagedWorld;

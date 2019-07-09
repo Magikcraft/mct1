@@ -6,15 +6,36 @@ var commando_1 = require("@magikcraft/mct1/utils/commando");
 var utils = require("utils");
 // import { isAdminUser } from 'magikcraft/user';
 var log = log_1.Logger(__filename);
+function parseOptions(args, playername) {
+    var parsed = {
+        questName: args.shift(),
+        method: 'start',
+        options: {
+            verbose: false,
+        },
+        playername: playername,
+    };
+    var isOption = function (s) { return s.includes(':'); };
+    var hasMoreArgs = !!args[0];
+    var firstArgIsOption = hasMoreArgs ? isOption(args[0]) : false;
+    parsed.method = hasMoreArgs && !firstArgIsOption ? args.shift() : 'start';
+    args.forEach(function (arg) {
+        if (isOption(arg)) {
+            var _a = arg.split(':'), key = _a[0], value = _a[1];
+            parsed.options[key] = value;
+        }
+        else {
+            parsed.playername = arg;
+        }
+    });
+    return parsed;
+}
+// Format: /quest <command> [playername?] [...option:value?]
 commando_1.default('quest', function (args, player) {
     log('/quest - args: ' + args);
-    var questName = args.shift();
-    if (questName == 'mct1') {
+    var parsed = parseOptions(args, player.name);
+    if (parsed.questName == 'mct1') {
         echo(player, 'You are about to start the MCT1 quest!');
-    }
-    var method = 'start';
-    if (args[0] && !args[0].includes(':')) {
-        method = args.shift();
     }
     // allow admins to run the quest command for other users like /quest mct1 start <player>
     // let playername = player.name
@@ -22,23 +43,11 @@ commando_1.default('quest', function (args, player) {
     //     playername = args.shift()!
     // }
     // For now, let any player start the quest for another
-    var playername = player.name;
-    if (args[0] && !args[0].includes(':')) {
-        playername = args.shift();
-    }
-    var questPlayer = utils.player(playername);
-    // Remaining args should be options.
-    var opts = {};
-    args.forEach(function (arg) {
-        if (!arg.includes(':')) {
-            log("unknown option '" + arg + "' in command /quest " + questName + " " + method + " " + args.join(' '));
-            return;
-        }
-        else {
-            opts[arg.split(':')[0]] = arg.split(':')[1];
-        }
+    var questPlayer = utils.player(parsed.playername);
+    quests_1.questCommand({
+        method: parsed.method,
+        opts: parsed.options,
+        player: questPlayer,
+        questName: parsed.questName,
     });
-    opts.mode = opts.mode || 'single'; // single | multi
-    opts.verbose = opts.verbose || false;
-    quests_1.questCommand(questName, method, questPlayer, opts);
 });

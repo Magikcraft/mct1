@@ -13,24 +13,22 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+var QuestMCT1_1 = require("../../../quests/QuestMCT1");
 var Locations = require("./locs");
-var world_1 = require("@magikcraft/mct1/world");
-var Quest_1 = require("@magikcraft/mct1/quests/Quest");
 var QuestMCT1Village = /** @class */ (function (_super) {
     __extends(QuestMCT1Village, _super);
     function QuestMCT1Village(conf) {
         var _this = _super.call(this, conf) || this;
-        _this.Locs = Locations.getLocations(_this.world);
+        _this.Locs = Locations.getLocations(_this.world.getBukkitWorld());
         _super.prototype.registerEvents.call(_this);
         return _this;
     }
     QuestMCT1Village.prototype.start = function () {
         _super.prototype.start.call(this);
-        var world = this.world;
-        world_1.worldly(world).setDay();
-        world_1.worldly(world).setSun();
+        this.world.setDay();
+        this.world.setSun();
         this.setMCT1SuperPowers(true);
     };
     return QuestMCT1Village;
-}(Quest_1.QuestMCT1));
+}(QuestMCT1_1.QuestMCT1));
 exports.default = QuestMCT1Village;

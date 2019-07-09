@@ -13,14 +13,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var MobTools = require("@magikcraft/mct1/mobs");
-var chest_items_1 = require("@magikcraft/mct1/quests/mct1/chest-items");
-var journals_1 = require("@magikcraft/mct1/quests/mct1/journals");
-var Quest_1 = require("@magikcraft/mct1/quests/Quest");
-var user_1 = require("@magikcraft/mct1/user");
-var world_1 = require("@magikcraft/mct1/world");
 var items = require("items");
+var MobTools = require("../../../mobs");
+var user_1 = require("../../../user");
 var questTools = require("../../quest-tools");
+var QuestMCT1_1 = require("../../QuestMCT1");
+var chest_items_1 = require("../chest-items");
+var journals_1 = require("../journals");
 var jail_brawl_1 = require("./jail-brawl");
 var Locations = require("./locs");
 var rockfall_1 = require("./rockfall");
@@ -30,112 +29,117 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         var _this = _super.call(this, conf) || this;
         _this.Locs = Locations.getLocations(_this.world);
         _this.state = {
-            hasJournal1: false,
-            hasInfiniteInsulin: false,
-            jailBreakStarted: false,
             combolockOpen: false,
+            hasInfiniteInsulin: false,
+            hasJournal1: false,
+            jailBreakStarted: false,
         };
         return _this;
     }
     QuestMCT1Prologue.prototype.start = function () {
+        var _this = this;
         _super.prototype.start.call(this);
-        var _a = this, player = _a.player, world = _a.world, log = _a.log, options = _a.options, Locs = _a.Locs, state = _a.state;
-        var regions = Locs.regions;
-        user_1.user(player).mct1.setFoodLevel(5);
-        user_1.user(player).mct1.setHealth(5);
-        user_1.user(player).mct1.bgl = 5;
-        user_1.user(player).mct1.insulin = 0;
-        user_1.user(player).inventory.set([]);
+        var regions = this.Locs.regions;
+        user_1.user(this.player).mct1.setFoodLevel(5);
+        user_1.user(this.player).mct1.setHealth(5);
+        user_1.user(this.player).mct1.bgl = 5;
+        user_1.user(this.player).mct1.insulin = 0;
+        user_1.user(this.player).inventory.set([]);
         // Region: jailHall.. Save player inventory
-        world_1.worldly(world).registerRegion('jailHall', Locs.regions.jailHall[0], Locs.regions.jailHall[1]);
-        world_1.worldly(world).registerPlayerEnterRegionEvent('jailHall', function (event) {
-            user_1.user(player).inventory.save(chest_items_1.ChestItems.jailCell.concat([journals_1.Journals.jail1]));
+        this.world.registerRegion('jailHall', this.Locs.regions.jailHall[0], this.Locs.regions.jailHall[1]);
+        this.world.registerPlayerEnterRegionEvent('jailHall', function (event) {
+            user_1.user(_this.player).inventory.save(chest_items_1.ChestItems.jailCell.concat([journals_1.Journals.jail1]));
         });
         // Close jail door
-        questTools.closeDoorAtLocation(Locs.locations.jailDoor, false);
+        questTools.closeDoorAtLocation(this.Locs.locations.jailDoor, false);
         // Setup Journal 1
-        var bookDrop = Locs.world.dropItem(Locs.locations.journal, journals_1.Journals.jail1);
+        var bookDrop = this.Locs.world.dropItem(this.Locs.locations.journal, journals_1.Journals.jail1);
         bookDrop.setVelocity(bookDrop.getVelocity().zero());
         // Setup jailGuard
-        this.jailGuard = MobTools.spawn('husk', Locs.locations.jailGuard);
-        this.jailGuard.getEquipment().setItemInHand(items['diamondSword'](1));
-        this.jailGuard.getEquipment().setHelmet(items['diamondHelmet'](1));
+        this.jailGuard = MobTools.spawn('husk', this.Locs.locations.jailGuard);
+        this.jailGuard.getEquipment().setItemInHand(items.diamondSword(1));
+        this.jailGuard.getEquipment().setHelmet(items.diamondHelmet(1));
         // Setup rockfall
-        this.rockfall = new rockfall_1.default(Locs.regions.rockfall);
+        this.rockfall = new rockfall_1.default(this.Locs.regions.rockfall);
         // Setup chest1
-        questTools.putItemsInChest(Locs.locations.chest1, chest_items_1.ChestItems.jailCell);
+        questTools.putItemsInChest(this.Locs.locations.chest1, chest_items_1.ChestItems.jailCell);
     };
     QuestMCT1Prologue.prototype.registerEvents = function () {
         var _this = this;
         _super.prototype.registerEvents.call(this);
-        var _a = this, player = _a.player, world = _a.world, log = _a.log, options = _a.options, Locs = _a.Locs, state = _a.state;
         // playerInteract
         this.registerEvent('playerInteract', function (event) {
-            if (event.player.name != player.name)
+            if (event.player.name != _this.player.name) {
                 return;
+            }
             if (event.action == 'RIGHT_CLICK_BLOCK' &&
                 event.clickedBlock.type == 'STONE_BUTTON') {
-                if (state.combolockOpen) {
+                if (_this.state.combolockOpen) {
                     event.setCancelled(true);
                 }
             }
-            if (event.action != 'RIGHT_CLICK_BLOCK')
+            if (event.action != 'RIGHT_CLICK_BLOCK') {
                 return;
-            if (event.clickedBlock.type != 'CHEST')
+            }
+            if (event.clickedBlock.type != 'CHEST') {
                 return;
+            }
             // chest1 open
-            if (event.clickedBlock.y === 82 && !state.hasJournal1) {
+            if (event.clickedBlock.y === 82 && !_this.state.hasJournal1) {
                 // Can only open chest after hasJournal1
-                log("Can't open chest until hasJournal1!");
+                _this.log("Can't open chest until hasJournal1!");
                 event.setCancelled(true);
             }
         });
         // playerPickupItem
         this.registerEvent('playerPickupItem', function (event) {
-            if (event.player.name != player.name)
+            var isThisPlayer = event.player.name == _this.player.name;
+            var isThisWorld = event.player.world.name == _this.world.getName();
+            if (!isThisPlayer || !isThisWorld) {
                 return;
-            if (event.player.world.name != world.name)
-                return;
+            }
             // Set hasJournal1 true on journal1 pickup
             if (event.item.itemStack.type == 'WRITTEN_BOOK') {
-                log('Picked up hasJournal1!');
-                state.hasJournal1 = true;
-                _this.debug('state', JSON.stringify(state));
+                _this.log('Picked up hasJournal1!');
+                _this.state.hasJournal1 = true;
+                _this.debug('state', JSON.stringify(_this.state));
             }
         });
         // inventoryClick
         this.registerEvent('inventoryClick', function (event) {
-            if (event.whoClicked.name != player.name)
+            if (event.whoClicked.name != _this.player.name) {
                 return;
-            log('event.clickedInventory', event.clickedInventory);
+            }
+            _this.log('event.clickedInventory', event.clickedInventory);
             if (event.clickedInventory && event.clickedInventory.type) {
-                log('event.clickedInventory.type', event.clickedInventory.type);
+                _this.log('event.clickedInventory.type', event.clickedInventory.type);
             }
             if (event.clickedInventory &&
-                event.clickedInventory.type != 'PLAYER')
+                event.clickedInventory.type != 'PLAYER') {
                 return;
-            log('inventoryClick 1');
+            }
+            _this.log('inventoryClick 1');
             // When player moves Insulin from chest to inventory, set insulinSlot and setInfiniteInsulin true.
-            log('event.cursor', event.cursor);
-            log('event.cursor.type', event.cursor.type);
+            _this.log('event.cursor', event.cursor);
+            _this.log('event.cursor.type', event.cursor.type);
             if (event.cursor && event.cursor.type) {
-                log('inventoryClick 2.1');
-                log('user(player).mct1.isInsulinStack(event.cursor)', user_1.user(player).mct1.isInsulinStack(event.cursor)
+                _this.log('inventoryClick 2.1');
+                _this.log('user(player).mct1.isInsulinStack(event.cursor)', user_1.user(_this.player).mct1.isInsulinStack(event.cursor)
                     ? 'true'
                     : 'false');
-                if (user_1.user(player).mct1.isInsulinStack(event.cursor)) {
-                    log('inventoryClick 2.2');
+                if (user_1.user(_this.player).mct1.isInsulinStack(event.cursor)) {
+                    _this.log('inventoryClick 2.2');
                     if (event.slot === -999 || event.slot > 8) {
                         event.setCancelled(true);
                     }
                     else {
-                        user_1.user(player).mct1.insulinSlot = event.slot;
-                        log('inventoryClick 3');
+                        user_1.user(_this.player).mct1.insulinSlot = event.slot;
+                        _this.log('inventoryClick 3');
                         _this.setTimeout(function () {
-                            user_1.user(player).mct1.setInfiniteInsulin(true);
-                            state.hasInfiniteInsulin = true;
-                            log('Enable infinite Insulin!');
-                            log('state', JSON.stringify(state));
+                            user_1.user(_this.player).mct1.setInfiniteInsulin(true);
+                            _this.state.hasInfiniteInsulin = true;
+                            _this.log('Enable infinite Insulin!');
+                            _this.log('state', JSON.stringify(_this.state));
                         }, 100);
                     }
                 }
@@ -143,20 +147,21 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         });
         // playerDropItem
         this.registerEvent('playerDropItem', function (event) {
-            if (event.player.name != player.name)
+            if (event.player.name != _this.player.name) {
                 return;
+            }
             if (event.itemDrop.type == 'DROPPED_ITEM' &&
                 event.itemDrop.itemStack) {
                 // Handle case where Insulin is cursor item and chest closed via esc key
-                if (user_1.user(player).mct1.isInsulinStack(event.itemDrop.itemStack)) {
-                    if (!state.hasInfiniteInsulin) {
+                if (user_1.user(_this.player).mct1.isInsulinStack(event.itemDrop.itemStack)) {
+                    if (!_this.state.hasInfiniteInsulin) {
                         // Cancel dropping insulin, instead move to inventory and setInfiniteInsulin(true).
                         event.setCancelled(true);
                         _this.setTimeout(function () {
-                            user_1.user(player).mct1.setInfiniteInsulin(true);
-                            state.hasInfiniteInsulin = true;
-                            log('Enable infinite Insulin!');
-                            log('state', JSON.stringify(state));
+                            user_1.user(_this.player).mct1.setInfiniteInsulin(true);
+                            _this.state.hasInfiniteInsulin = true;
+                            _this.log('Enable infinite Insulin!');
+                            _this.log('state', JSON.stringify(_this.state));
                         }, 100);
                     }
                 }
@@ -164,18 +169,20 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         });
         // inventoryClose
         this.registerEvent('inventoryClose', function (event) {
-            if (event.player.name != player.name)
+            if (event.player.name != _this.player.name) {
                 return;
-            if (event.inventory.type != 'CHEST')
+            }
+            if (event.inventory.type != 'CHEST') {
                 return;
+            }
             // chest1 close...
             if (event.inventory.location.y === 82) {
                 // if (state.hasInfiniteInsulin && !state.jailBreakStarted) {
-                if (!state.jailBreakStarted) {
-                    log("startJailBreakSequence");
+                if (!_this.state.jailBreakStarted) {
+                    _this.log("startJailBreakSequence");
                     _this.startJailBreak();
-                    state.jailBreakStarted = true;
-                    _this.debug('state', JSON.stringify(state));
+                    _this.state.jailBreakStarted = true;
+                    _this.debug('state', JSON.stringify(_this.state));
                 }
             }
         });
@@ -197,17 +204,16 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
     };
     QuestMCT1Prologue.prototype.startJailBreak = function () {
         var _this = this;
-        var _a = this, player = _a.player, world = _a.world, log = _a.log, options = _a.options, Locs = _a.Locs, state = _a.state;
-        var jailBrawl = new jail_brawl_1.default(Locs, this.jailGuard);
+        var jailBrawl = new jail_brawl_1.default(this.Locs, this.jailGuard);
         jailBrawl.start();
         this.setTimeout(function () {
             _this.rockfall.doRockfall();
         }, 7000);
         this.setTimeout(function () {
             _this.jailGuard.remove();
-            questTools.openDoorAtLocation(Locs.locations.jailDoor);
+            questTools.openDoorAtLocation(_this.Locs.locations.jailDoor);
         }, 10000);
     };
     return QuestMCT1Prologue;
-}(Quest_1.QuestMCT1));
+}(QuestMCT1_1.QuestMCT1));
 exports.default = QuestMCT1Prologue;

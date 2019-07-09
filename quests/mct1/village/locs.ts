@@ -2,7 +2,6 @@ const Location = Java.type('org.bukkit.Location')
 
 export const getLocations = world => {
     return {
-        world: world,
         locations: {
             spawn: new Location(world, 348, 69, -309, 94, 22),
         },
@@ -12,5 +11,6 @@ export const getLocations = world => {
                 new Location(world, 351, 86, -303),
             ],
         },
+        world,
     }
 }

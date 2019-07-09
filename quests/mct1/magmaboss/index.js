@@ -13,9 +13,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Quest_1 = require("@magikcraft/mct1/quests/Quest");
-var questTools = require("@magikcraft/mct1/quests/quest-tools");
-var world_1 = require("@magikcraft/mct1/world");
+var questTools = require("../../quest-tools");
+var QuestMCT1_1 = require("../../QuestMCT1");
 var arena_stairs_1 = require("./arena-stairs");
 var Locations = require("./locs");
 var Material = Java.type('org.bukkit.Material');
@@ -36,19 +35,18 @@ var QuestMCT1Magmaboss = /** @class */ (function (_super) {
         var _this = this;
         _super.prototype.start.call(this);
         _super.prototype.registerEvents.call(this);
-        var _a = this, player = _a.player, world = _a.world, log = _a.log, options = _a.options, Locs = _a.Locs, state = _a.state;
-        var regions = Locs.regions, locations = Locs.locations, waypoints = Locs.waypoints;
+        var waypoints = this.Locs.waypoints;
         // Setup arenaStairs
-        this.arenaStairs = new arena_stairs_1.default(Locs.regions.arenaStairs);
+        this.arenaStairs = new arena_stairs_1.default(this.Locs.regions.arenaStairs);
         this.arenaStairs.saveRegion();
         this.arenaStairs.hideRegion();
         // Region: complete
-        world_1.worldly(world).registerRegion('arenaThreshold', waypoints.arenaThreshold.region[0], waypoints.arenaThreshold.region[1]);
-        world_1.worldly(world).registerPlayerEnterRegionEvent('arenaThreshold', function (event) {
+        this.world.registerRegion('arenaThreshold', waypoints.arenaThreshold.region[0], waypoints.arenaThreshold.region[1]);
+        this.world.registerPlayerEnterRegionEvent('arenaThreshold', function (event) {
             _this.startBossScene();
         });
         this.setTimeout(function () {
-            Locs.locations.dispensers.forEach(function (loc) {
+            _this.Locs.locations.dispensers.forEach(function (loc) {
                 loc.block.setType(Material.DISPENSER);
                 loc.block.setData(1);
             });
@@ -56,19 +54,20 @@ var QuestMCT1Magmaboss = /** @class */ (function (_super) {
     };
     QuestMCT1Magmaboss.prototype.startBossScene = function () {
         var _this = this;
-        var _a = this, player = _a.player, world = _a.world, log = _a.log, options = _a.options, Locs = _a.Locs, state = _a.state;
-        if (state.bossSceneStarted)
+        if (this.state.bossSceneStarted) {
             return;
-        state.bossSceneStarted = true;
-        state.magmaboss = world.spawnEntity(Locs.locations.magmabossSpawn, EntityType.MAGMA_CUBE);
-        state.magmaboss.setSize(5);
-        var marker = questTools.makeInvisibleArmourStand(Locs.locations.magmabossSpawn);
+        }
+        this.state.bossSceneStarted = true;
+        this.state.magmaboss = this.world.spawnEntity(this.Locs.locations.magmabossSpawn, EntityType.MAGMA_CUBE);
+        this.state.magmaboss.setSize(5);
+        var marker = questTools.makeInvisibleArmourStand(this.Locs.locations.magmabossSpawn);
         // Reveal arena stairs once the magmaboss is dead.
         this.setInterval(function () {
             var magambossStillAlive = false;
             marker.getNearbyEntities(40, 20, 40).forEach(function (e) {
-                if (e.type == 'MAGMA_CUBE')
+                if (e.type == 'MAGMA_CUBE') {
                     magambossStillAlive = true;
+                }
             });
             if (!magambossStillAlive) {
                 _this.arenaStairs.replaceRegion();
@@ -76,8 +75,9 @@ var QuestMCT1Magmaboss = /** @class */ (function (_super) {
         }, 3000);
         // ## helper
         var dispenseLava = function (loc) {
-            if (loc.block.type != 'DISPENSER')
+            if (loc.block.type != 'DISPENSER') {
                 return;
+            }
             questTools.shootDispenser(loc.block, 'LAVA_BUCKET');
             var lavaLoc = new Location(loc.world, loc.x, loc.y + 1, loc.z);
             _this.setTimeout(function () {
@@ -85,7 +85,7 @@ var QuestMCT1Magmaboss = /** @class */ (function (_super) {
             }, 7500);
         };
         // Dispense lava on interval
-        Locs.locations.dispensers.forEach(function (loc, i) {
+        this.Locs.locations.dispensers.forEach(function (loc, i) {
             dispenseLava(loc);
             _this.setInterval(function () {
                 dispenseLava(loc);
@@ -93,5 +93,5 @@ var QuestMCT1Magmaboss = /** @class */ (function (_super) {
         });
     };
     return QuestMCT1Magmaboss;
-}(Quest_1.QuestMCT1));
+}(QuestMCT1_1.QuestMCT1));
 exports.default = QuestMCT1Magmaboss;

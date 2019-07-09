@@ -1,8 +1,8 @@
+import { WorldManager } from '@magikcraft/mct1/world'
 import { Logger } from '../log'
-import { Multiverse } from '../world/multiverse'
-import { QuestConfig } from 'quests/Quest'
-
 import { user } from '../user'
+import { Multiverse } from '../world/multiverse'
+import { QuestConfig } from './Quest'
 
 const log = Logger(__filename)
 
@@ -53,7 +53,7 @@ const availableQuests = Object.keys(quests)
     .sort()
     .reduce((prev, current) => `${prev}, ${current}`)
 
-export async function questCommand(questName, method, player, opts) {
+export async function questCommand({ questName, method, player, opts }) {
     if (questName === 'mct1') {
         questName = 'mct1-prologue'
     }
@@ -76,39 +76,34 @@ export async function questCommand(questName, method, player, opts) {
     }
 
     const templateWorldName = quests[questName].worldName
-    const worldName =
-        opts.mode === 'single'
-            ? `${templateWorldName}--${player.name}`
-            : `${templateWorldName}-multi`
+    const playername = opts.mode === 'single' ? player.name : undefined
 
     switch (method) {
         case 'start':
             echo(player, `Starting quest ${questName}...`)
             log(`Starting quest ${questName} for ${player}`)
-            const world = await Multiverse.cloneWorld(
-                worldName,
-                templateWorldName
+            const world = await WorldManager.createManagedWorld(
+                templateWorldName,
+                playername
             )
+
             if (!world) {
-                log(`Failed to setup world ${worldName}. Aborting.`)
                 return
             }
-
-            log(`Quest world ${worldName} intialized.`)
 
             const QuestClass = require(quests[questName].filePath).default
 
             const questConfig: QuestConfig = {
                 name: questName,
                 nextQuestName: quests[questName].nextQuestName,
+                options: opts,
                 player,
                 world,
-                options: opts,
             }
 
-            const quest = new QuestClass(questConfig)
-            user(player).quest = quest
-            quest.start()
+            const thisQuest = new QuestClass(questConfig)
+            user(player).quest = thisQuest
+            thisQuest.start()
             break
         case 'import':
             Multiverse.importWorld(templateWorldName)
@@ -119,7 +114,7 @@ export async function questCommand(questName, method, player, opts) {
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.
-            Multiverse.destroyWorld(worldName)
+            WorldManager.deleteWorldsForPlayer(player.name)
             break
     }
 }

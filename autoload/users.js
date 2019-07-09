@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
 var utils = require("utils");
-var user_1 = require("../user");
 var log_1 = require("../log");
+var user_1 = require("../user");
+var world_1 = require("../world");
 var log = log_1.Logger('plugins/magikcraft/users');
 // Josh please don't rewrite this file!
 // Create all users when Scriptcraft starts.
@@ -28,4 +29,5 @@ function playerJoin(player) {
 }
 function playerQuit(player) {
     user_1.userDelete(player);
+    world_1.WorldManager.deleteWorldsForPlayer(player);
 }

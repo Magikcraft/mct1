@@ -1,5 +1,6 @@
+import { QuestConfig } from '../../Quest'
+import { QuestMCT1 } from '../../QuestMCT1'
 import * as Locations from './locs'
-import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 
 export default class QuestMCT1Sunken extends QuestMCT1 {
     constructor(conf: QuestConfig) {

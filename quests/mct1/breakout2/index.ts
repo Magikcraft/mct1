@@ -1,6 +1,6 @@
+import { QuestConfig } from '../../../quests/Quest'
+import { QuestMCT1 } from '../../../quests/QuestMCT1'
 import * as Locations from './locs'
-import { worldly } from '@magikcraft/mct1/world'
-import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 
 export default class QuestMCT1Breakout2 extends QuestMCT1 {
     constructor(conf: QuestConfig) {
@@ -9,10 +9,9 @@ export default class QuestMCT1Breakout2 extends QuestMCT1 {
         super.registerEvents()
     }
 
-    start() {
+    public start() {
         super.start()
-        const { world } = this
-        worldly(world).setSun()
+        this.world.setSun()
         this.setMCT1SuperPowers(true)
     }
 }

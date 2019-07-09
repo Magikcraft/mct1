@@ -1,9 +1,9 @@
 import * as events from 'events'
-import utils = require('utils')
-
-import { user, userDelete } from '../user'
-
+import * as utils from 'utils'
 import { Logger } from '../log'
+import { user, userDelete } from '../user'
+import { WorldManager } from '../world'
+
 const log = Logger('plugins/magikcraft/users')
 
 // Josh please don't rewrite this file!
@@ -27,4 +27,5 @@ function playerJoin(player) {
 }
 function playerQuit(player) {
     userDelete(player)
+    WorldManager.deleteWorldsForPlayer(player)
 }

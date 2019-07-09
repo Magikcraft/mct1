@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var events = require("events");
 var log_1 = require("@magikcraft/mct1/log");
-var log = log_1.Logger(__filename);
 var mct1_1 = require("@magikcraft/mct1/mct1");
 var tools = require("@magikcraft/mct1/tools");
-var db_1 = require("./db");
-var inventory_1 = require("./inventory");
-var effects_1 = require("./effects");
 var user_1 = require("@magikcraft/mct1/user");
+var events = require("events");
+var db_1 = require("./db");
+var effects_1 = require("./effects");
 var follower_1 = require("./follower");
+var inventory_1 = require("./inventory");
+var log = log_1.Logger(__filename);
 var GameMode = Java.type('org.bukkit.GameMode');
 // User class
 var User = /** @class */ (function () {
@@ -65,8 +65,9 @@ var User = /** @class */ (function () {
         this.db.set('spawnLocation', tools.locationToJSON(location));
     };
     User.prototype.loadSpawn = function () {
-        if (this.getSpawn())
+        if (this.getSpawn()) {
             user_1.user(this.player).teleport(this.getSpawn());
+        }
     };
     User.prototype.getSpawn = function () {
         return this.db.get('spawnLocation')
@@ -82,8 +83,9 @@ var User = /** @class */ (function () {
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent('playerRespawn', function (event) {
-                    if (event.player.name !== _this.player.name)
+                    if (event.player.name !== _this.player.name) {
                         return;
+                    }
                     var spawn = _this.getSpawn();
                     if (!spawn) {
                         // return
@@ -111,10 +113,12 @@ var User = /** @class */ (function () {
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent('entityDamage', function (event) {
-                    if (event.entity.type != 'PLAYER')
+                    if (event.entity.type != 'PLAYER') {
                         return;
-                    if (event.entity.name !== _this.player.name)
+                    }
+                    if (event.entity.name !== _this.player.name) {
                         return;
+                    }
                     event.setCancelled(true);
                 }, key);
             }
@@ -168,8 +172,9 @@ var User = /** @class */ (function () {
         this.events[k] = events[type](callback);
     };
     User.prototype.unregisterEvent = function (key) {
-        if (this.events[key])
+        if (this.events[key]) {
             this.events[key].unregister();
+        }
     };
     User.prototype.unregisterEventsLike = function (wildcard) {
         for (var key in this.events) {

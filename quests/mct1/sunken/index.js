@@ -13,8 +13,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+var QuestMCT1_1 = require("../../QuestMCT1");
 var Locations = require("./locs");
-var Quest_1 = require("@magikcraft/mct1/quests/Quest");
 var QuestMCT1Sunken = /** @class */ (function (_super) {
     __extends(QuestMCT1Sunken, _super);
     function QuestMCT1Sunken(conf) {
@@ -24,5 +24,5 @@ var QuestMCT1Sunken = /** @class */ (function (_super) {
         return _this;
     }
     return QuestMCT1Sunken;
-}(Quest_1.QuestMCT1));
+}(QuestMCT1_1.QuestMCT1));
 exports.default = QuestMCT1Sunken;
