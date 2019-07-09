@@ -10,9 +10,9 @@ const Effect = Java.type('org.bukkit.Effect')
 const Sound = Java.type('org.bukkit.Sound')
 
 export default class Rockfall {
-    region: Region
-    upperY: number
-    blocks: any[]
+    public region: Region
+    public upperY: number
+    public blocks: any[]
 
     constructor(region) {
         this.blocks = []
@@ -25,7 +25,7 @@ export default class Rockfall {
         this.replaceRegion()
     }
 
-    saveRegion() {
+    public saveRegion() {
         // Make schematic
         const startLoc: Vector3 = new Vector3(
             Math.min(...this.region.xArray()),
@@ -48,17 +48,17 @@ export default class Rockfall {
                 ) {
                     const block = world.getBlockAt(x, y, z)
                     this.blocks.push({
-                        layer: layer,
-                        type: block.type,
-                        location: block.location,
                         data: block.data,
+                        layer,
+                        location: block.location,
+                        type: block.type,
                     })
                 }
             }
         }
     }
 
-    replaceRegion() {
+    public replaceRegion() {
         const startLoc: Vector3 = new Vector3(
             Math.min(...this.region.xArray()),
             Math.min(...this.region.yArray()),
@@ -82,7 +82,7 @@ export default class Rockfall {
         }
     }
 
-    doRockfall() {
+    public doRockfall() {
         const world = utils.world(this.region.getWorld())
         let soundIndex = 0
         const sounds = [
@@ -101,7 +101,9 @@ export default class Rockfall {
             interval = Math.floor(Math.random() * 100) * 5 + block.layer * 500
             const sound = sounds[soundIndex]
             soundIndex++
-            if (soundIndex === sounds.length) soundIndex = 0
+            if (soundIndex === sounds.length) {
+                soundIndex = 0
+            }
             setTimeout(() => {
                 const loc = block.location
                 const dropLoc = loc
@@ -111,7 +113,9 @@ export default class Rockfall {
 
                 world.spawnFallingBlock(dropLoc, block.type, block.data)
                 loc.world.playEffect(loc, Effect.WITHER_BREAK_BLOCK, 100)
-                if (sound) loc.world.playSound(loc, sound, 5, 1)
+                if (sound) {
+                    loc.world.playSound(loc, sound, 5, 1)
+                }
                 // BLOCK_STONE_FALL
                 // world.createExplosion(loc.x, loc.y, loc.z, 1, false, false);
             }, interval)

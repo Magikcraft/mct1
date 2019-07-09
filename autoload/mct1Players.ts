@@ -1,21 +1,21 @@
 import * as events from 'events'
 import * as utils from 'utils'
 import { Logger } from '../log'
+import { MCT1PlayerCache } from '../user'
 import { WorldManager } from '../world'
-import { MCT1PlayerCache } from './../user'
 
 const log = Logger(__filename)
 
 // Josh please don't rewrite this file!
 
-// Create all users when Scriptcraft starts.
+// Create all mct1Players when Scriptcraft starts.
 const players = utils.players()
 players.forEach(onPlayerJoin)
 
-// Create a new user when player joins.
+// Create a new mct1Player when player joins.
 events.playerJoin(({ player }) => setTimeout(() => onPlayerJoin(player), 100))
 
-// Delete user when player quits.
+// Delete mct1Player when player quits.
 events.playerQuit(({ player }) => setTimeout(() => onPlayerQuit(player), 100))
 
 // ### HELPERS

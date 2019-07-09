@@ -29,10 +29,10 @@ var Rockfall = /** @class */ (function () {
                 for (var z = startLoc.z; z < startLoc.z + this.region.zLength(); z++) {
                     var block = world.getBlockAt(x, y, z);
                     this.blocks.push({
-                        layer: layer,
-                        type: block.type,
-                        location: block.location,
                         data: block.data,
+                        layer: layer,
+                        location: block.location,
+                        type: block.type,
                     });
                 }
             }
@@ -68,8 +68,9 @@ var Rockfall = /** @class */ (function () {
             interval = Math.floor(Math.random() * 100) * 5 + block.layer * 500;
             var sound = sounds[soundIndex];
             soundIndex++;
-            if (soundIndex === sounds.length)
+            if (soundIndex === sounds.length) {
                 soundIndex = 0;
+            }
             setTimeout(function () {
                 var loc = block.location;
                 var dropLoc = loc;
@@ -78,8 +79,9 @@ var Rockfall = /** @class */ (function () {
                 dropLoc.setZ(loc.z + 0.5);
                 world.spawnFallingBlock(dropLoc, block.type, block.data);
                 loc.world.playEffect(loc, Effect.WITHER_BREAK_BLOCK, 100);
-                if (sound)
+                if (sound) {
                     loc.world.playSound(loc, sound, 5, 1);
+                }
                 // BLOCK_STONE_FALL
                 // world.createExplosion(loc.x, loc.y, loc.z, 1, false, false);
             }, interval);

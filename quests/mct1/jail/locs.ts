@@ -4,7 +4,7 @@ const Location = Java.type('org.bukkit.Location')
 
 export const getLocations = world => {
     return {
-        world: world,
+        world,
         waypoints: {
             combolock: {
                 region: [

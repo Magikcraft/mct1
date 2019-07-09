@@ -7,15 +7,15 @@ var world_1 = require("../world");
 var user_1 = require("./../user");
 var log = log_1.Logger(__filename);
 // Josh please don't rewrite this file!
-// Create all users when Scriptcraft starts.
+// Create all mct1Players when Scriptcraft starts.
 var players = utils.players();
 players.forEach(onPlayerJoin);
-// Create a new user when player joins.
+// Create a new mct1Player when player joins.
 events.playerJoin(function (_a) {
     var player = _a.player;
     return setTimeout(function () { return onPlayerJoin(player); }, 100);
 });
-// Delete user when player quits.
+// Delete mct1Player when player quits.
 events.playerQuit(function (_a) {
     var player = _a.player;
     return setTimeout(function () { return onPlayerQuit(player); }, 100);

@@ -1,9 +1,9 @@
-console.log('MCT1 is loaded!')
-
 import { Logger } from '../log'
 import * as environment from '../utils/environment'
 
 const log = Logger(__filename)
+
+log('MCT1 is loaded!')
 
 const WATCH_RELOAD_STATE = environment.DISABLE_WATCH_RELOAD
     ? 'disabled'

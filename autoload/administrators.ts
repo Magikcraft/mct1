@@ -1,8 +1,9 @@
 import * as events from 'events'
+import * as utils from 'utils'
 import { Logger } from '../log'
 import { isAdminUser } from '../user'
 import * as server from '../utils/server'
-import utils = require('utils')
+
 const log = Logger(__filename)
 
 // Create all users when Scriptcraft starts.

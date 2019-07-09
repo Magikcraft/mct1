@@ -5,10 +5,10 @@ const log = Logger(__filename)
 const Sound = Java.type('org.bukkit.Sound')
 
 export default class JailBrawl {
-    log: any
-    jailGuard: any
-    jailGuardLure: any
-    brawlSounds = [
+    public log: any
+    public jailGuard: any
+    public jailGuardLure: any
+    public brawlSounds = [
         'ENTITY_LIGHTNING_BOLT_IMPACT',
         'ENTITY_LIGHTNING_BOLT_IMPACT',
         'ENTITY_LIGHTNING_BOLT_IMPACT',
@@ -18,15 +18,15 @@ export default class JailBrawl {
         'ENTITY_WOLF_GROWL',
         'ENTITY_WOLF_GROWL',
     ]
-    Locs: any
-    timers: Array<any> = [] // all mobs stored in here.
+    public Locs: any
+    public timers: any[] = [] // all mobs stored in here.
 
     constructor(Locs, jailGuard) {
         this.Locs = Locs
         this.jailGuard = jailGuard
     }
 
-    start() {
+    public start() {
         this.initBrawl()
 
         this.timers.push(
@@ -42,17 +42,19 @@ export default class JailBrawl {
         )
     }
 
-    stop() {
-        if (this.jailGuardLure) this.jailGuardLure.remove()
+    public stop() {
+        if (this.jailGuardLure) {
+            this.jailGuardLure.remove()
+        }
     }
 
-    initBrawl() {
+    public initBrawl() {
         Array.from({ length: 20 }, (x, i) => i + 1).map(count => {
             this.queueBrawlSound(count)
         })
     }
 
-    queueBrawlSound(count) {
+    public queueBrawlSound(count) {
         const interval = Math.floor(Math.random() * 5) * 400 + count * 1000
         const soundIndex = Math.floor(Math.random() * this.brawlSounds.length)
 

@@ -31,8 +31,9 @@ var JailBrawl = /** @class */ (function () {
         }, 3000));
     };
     JailBrawl.prototype.stop = function () {
-        if (this.jailGuardLure)
+        if (this.jailGuardLure) {
             this.jailGuardLure.remove();
+        }
     };
     JailBrawl.prototype.initBrawl = function () {
         var _this = this;
