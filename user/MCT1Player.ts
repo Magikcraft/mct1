@@ -3,7 +3,6 @@ import { Logger } from '../log'
 import { MCT1 } from '../mct1'
 import { Quest } from '../quests/Quest'
 import * as tools from '../tools'
-import { makeMCT1Player } from '../user'
 import DB from './db'
 import PlayerEffects from './effects'
 import Follower from './follower'
@@ -39,7 +38,7 @@ export default class MCT1Player {
         this.effects = new PlayerEffects(player)
         this.setRespawnAtSpawnLocation(true)
         this.setReloadInventoryAtSpawn(true)
-        this.follower = new Follower(makeMCT1Player)
+        this.follower = new Follower(this)
         // this.cube =
     }
 

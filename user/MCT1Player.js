@@ -4,7 +4,6 @@ var events = require("events");
 var log_1 = require("../log");
 var mct1_1 = require("../mct1");
 var tools = require("../tools");
-var user_1 = require("../user");
 var db_1 = require("./db");
 var effects_1 = require("./effects");
 var follower_1 = require("./follower");
@@ -32,7 +31,7 @@ var MCT1Player = /** @class */ (function () {
         this.effects = new effects_1.default(player);
         this.setRespawnAtSpawnLocation(true);
         this.setReloadInventoryAtSpawn(true);
-        this.follower = new follower_1.default(user_1.makeMCT1Player);
+        this.follower = new follower_1.default(this);
         // this.cube =
     }
     MCT1Player.prototype.cleanse = function () {
