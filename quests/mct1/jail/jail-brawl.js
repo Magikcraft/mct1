@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var log_1 = require("@magikcraft/mct1/log");
-var MobTools = require("@magikcraft/mct1/mobs");
+var log_1 = require("../../../log");
+var MobTools = require("../../../mobs");
 var log = log_1.Logger(__filename);
 var Sound = Java.type('org.bukkit.Sound');
 var JailBrawl = /** @class */ (function () {

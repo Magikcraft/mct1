@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
-var utils = require("utils");
-var server = require("../utils/server");
 var log_1 = require("../log");
-var log = log_1.Logger('plugins/magikcraft/users');
 var user_1 = require("../user");
+var server = require("../utils/server");
+var utils = require("utils");
+var log = log_1.Logger(__filename);
 // Create all users when Scriptcraft starts.
 var players = utils.players();
 players.forEach(opPlayer);

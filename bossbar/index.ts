@@ -1,15 +1,15 @@
-import * as environment from '@magikcraft/mct1/utils/environment'
+import * as environment from '../utils/environment'
 import { color, IBossBar, style } from './bossbar'
 
-let bar = (msg, player) => ({} as IBossBar)
+let bar = (msg, player): IBossBar => (({} as unknown) as IBossBar)
 
 if (environment.HAS_BOSSBAR_BUKKIT) {
-    const Bukkit = require('./bossbar-bukkit') // tslint:disable-line - side-effects
+    const Bukkit = require('./bossbar-bukkit') // tslint:disable-line
     bar = Bukkit.bar
 }
 
 if (environment.HAS_BOSSBAR_NUKKIT) {
-    const Nukkit = require('./bossbar-nukkit') // tslint:disable-line - side-effects
+    const Nukkit = require('./bossbar-nukkit') // tslint:disable-line
     bar = Nukkit.bar
 }
 

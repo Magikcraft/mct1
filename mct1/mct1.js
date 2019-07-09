@@ -851,9 +851,7 @@ var MCT1 = /** @class */ (function () {
             this.mct1Player.inventory.bumpItemIntoSlot(this.snowballSlot, this.makeLigtningSnowballItemStack(1));
         }
         // now make sure there aren't any duplicates
-        this.mct1Player
-            .inventory.getAllitemStacks()
-            .forEach(function (itemStack, i) {
+        this.mct1Player.inventory.getAllitemStacks().forEach(function (itemStack, i) {
             if (i != _this.snowballSlot &&
                 itemStack &&
                 _this.isLightningSnowballStack(itemStack)) {
@@ -863,9 +861,7 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.removeInfiniteSnowballs = function () {
         var _this = this;
-        this.mct1Player
-            .inventory.getAllitemStacks()
-            .forEach(function (itemStack, i) {
+        this.mct1Player.inventory.getAllitemStacks().forEach(function (itemStack, i) {
             if (itemStack && _this.isLightningSnowballStack(itemStack)) {
                 _this.mct1Player.inventory.setEmpty(i);
             }
@@ -878,9 +874,7 @@ var MCT1 = /** @class */ (function () {
             this.mct1Player.inventory.bumpItemIntoSlot(this.insulinSlot, this.makeInsulinStack(1));
         }
         // now make sure there aren't any duplicates
-        this.mct1Player
-            .inventory.getAllitemStacks()
-            .forEach(function (itemStack, i) {
+        this.mct1Player.inventory.getAllitemStacks().forEach(function (itemStack, i) {
             if (i != _this.insulinSlot &&
                 itemStack &&
                 _this.isInsulinStack(itemStack)) {
@@ -890,9 +884,7 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.removeInfiniteInsulin = function () {
         var _this = this;
-        this.mct1Player
-            .inventory.getAllitemStacks()
-            .forEach(function (itemStack, i) {
+        this.mct1Player.inventory.getAllitemStacks().forEach(function (itemStack, i) {
             if (itemStack && _this.isInsulinStack(itemStack)) {
                 _this.mct1Player.inventory.setEmpty(i);
             }

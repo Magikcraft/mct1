@@ -4,7 +4,7 @@ var events = require("events");
 var log_1 = require("../log");
 var user_1 = require("../user");
 var server = require("../utils/server");
-var log = log_1.Logger('player-quit-event');
+var log = log_1.Logger(__filename);
 var commandWhitelist = [
     '/jsp quest',
     '/jsp cast',

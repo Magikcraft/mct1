@@ -1,6 +1,6 @@
-import { Vector3 } from '@magikcraft/mct1/vector3'
-import { Region } from '@magikcraft/mct1/regions'
 import * as utils from 'utils'
+import { Region } from '../../../regions'
+import { Vector3 } from '../../../vector3'
 
 const Material = Java.type('org.bukkit.Material')
 

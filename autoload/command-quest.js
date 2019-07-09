@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var log_1 = require("@magikcraft/mct1/log");
-var quests_1 = require("@magikcraft/mct1/quests");
-var commando_1 = require("@magikcraft/mct1/utils/commando");
 var utils = require("utils");
+var log_1 = require("../log");
+var quests_1 = require("../quests");
+var commando_1 = require("../utils/commando");
 // import { isAdminUser } from 'magikcraft/user';
 var log = log_1.Logger(__filename);
 function parseOptions(args, playername) {

@@ -1,10 +1,9 @@
 import * as events from 'events'
-import utils = require('utils')
-import * as server from '../utils/server'
 import { Logger } from '../log'
-const log = Logger('plugins/magikcraft/users')
-
 import { isAdminUser } from '../user'
+import * as server from '../utils/server'
+import utils = require('utils')
+const log = Logger(__filename)
 
 // Create all users when Scriptcraft starts.
 const players = utils.players()

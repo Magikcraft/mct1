@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var bossbar_1 = require("@magikcraft/mct1/bossbar/bossbar");
-var environment = require("@magikcraft/mct1/utils/environment");
+var bossbar_1 = require("../bossbar/bossbar");
+var log_1 = require("../log");
+var environment = require("../utils/environment");
 var hasBukkitBossBar = environment.HAS_BOSSBAR_BUKKIT;
 var BossBarAPI = hasBukkitBossBar
     ? Java.type(environment.BUKKIT_BOSSBAR_TYPE)
@@ -10,7 +11,6 @@ var BossBarAPI = hasBukkitBossBar
 exports.TextComponent = hasBukkitBossBar
     ? Java.type('net.md_5.bungee.api.chat.TextComponent')
     : undefined;
-var log_1 = require("@magikcraft/mct1/log");
 var log = log_1.Logger(__filename);
 /**
  *

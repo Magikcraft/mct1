@@ -1,6 +1,6 @@
-import { WorldManager } from '@magikcraft/mct1/world'
 import { Logger } from '../log'
 import { makeMCT1Player } from '../user'
+import { WorldManager } from '../world'
 import { Multiverse } from '../world/multiverse'
 import { QuestConfig } from './Quest'
 
@@ -8,42 +8,42 @@ const log = Logger(__filename)
 
 const quests = {
     'mct1-prologue': {
-        filePath: '@magikcraft/mct1/quests/mct1/prologue',
+        filePath: '../quests/mct1/prologue',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-jail',
     },
     'mct1-jail': {
-        filePath: '@magikcraft/mct1/quests/mct1/jail',
+        filePath: '../quests/mct1/jail',
         worldName: 'mct1-jail',
         nextQuestName: 'mct1-sunken',
     },
     'mct1-sunken': {
-        filePath: '@magikcraft/mct1/quests/mct1/sunken',
+        filePath: '../quests/mct1/sunken',
         worldName: 'mct1-sunken-v2',
         nextQuestName: 'mct1-magmarun',
     },
     'mct1-magmarun': {
-        filePath: '@magikcraft/mct1/quests/mct1/magmarun',
+        filePath: '../quests/mct1/magmarun',
         worldName: 'mct1-magmarun',
         nextQuestName: 'mct1-magmaboss',
     },
     'mct1-magmaboss': {
-        filePath: '@magikcraft/mct1/quests/mct1/magmaboss',
+        filePath: '../quests/mct1/magmaboss',
         worldName: 'mct1-magmaboss',
         nextQuestName: 'mct1-breakout',
     },
     'mct1-breakout': {
-        filePath: '@magikcraft/mct1/quests/mct1/breakout',
+        filePath: '../quests/mct1/breakout',
         worldName: 'mct1-breakout',
         nextQuestName: 'mct1-village',
     },
     'mct1-village': {
-        filePath: '@magikcraft/mct1/quests/mct1/village',
+        filePath: '../quests/mct1/village',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-breakout2',
     },
     'mct1-breakout2': {
-        filePath: '@magikcraft/mct1/quests/mct1/breakout2',
+        filePath: '../quests/mct1/breakout2',
         worldName: 'mct1-breakout',
         nextQuestName: 'mct1-village',
     },

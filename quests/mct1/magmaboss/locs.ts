@@ -1,8 +1,8 @@
-import { Region } from '@magikcraft/mct1/regions'
-import { Vector3 } from '@magikcraft/mct1/vector3'
+import { Logger } from '../../../log'
+import { Region } from '../../../regions'
+import { Vector3 } from '../../../vector3'
 const Location = Java.type('org.bukkit.Location')
 
-import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)
 
 export const getLocations = world => {

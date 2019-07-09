@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("../log");
 var user_1 = require("../user");
 var commando_1 = require("../utils/commando");
-var log = log_1.Logger('plugins/magikcraft/command-mct1');
+var log = log_1.Logger(__filename);
 // import LightningSuperStrike = require('magikcraft/fx/lightning-super-strike')
 commando_1.default('mct1', function (args, player) {
     var method = args[0] || 'start';

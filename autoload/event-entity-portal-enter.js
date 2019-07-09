@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
 var log_1 = require("../log");
 var quests_1 = require("../quests");
-var log = log_1.Logger('event-entity-portal-enter');
+var log = log_1.Logger(__filename);
 log('############ register entityPortalEnter');
 events.playerPortal(function (event) {
     log('playerPortal');

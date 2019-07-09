@@ -1,5 +1,5 @@
-import { Region } from '@magikcraft/mct1/regions'
-import { Vector3 } from '@magikcraft/mct1/vector3'
+import { Vector3 } from '../../..//vector3'
+import { Region } from '../../../regions'
 const Location = Java.type('org.bukkit.Location')
 
 export const getLocations = world => {

@@ -5,7 +5,7 @@ var utils = require("utils");
 var log_1 = require("../log");
 var user_1 = require("../user");
 var world_1 = require("../world");
-var log = log_1.Logger('plugins/magikcraft/users');
+var log = log_1.Logger(__filename);
 // Josh please don't rewrite this file!
 // Create all users when Scriptcraft starts.
 var players = utils.players();

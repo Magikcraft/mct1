@@ -1,7 +1,7 @@
-import { Logger } from '@magikcraft/mct1/log'
-import { questCommand } from '@magikcraft/mct1/quests'
-import commando from '@magikcraft/mct1/utils/commando'
 import * as utils from 'utils'
+import { Logger } from '../log'
+import { questCommand } from '../quests'
+import commando from '../utils/commando'
 
 // import { isAdminUser } from 'magikcraft/user';
 

@@ -1,5 +1,5 @@
-import { Logger } from '@magikcraft/mct1/log'
-import * as MobTools from '@magikcraft/mct1/mobs'
+import { Logger } from '../../../log'
+import * as MobTools from '../../../mobs'
 const log = Logger(__filename)
 
 const Sound = Java.type('org.bukkit.Sound')

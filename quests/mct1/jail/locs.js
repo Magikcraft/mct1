@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var regions_1 = require("@magikcraft/mct1/regions");
-var vector3_1 = require("@magikcraft/mct1/vector3");
+var vector3_1 = require("../../..//vector3");
+var regions_1 = require("../../../regions");
 var Location = Java.type('org.bukkit.Location');
 exports.getLocations = function (world) {
     return {

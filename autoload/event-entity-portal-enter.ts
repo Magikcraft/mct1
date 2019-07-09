@@ -2,7 +2,7 @@ import * as events from 'events'
 import { Logger } from '../log'
 import { questCommand } from '../quests'
 
-const log = Logger('event-entity-portal-enter')
+const log = Logger(__filename)
 
 log('############ register entityPortalEnter')
 events.playerPortal(event => {

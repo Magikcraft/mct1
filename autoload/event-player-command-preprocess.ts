@@ -2,7 +2,7 @@ import * as events from 'events'
 import { Logger } from '../log'
 import { isAdminUser, isTestUser, makeMCT1Player } from '../user'
 import * as server from '../utils/server'
-const log = Logger('player-quit-event')
+const log = Logger(__filename)
 
 const commandWhitelist = [
     '/jsp quest',

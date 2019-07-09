@@ -2,7 +2,7 @@ import { Logger } from '../log'
 import { makeMCT1Player } from '../user'
 import commando from '../utils/commando'
 
-const log = Logger('plugins/magikcraft/command-mct1')
+const log = Logger(__filename)
 // import LightningSuperStrike = require('magikcraft/fx/lightning-super-strike')
 
 commando('mct1', (args, player) => {

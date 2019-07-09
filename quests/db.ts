@@ -1,11 +1,11 @@
-import * as fs from '@magikcraft/mct1/utils/fs'
+import * as fs from '../utils/fs'
 
 export default class DB {
-    questName: string
-    isLoading: boolean
-    private database
+    public questName: string
+    public isLoading: boolean
+    public filename: string
 
-    filename: string
+    private database
 
     constructor(questName) {
         this.questName = questName
@@ -25,7 +25,7 @@ export default class DB {
     // 	return this.database
     // }
 
-    push(data: any) {
+    public push(data: any) {
         this.database.push(data)
         this._save()
     }

@@ -4,7 +4,7 @@ import { Logger } from '../log'
 import { makeMCT1Player, userDelete } from '../user'
 import { WorldManager } from '../world'
 
-const log = Logger('plugins/magikcraft/users')
+const log = Logger(__filename)
 
 // Josh please don't rewrite this file!
 

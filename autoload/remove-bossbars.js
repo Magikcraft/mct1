@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var environment = require("@magikcraft/mct1/utils/environment");
 var utils = require("utils");
-var log_1 = require("@magikcraft/mct1/log");
+var log_1 = require("../log");
+var environment = require("../utils/environment");
 var log = log_1.Logger(__filename);
 if (environment.HAS_BOSSBAR) {
     if (environment.HAS_BOSSBAR_BUKKIT) {
