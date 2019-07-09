@@ -66,7 +66,7 @@ var MCT1Player = /** @class */ (function () {
     };
     MCT1Player.prototype.loadSpawn = function () {
         if (this.getSpawn()) {
-            user_1.makeMCT1Player(this.player).teleport(this.getSpawn());
+            this.teleport(this.getSpawn());
         }
     };
     MCT1Player.prototype.getSpawn = function () {

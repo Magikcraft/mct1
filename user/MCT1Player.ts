@@ -86,7 +86,7 @@ export default class MCT1Player {
 
     public loadSpawn() {
         if (this.getSpawn()) {
-            makeMCT1Player(this.player).teleport(this.getSpawn())
+            this.teleport(this.getSpawn())
         }
     }
 
