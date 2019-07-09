@@ -4,7 +4,8 @@ import * as items from 'items'
 import { BossBar } from '../bossbar'
 import { IBossBar } from '../bossbar/bossbar'
 import { Logger } from '../log'
-import { makeMCT1Player } from '../user'
+import { MCT1PlayerCache } from '../user'
+import MCT1Player from '../user/MCT1Player'
 import { activityCosts, activityTypes } from './activities'
 import foods from './foods'
 
@@ -60,11 +61,11 @@ export class MCT1 {
     public insulinSlot: number = 1
 
     public isStarted: boolean = false
-    public mct1Player: ReturnType<typeof makeMCT1Player>
+    public mct1Player: MCT1Player
 
     constructor(player) {
         this.player = player
-        this.mct1Player = makeMCT1Player(player)
+        this.mct1Player = MCT1PlayerCache.getMct1Player(player)
         this.name = player.name
         this.foodLevel = this.player.foodLevel
     }

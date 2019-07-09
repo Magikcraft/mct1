@@ -1,6 +1,6 @@
 import * as events from 'events'
 import { Logger } from '../log'
-import { isAdminUser, isTestUser, makeMCT1Player } from '../user'
+import { isAdminUser, isTestUser, MCT1PlayerCache } from '../user'
 import * as server from '../utils/server'
 const log = Logger(__filename)
 
@@ -17,11 +17,13 @@ events.playerCommandPreprocess(event => {
     const command = message
     const commandStr = command.replace('jsp ', '')
 
+    const mct1Player = MCT1PlayerCache.getMct1Player(player)
+
     if (command === '/heal') {
-        if (makeMCT1Player(player).mct1.isStarted) {
-            makeMCT1Player(player).mct1.bgl = 5
-            makeMCT1Player(player).mct1.insulin = 0
-            makeMCT1Player(player).mct1.digestionQueue = []
+        if (mct1Player.mct1.isStarted) {
+            mct1Player.mct1.bgl = 5
+            mct1Player.mct1.insulin = 0
+            mct1Player.mct1.digestionQueue = []
         }
     }
 

@@ -365,7 +365,7 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this.player = player;
-        this.mct1Player = user_1.makeMCT1Player(player);
+        this.mct1Player = user_1.MCT1PlayerCache.getMct1Player(player);
         this.name = player.name;
         this.foodLevel = this.player.foodLevel;
     }

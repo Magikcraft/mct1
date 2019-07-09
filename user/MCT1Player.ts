@@ -145,10 +145,10 @@ export default class MCT1Player {
                 this.registerEvent(
                     'entityDamage',
                     event => {
-                        if (event.entity.type != 'PLAYER') {
-                            return
-                        }
-                        if (event.entity.name !== this.player.name) {
+                        if (
+                            event.entity.type != 'PLAYER' ||
+                            event.entity.name !== this.player.name
+                        ) {
                             return
                         }
                         event.setCancelled(true)

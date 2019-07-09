@@ -3,31 +3,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
 var utils = require("utils");
 var log_1 = require("../log");
-var user_1 = require("../user");
 var world_1 = require("../world");
+var user_1 = require("./../user");
 var log = log_1.Logger(__filename);
 // Josh please don't rewrite this file!
 // Create all users when Scriptcraft starts.
 var players = utils.players();
-players.forEach(playerJoin);
+players.forEach(onPlayerJoin);
 // Create a new user when player joins.
 events.playerJoin(function (_a) {
     var player = _a.player;
-    return setTimeout(function () { return playerJoin(player); }, 100);
+    return setTimeout(function () { return onPlayerJoin(player); }, 100);
 });
 // Delete user when player quits.
 events.playerQuit(function (_a) {
     var player = _a.player;
-    return setTimeout(function () { return playerQuit(player); }, 100);
+    return setTimeout(function () { return onPlayerQuit(player); }, 100);
 });
 // ### HELPERS
-function playerJoin(player) {
+function onPlayerJoin(player) {
     log('playerJoin', player.name);
-    user_1.userDelete(player); // ensure clean
-    user_1.makeMCT1Player(player); // create user
+    user_1.MCT1PlayerCache.deleteMct1Player(player); // ensure clean
+    user_1.MCT1PlayerCache.getMct1Player(player); // create MCT1Player
     // user(player).continue() // ensure mct1 is not running (clear bars and effects).
 }
-function playerQuit(player) {
-    user_1.userDelete(player);
+function onPlayerQuit(player) {
+    user_1.MCT1PlayerCache.deleteMct1Player(player);
     world_1.WorldManager.deleteWorldsForPlayer(player);
 }

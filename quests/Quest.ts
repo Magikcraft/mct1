@@ -1,7 +1,7 @@
 import * as events from 'events'
 import { Logger } from '../log'
 import * as tools from '../tools'
-import { makeMCT1Player } from '../user'
+import { MCT1PlayerCache } from '../user'
 import MCT1Player from '../user/MCT1Player'
 import ManagedWorld from '../world/ManagedWorld'
 import DB from './db'
@@ -18,7 +18,7 @@ export interface QuestOptions {
 export interface QuestConfig {
     name: string
     nextQuestName: string | undefined
-    player: any
+    player: BukkitPlayer
     world: ManagedWorld
     options: QuestOptions
 }
@@ -49,7 +49,7 @@ export class QuestBase {
         this.name = conf.name
         this.nextQuestName = conf.nextQuestName
         this.player = conf.player
-        this.mct1Player = makeMCT1Player(conf.player)
+        this.mct1Player = MCT1PlayerCache.getMct1Player(conf.player)
         this.world = conf.world
         this.db = new DB(this.world.getName())
         this.options = conf.options || {}

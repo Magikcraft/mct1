@@ -16,11 +16,12 @@ events.playerCommandPreprocess(function (event) {
     var message = event.message, player = event.player;
     var command = message;
     var commandStr = command.replace('jsp ', '');
+    var mct1Player = user_1.MCT1PlayerCache.getMct1Player(player);
     if (command === '/heal') {
-        if (user_1.makeMCT1Player(player).mct1.isStarted) {
-            user_1.makeMCT1Player(player).mct1.bgl = 5;
-            user_1.makeMCT1Player(player).mct1.insulin = 0;
-            user_1.makeMCT1Player(player).mct1.digestionQueue = [];
+        if (mct1Player.mct1.isStarted) {
+            mct1Player.mct1.bgl = 5;
+            mct1Player.mct1.insulin = 0;
+            mct1Player.mct1.digestionQueue = [];
         }
     }
     if (command === '/js refresh()') {

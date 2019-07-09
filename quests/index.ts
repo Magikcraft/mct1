@@ -1,5 +1,5 @@
 import { Logger } from '../log'
-import { makeMCT1Player } from '../user'
+import { MCT1PlayerCache } from '../user'
 import { WorldManager } from '../world'
 import { Multiverse } from '../world/multiverse'
 import { QuestConfig } from './Quest'
@@ -59,7 +59,7 @@ export async function questCommand({ questName, method, player, opts }) {
     }
 
     if (questName === 'stop') {
-        const userQuest = makeMCT1Player(player).quest
+        const userQuest = MCT1PlayerCache.getMct1Player(player).quest
         if (userQuest) {
             questName = userQuest.name
             method = 'stop'
@@ -77,6 +77,7 @@ export async function questCommand({ questName, method, player, opts }) {
 
     const templateWorldName = quests[questName].worldName
     const playername = opts.mode === 'single' ? player.name : undefined
+    const mct1Player = MCT1PlayerCache.getMct1Player(player)
 
     switch (method) {
         case 'start':
@@ -102,15 +103,15 @@ export async function questCommand({ questName, method, player, opts }) {
             }
 
             const thisQuest = new QuestClass(questConfig)
-            makeMCT1Player(player).quest = thisQuest
+            mct1Player.quest = thisQuest
             thisQuest.start()
             break
         case 'import':
             Multiverse.importWorld(templateWorldName)
             break
         case 'stop':
-            makeMCT1Player(player).mct1.stop()
-            makeMCT1Player(player).quest = undefined
+            mct1Player.mct1.stop()
+            mct1Player.quest = undefined
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.

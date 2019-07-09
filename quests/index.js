@@ -88,7 +88,7 @@ var availableQuests = Object.keys(quests)
 function questCommand(_a) {
     var questName = _a.questName, method = _a.method, player = _a.player, opts = _a.opts;
     return __awaiter(this, void 0, void 0, function () {
-        var userQuest, quest, templateWorldName, playername, _b, world, QuestClass, questConfig, thisQuest;
+        var userQuest, quest, templateWorldName, playername, mct1Player, _b, world, QuestClass, questConfig, thisQuest;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -96,7 +96,7 @@ function questCommand(_a) {
                         questName = 'mct1-prologue';
                     }
                     if (questName === 'stop') {
-                        userQuest = user_1.makeMCT1Player(player).quest;
+                        userQuest = user_1.MCT1PlayerCache.getMct1Player(player).quest;
                         if (userQuest) {
                             questName = userQuest.name;
                             method = 'stop';
@@ -113,6 +113,7 @@ function questCommand(_a) {
                     }
                     templateWorldName = quests[questName].worldName;
                     playername = opts.mode === 'single' ? player.name : undefined;
+                    mct1Player = user_1.MCT1PlayerCache.getMct1Player(player);
                     _b = method;
                     switch (_b) {
                         case 'start': return [3 /*break*/, 1];
@@ -138,15 +139,15 @@ function questCommand(_a) {
                         world: world,
                     };
                     thisQuest = new QuestClass(questConfig);
-                    user_1.makeMCT1Player(player).quest = thisQuest;
+                    mct1Player.quest = thisQuest;
                     thisQuest.start();
                     return [3 /*break*/, 5];
                 case 3:
                     multiverse_1.Multiverse.importWorld(templateWorldName);
                     return [3 /*break*/, 5];
                 case 4:
-                    user_1.makeMCT1Player(player).mct1.stop();
-                    user_1.makeMCT1Player(player).quest = undefined;
+                    mct1Player.mct1.stop();
+                    mct1Player.quest = undefined;
                     // Deleting the world kicks the player from the world
                     // This triggers the playerChangedWorld event, which calls the stop() method
                     // of the quest object, doing quest cleanup.

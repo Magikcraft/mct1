@@ -29,7 +29,6 @@ var indexMap = {
 };
 var PlayerInventory = /** @class */ (function () {
     function PlayerInventory(player) {
-        this.events = {};
         // indexMap: any
         this.indexMap = {
             hotbarFirst: 0,
@@ -52,15 +51,18 @@ var PlayerInventory = /** @class */ (function () {
             helmet: 39,
             shield: 40,
         };
+        this.events = {};
         this.exportToJSON = function (itemStacks) {
             // Important - using .map causes problems when this is called from
             // inside an event listener, use forEach instead to be safe!
             var itemStacksJSON = [];
             itemStacks.forEach(function (itemStack) {
-                if (itemStack)
+                if (itemStack) {
                     itemStacksJSON.push(tools.itemStackToJSON(itemStack));
-                else
+                }
+                else {
                     itemStacksJSON.push(undefined);
+                }
             });
             return itemStacksJSON;
         };
@@ -90,10 +92,12 @@ var PlayerInventory = /** @class */ (function () {
         // inside an event listener, use forEach instead to be safe!
         var itemStacks = [];
         itemStacksJSON.forEach(function (itemStackJSON) {
-            if (itemStackJSON)
+            if (itemStackJSON) {
                 itemStacks.push(tools.itemStackFromJSON(itemStackJSON));
-            else
+            }
+            else {
                 itemStacks.push(undefined);
+            }
         });
         return itemStacks;
     };
@@ -104,20 +108,22 @@ var PlayerInventory = /** @class */ (function () {
         var _this = this;
         this.clear();
         itemStacks.forEach(function (itemStack, i) {
-            if (itemStack)
+            if (itemStack) {
                 _this.setItem(i, itemStack);
-            else
+            }
+            else {
                 _this.setEmpty(i);
+            }
         });
     };
     PlayerInventory.prototype.save = function (itemStacks) {
-        user_1.makeMCT1Player(this.player).db.set('savedInventory', this.exportToJSON(itemStacks));
+        user_1.MCT1PlayerCache.getMct1Player(this.player).db.set('savedInventory', this.exportToJSON(itemStacks));
     };
     PlayerInventory.prototype.saveCurrent = function () {
         this.save(this.getAllitemStacks());
     };
     PlayerInventory.prototype.loadSaved = function () {
-        var itemStacksJSON = user_1.makeMCT1Player(this.player).db.get('savedInventory') || [];
+        var itemStacksJSON = user_1.MCT1PlayerCache.getMct1Player(this.player).db.get('savedInventory') || [];
         this.set(this.importFromJSON(itemStacksJSON));
     };
     PlayerInventory.prototype.getItem = function (slotIndex) {
@@ -147,8 +153,9 @@ var PlayerInventory = /** @class */ (function () {
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent('playerRespawn', function (event) {
-                    if (event.player.name !== _this.player.name)
+                    if (event.player.name !== _this.player.name) {
                         return;
+                    }
                     _this.loadSaved();
                 }, key);
             }
@@ -167,17 +174,20 @@ var PlayerInventory = /** @class */ (function () {
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent('playerDeath', function (event) {
-                    if (event.entity.type != 'PLAYER')
+                    if (event.entity.type != 'PLAYER') {
                         return;
-                    if (event.entity.name !== _this.player.name)
+                    }
+                    if (event.entity.name !== _this.player.name) {
                         return;
+                    }
                     setTimeout(function () {
                         // Clean-up dropped items
                         event.entity
                             .getNearbyEntities(2, 2, 2)
                             .forEach(function (entity) {
-                            if (entity.type == 'DROPPED_ITEM')
+                            if (entity.type == 'DROPPED_ITEM') {
                                 entity.remove();
+                            }
                         });
                     }, 500);
                 }, key);
@@ -195,8 +205,9 @@ var PlayerInventory = /** @class */ (function () {
         this.events[k] = events[type](callback);
     };
     PlayerInventory.prototype.unregisterEvent = function (key) {
-        if (this.events[key])
+        if (this.events[key]) {
             this.events[key].unregister();
+        }
     };
     return PlayerInventory;
 }());

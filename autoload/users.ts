@@ -1,8 +1,8 @@
 import * as events from 'events'
 import * as utils from 'utils'
 import { Logger } from '../log'
-import { makeMCT1Player, userDelete } from '../user'
 import { WorldManager } from '../world'
+import { MCT1PlayerCache } from './../user'
 
 const log = Logger(__filename)
 
@@ -10,22 +10,22 @@ const log = Logger(__filename)
 
 // Create all users when Scriptcraft starts.
 const players = utils.players()
-players.forEach(playerJoin)
+players.forEach(onPlayerJoin)
 
 // Create a new user when player joins.
-events.playerJoin(({ player }) => setTimeout(() => playerJoin(player), 100))
+events.playerJoin(({ player }) => setTimeout(() => onPlayerJoin(player), 100))
 
 // Delete user when player quits.
-events.playerQuit(({ player }) => setTimeout(() => playerQuit(player), 100))
+events.playerQuit(({ player }) => setTimeout(() => onPlayerQuit(player), 100))
 
 // ### HELPERS
-function playerJoin(player) {
+function onPlayerJoin(player) {
     log('playerJoin', player.name)
-    userDelete(player) // ensure clean
-    makeMCT1Player(player) // create user
+    MCT1PlayerCache.deleteMct1Player(player) // ensure clean
+    MCT1PlayerCache.getMct1Player(player) // create MCT1Player
     // user(player).continue() // ensure mct1 is not running (clear bars and effects).
 }
-function playerQuit(player) {
-    userDelete(player)
+function onPlayerQuit(player) {
+    MCT1PlayerCache.deleteMct1Player(player)
     WorldManager.deleteWorldsForPlayer(player)
 }
