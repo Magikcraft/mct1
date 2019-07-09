@@ -112,10 +112,8 @@ var MCT1Player = /** @class */ (function () {
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent('entityDamage', function (event) {
-                    if (event.entity.type != 'PLAYER') {
-                        return;
-                    }
-                    if (event.entity.name !== _this.player.name) {
+                    if (event.entity.type != 'PLAYER' ||
+                        event.entity.name !== _this.player.name) {
                         return;
                     }
                     event.setCancelled(true);
