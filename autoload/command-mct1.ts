@@ -1,6 +1,6 @@
-import commando from '@magikcraft/mct1/utils/commando'
 import { Logger } from '../log'
-import { user } from '../user'
+import { makeMCT1Player } from '../user'
+import commando from '../utils/commando'
 
 const log = Logger('plugins/magikcraft/command-mct1')
 // import LightningSuperStrike = require('magikcraft/fx/lightning-super-strike')
@@ -14,18 +14,18 @@ commando('mct1', (args, player) => {
     switch (method) {
         case 'start':
             // LightningSuperStrike.kaboom(player.location, 5, 20)
-            user(player).mct1.start()
+            makeMCT1Player(player).mct1.start()
             break
         case 'stop':
-            user(player).mct1.stop()
+            makeMCT1Player(player).mct1.stop()
             break
         case 'inventory':
         case 'i':
-            user(player).mct1.setDemoInventory()
+            makeMCT1Player(player).mct1.setDemoInventory()
             break
         case 'debug':
         case 'd':
-            user(player).mct1.setDebugMode(true)
+            makeMCT1Player(player).mct1.setDebugMode(true)
             break
         default:
             echo(player, `Unknown /mct1 arg "${args[0]}"`)

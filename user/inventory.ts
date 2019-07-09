@@ -1,8 +1,8 @@
-import { Logger } from '@magikcraft/mct1/log'
-import * as tools from '@magikcraft/mct1/tools'
-import { user } from '@magikcraft/mct1/user'
 import * as events from 'events'
 import * as items from 'items'
+import { Logger } from '../log'
+import * as tools from '../tools'
+import { makeMCT1Player } from '../user'
 
 const log = Logger(__filename)
 
@@ -118,7 +118,7 @@ export default class PlayerInventory {
     }
 
     save(itemStacks: any[]) {
-        user(this.player).db.set(
+        makeMCT1Player(this.player).db.set(
             'savedInventory',
             this.exportToJSON(itemStacks)
         )
@@ -129,7 +129,8 @@ export default class PlayerInventory {
     }
 
     loadSaved() {
-        const itemStacksJSON = user(this.player).db.get('savedInventory') || []
+        const itemStacksJSON =
+            makeMCT1Player(this.player).db.get('savedInventory') || []
         this.set(this.importFromJSON(itemStacksJSON))
     }
 

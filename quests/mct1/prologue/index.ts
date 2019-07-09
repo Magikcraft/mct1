@@ -2,7 +2,6 @@
 import * as LightingStorm from '../../../fx/lighting-storm'
 import * as LightningSuperStrike from '../../../fx/lightning-super-strike'
 import * as MobTools from '../../../mobs'
-import { user } from '../../../user'
 import { QuestConfig } from '../../Quest'
 import * as questTools from '../../quest-tools'
 import { QuestMCT1 } from '../../QuestMCT1'
@@ -32,11 +31,11 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         // this.registerEvents(); // called by parent
 
         this.player.setFoodLevel(15)
-        user(this.player).mct1.setInfiniteInsulin(false)
-        user(this.player).mct1.setFoodLevel(20)
-        user(this.player).mct1.setHealth(20)
-        user(this.player).mct1.isUSA = this.isUSA
-        user(this.player).mct1.stop()
+        this.mct1Player.mct1.setInfiniteInsulin(false)
+        this.mct1Player.mct1.setFoodLevel(20)
+        this.mct1Player.mct1.setHealth(20)
+        this.mct1Player.mct1.isUSA = this.isUSA
+        this.mct1Player.mct1.stop()
 
         this.world.setDawn()
         this.world.setSun()
@@ -65,18 +64,17 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         this.setTimeout(() => {
             this.log(`Strike with Lightning!`)
             LightningSuperStrike.kaboom(this.player.location, 5, 20)
-            const mct1Player = user(this.player)
-            mct1Player.mct1.bgl = 5
-            mct1Player.mct1.insulin = 0
-            mct1Player.mct1.setSuperCharged(true)
-            mct1Player.mct1.setInfiniteInsulin(false)
-            mct1Player.mct1.setInfiniteSnowballs(true)
-            mct1Player.mct1.setNightVision(true)
-            mct1Player.mct1.start()
+            this.mct1Player.mct1.bgl = 5
+            this.mct1Player.mct1.insulin = 0
+            this.mct1Player.mct1.setSuperCharged(true)
+            this.mct1Player.mct1.setInfiniteInsulin(false)
+            this.mct1Player.mct1.setInfiniteSnowballs(true)
+            this.mct1Player.mct1.setNightVision(true)
+            this.mct1Player.mct1.start()
             this.state.hasMCT1 = true
 
-            mct1Player.gms() // SURVIVAL mode so player can interact with blocks and shoot snowballs
-            mct1Player.inventory.setHeldItemSlot(0)
+            this.mct1Player.gms() // SURVIVAL mode so player can interact with blocks and shoot snowballs
+            this.mct1Player.inventory.setHeldItemSlot(0)
 
             echo(this.player, 'You got struck by lightning!')
         }, Math.max(45000 + intervalModifier, 0))
@@ -97,8 +95,8 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         this.setTimeout(() => {
             this.log(`Turn off God mode`)
-            user(this.player).mct1.setSuperCharged(false)
-            user(this.player).mct1.setNightVision(false)
+            this.mct1Player.mct1.setSuperCharged(false)
+            this.mct1Player.mct1.setNightVision(false)
         }, Math.max(135000 + intervalModifier, 0))
 
         this.setTimeout(() => {
@@ -131,8 +129,8 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
                 event.setCancelled(true)
                 if (!this.state.completed) {
                     this.state.completed = true
-                    user(this.player).effects.add('LEVITATION')
-                    user(this.player).mct1.bgl = 20 // Make player go blind.
+                    this.mct1Player.effects.add('LEVITATION')
+                    this.mct1Player.mct1.bgl = 20 // Make player go blind.
 
                     setTimeout(() => {
                         this.complete()

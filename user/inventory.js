@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var log_1 = require("@magikcraft/mct1/log");
-var tools = require("@magikcraft/mct1/tools");
-var user_1 = require("@magikcraft/mct1/user");
 var events = require("events");
 var items = require("items");
+var log_1 = require("../log");
+var tools = require("../tools");
+var user_1 = require("../user");
 var log = log_1.Logger(__filename);
 var indexMap = {
     hotbarFirst: 0,
@@ -111,13 +111,13 @@ var PlayerInventory = /** @class */ (function () {
         });
     };
     PlayerInventory.prototype.save = function (itemStacks) {
-        user_1.user(this.player).db.set('savedInventory', this.exportToJSON(itemStacks));
+        user_1.makeMCT1Player(this.player).db.set('savedInventory', this.exportToJSON(itemStacks));
     };
     PlayerInventory.prototype.saveCurrent = function () {
         this.save(this.getAllitemStacks());
     };
     PlayerInventory.prototype.loadSaved = function () {
-        var itemStacksJSON = user_1.user(this.player).db.get('savedInventory') || [];
+        var itemStacksJSON = user_1.makeMCT1Player(this.player).db.get('savedInventory') || [];
         this.set(this.importFromJSON(itemStacksJSON));
     };
     PlayerInventory.prototype.getItem = function (slotIndex) {

@@ -1,4 +1,3 @@
-import { user } from '../user'
 import { ChestItems } from './mct1/chest-items'
 import { Inventories } from './mct1/inventories'
 import { QuestBase, QuestConfig } from './Quest'
@@ -38,19 +37,20 @@ export class QuestMCT1 extends QuestBase {
         }
         // Do this here ...
         super.start()
-        user(this.player).teleport(locations.spawn)
-        user(this.player).saveSpawn(locations.spawn)
-        user(this.player).setRespawnAtSpawnLocation(true)
-        user(this.player).gma() // ADVENTURE!
-        user(this.player).effects.cancel('LEVITATION') // Just in case
+
+        this.mct1Player.teleport(locations.spawn)
+        this.mct1Player.saveSpawn(locations.spawn)
+        this.mct1Player.setRespawnAtSpawnLocation(true)
+        this.mct1Player.gma() // ADVENTURE!
+        this.mct1Player.effects.cancel('LEVITATION') // Just in case
         if (this.inventory) {
-            user(this.player).inventory.set(this.inventory)
+            this.mct1Player.inventory.set(this.inventory)
         }
-        user(this.player).inventory.saveCurrent()
-        user(this.player).inventory.setReloadAtSpawn(true)
+        this.mct1Player.inventory.saveCurrent()
+        this.mct1Player.inventory.setReloadAtSpawn(true)
         this.setMCT1SuperPowers(false)
-        user(this.player).mct1.start()
-        user(this.player).mct1.setInfiniteInsulin(true)
+        this.mct1Player.mct1.start()
+        this.mct1Player.mct1.setInfiniteInsulin(true)
         this.log('setInfiniteInsulin')
         this.world.killAll('mobs')
         // world.setSpawnFlags(false, true)
@@ -79,18 +79,18 @@ export class QuestMCT1 extends QuestBase {
     }
     public setMCT1SuperPowers(bool) {
         if (bool) {
-            user(this.player).mct1.setSuperCharged(false)
-            user(this.player).mct1.setInfiniteSnowballs(true)
-            user(this.player).mct1.setSuperJump(true)
-            user(this.player).mct1.setSuperSpeed(true)
-            user(this.player).mct1.setNightVision(false)
+            this.mct1Player.mct1.setSuperCharged(false)
+            this.mct1Player.mct1.setInfiniteSnowballs(true)
+            this.mct1Player.mct1.setSuperJump(true)
+            this.mct1Player.mct1.setSuperSpeed(true)
+            this.mct1Player.mct1.setNightVision(false)
             // user(player).mct1.start()
         } else {
-            user(this.player).mct1.setSuperCharged(false)
-            user(this.player).mct1.setInfiniteSnowballs(false)
-            user(this.player).mct1.setSuperJump(false)
-            user(this.player).mct1.setSuperSpeed(false)
-            user(this.player).mct1.setNightVision(false)
+            this.mct1Player.mct1.setSuperCharged(false)
+            this.mct1Player.mct1.setInfiniteSnowballs(false)
+            this.mct1Player.mct1.setSuperJump(false)
+            this.mct1Player.mct1.setSuperSpeed(false)
+            this.mct1Player.mct1.setNightVision(false)
             // user(player).mct1.start()
         }
     }

@@ -365,6 +365,7 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this.player = player;
+        this.mct1Player = user_1.makeMCT1Player(player);
         this.name = player.name;
         this.foodLevel = this.player.foodLevel;
     }
@@ -455,12 +456,12 @@ var MCT1 = /** @class */ (function () {
             this.player.setHealth(20);
             this.setFoodLevel(20);
             // server.dispatchCommand(sender, `god ${this.player.name} ON`)
-            user_1.user(this.player).setGodMode(true);
+            this.mct1Player.setGodMode(true);
             this.giveSuperPowers();
         }
         else {
             this.isSuperCharged = false;
-            user_1.user(this.player).setGodMode(false);
+            this.mct1Player.setGodMode(false);
             // server.dispatchCommand(sender, `god ${this.player.name} OFF`)
             this.cancelSuperPowers();
         }
@@ -845,55 +846,55 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.ensureInfiniteSnowballs = function () {
         var _this = this;
-        var itemInSlot = user_1.user(this.player).inventory.getItem(this.snowballSlot);
+        var itemInSlot = this.mct1Player.inventory.getItem(this.snowballSlot);
         if (!itemInSlot || !this.isLightningSnowballStack(itemInSlot)) {
-            user_1.user(this.player).inventory.bumpItemIntoSlot(this.snowballSlot, this.makeLigtningSnowballItemStack(1));
+            this.mct1Player.inventory.bumpItemIntoSlot(this.snowballSlot, this.makeLigtningSnowballItemStack(1));
         }
         // now make sure there aren't any duplicates
-        user_1.user(this.player)
+        this.mct1Player
             .inventory.getAllitemStacks()
             .forEach(function (itemStack, i) {
             if (i != _this.snowballSlot &&
                 itemStack &&
                 _this.isLightningSnowballStack(itemStack)) {
-                user_1.user(_this.player).inventory.setEmpty(i);
+                _this.mct1Player.inventory.setEmpty(i);
             }
         });
     };
     MCT1.prototype.removeInfiniteSnowballs = function () {
         var _this = this;
-        user_1.user(this.player)
+        this.mct1Player
             .inventory.getAllitemStacks()
             .forEach(function (itemStack, i) {
             if (itemStack && _this.isLightningSnowballStack(itemStack)) {
-                user_1.user(_this.player).inventory.setEmpty(i);
+                _this.mct1Player.inventory.setEmpty(i);
             }
         });
     };
     MCT1.prototype.ensureInfiniteInsulin = function () {
         var _this = this;
-        var itemInSlot = user_1.user(this.player).inventory.getItem(this.insulinSlot);
+        var itemInSlot = this.mct1Player.inventory.getItem(this.insulinSlot);
         if (!itemInSlot || !this.isInsulinStack(itemInSlot)) {
-            user_1.user(this.player).inventory.bumpItemIntoSlot(this.insulinSlot, this.makeInsulinStack(1));
+            this.mct1Player.inventory.bumpItemIntoSlot(this.insulinSlot, this.makeInsulinStack(1));
         }
         // now make sure there aren't any duplicates
-        user_1.user(this.player)
+        this.mct1Player
             .inventory.getAllitemStacks()
             .forEach(function (itemStack, i) {
             if (i != _this.insulinSlot &&
                 itemStack &&
                 _this.isInsulinStack(itemStack)) {
-                user_1.user(_this.player).inventory.setEmpty(i);
+                _this.mct1Player.inventory.setEmpty(i);
             }
         });
     };
     MCT1.prototype.removeInfiniteInsulin = function () {
         var _this = this;
-        user_1.user(this.player)
+        this.mct1Player
             .inventory.getAllitemStacks()
             .forEach(function (itemStack, i) {
             if (itemStack && _this.isInsulinStack(itemStack)) {
-                user_1.user(_this.player).inventory.setEmpty(i);
+                _this.mct1Player.inventory.setEmpty(i);
             }
         });
     };

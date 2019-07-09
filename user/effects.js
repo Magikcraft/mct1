@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var log_1 = require("@magikcraft/mct1/log");
+var log_1 = require("../log");
 var log = log_1.Logger(__filename);
 var PotionEffect = Java.type('org.bukkit.potion.PotionEffect');
 exports.Effects = {

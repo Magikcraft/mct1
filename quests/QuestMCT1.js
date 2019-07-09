@@ -13,7 +13,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var user_1 = require("../user");
 var chest_items_1 = require("./mct1/chest-items");
 var inventories_1 = require("./mct1/inventories");
 var Quest_1 = require("./Quest");
@@ -49,19 +48,19 @@ var QuestMCT1 = /** @class */ (function (_super) {
         }
         // Do this here ...
         _super.prototype.start.call(this);
-        user_1.user(this.player).teleport(locations.spawn);
-        user_1.user(this.player).saveSpawn(locations.spawn);
-        user_1.user(this.player).setRespawnAtSpawnLocation(true);
-        user_1.user(this.player).gma(); // ADVENTURE!
-        user_1.user(this.player).effects.cancel('LEVITATION'); // Just in case
+        this.mct1Player.teleport(locations.spawn);
+        this.mct1Player.saveSpawn(locations.spawn);
+        this.mct1Player.setRespawnAtSpawnLocation(true);
+        this.mct1Player.gma(); // ADVENTURE!
+        this.mct1Player.effects.cancel('LEVITATION'); // Just in case
         if (this.inventory) {
-            user_1.user(this.player).inventory.set(this.inventory);
+            this.mct1Player.inventory.set(this.inventory);
         }
-        user_1.user(this.player).inventory.saveCurrent();
-        user_1.user(this.player).inventory.setReloadAtSpawn(true);
+        this.mct1Player.inventory.saveCurrent();
+        this.mct1Player.inventory.setReloadAtSpawn(true);
         this.setMCT1SuperPowers(false);
-        user_1.user(this.player).mct1.start();
-        user_1.user(this.player).mct1.setInfiniteInsulin(true);
+        this.mct1Player.mct1.start();
+        this.mct1Player.mct1.setInfiniteInsulin(true);
         this.log('setInfiniteInsulin');
         this.world.killAll('mobs');
         // world.setSpawnFlags(false, true)
@@ -87,19 +86,19 @@ var QuestMCT1 = /** @class */ (function (_super) {
     };
     QuestMCT1.prototype.setMCT1SuperPowers = function (bool) {
         if (bool) {
-            user_1.user(this.player).mct1.setSuperCharged(false);
-            user_1.user(this.player).mct1.setInfiniteSnowballs(true);
-            user_1.user(this.player).mct1.setSuperJump(true);
-            user_1.user(this.player).mct1.setSuperSpeed(true);
-            user_1.user(this.player).mct1.setNightVision(false);
+            this.mct1Player.mct1.setSuperCharged(false);
+            this.mct1Player.mct1.setInfiniteSnowballs(true);
+            this.mct1Player.mct1.setSuperJump(true);
+            this.mct1Player.mct1.setSuperSpeed(true);
+            this.mct1Player.mct1.setNightVision(false);
             // user(player).mct1.start()
         }
         else {
-            user_1.user(this.player).mct1.setSuperCharged(false);
-            user_1.user(this.player).mct1.setInfiniteSnowballs(false);
-            user_1.user(this.player).mct1.setSuperJump(false);
-            user_1.user(this.player).mct1.setSuperSpeed(false);
-            user_1.user(this.player).mct1.setNightVision(false);
+            this.mct1Player.mct1.setSuperCharged(false);
+            this.mct1Player.mct1.setInfiniteSnowballs(false);
+            this.mct1Player.mct1.setSuperJump(false);
+            this.mct1Player.mct1.setSuperSpeed(false);
+            this.mct1Player.mct1.setNightVision(false);
             // user(player).mct1.start()
         }
     };

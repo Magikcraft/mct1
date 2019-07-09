@@ -4,7 +4,7 @@ import * as items from 'items'
 import { BossBar } from '../bossbar'
 import { IBossBar } from '../bossbar/bossbar'
 import { Logger } from '../log'
-import { user } from '../user'
+import { makeMCT1Player } from '../user'
 import { activityCosts, activityTypes } from './activities'
 import foods from './foods'
 
@@ -60,9 +60,11 @@ export class MCT1 {
     public insulinSlot: number = 1
 
     public isStarted: boolean = false
+    public mct1Player: ReturnType<typeof makeMCT1Player>
 
     constructor(player) {
         this.player = player
+        this.mct1Player = makeMCT1Player(player)
         this.name = player.name
         this.foodLevel = this.player.foodLevel
     }
@@ -165,11 +167,11 @@ export class MCT1 {
             this.player.setHealth(20)
             this.setFoodLevel(20)
             // server.dispatchCommand(sender, `god ${this.player.name} ON`)
-            user(this.player).setGodMode(true)
+            this.mct1Player.setGodMode(true)
             this.giveSuperPowers()
         } else {
             this.isSuperCharged = false
-            user(this.player).setGodMode(false)
+            this.mct1Player.setGodMode(false)
             // server.dispatchCommand(sender, `god ${this.player.name} OFF`)
             this.cancelSuperPowers()
         }
@@ -644,69 +646,59 @@ export class MCT1 {
     }
 
     public ensureInfiniteSnowballs() {
-        const itemInSlot = user(this.player).inventory.getItem(
-            this.snowballSlot
-        )
+        const itemInSlot = this.mct1Player.inventory.getItem(this.snowballSlot)
         if (!itemInSlot || !this.isLightningSnowballStack(itemInSlot)) {
-            user(this.player).inventory.bumpItemIntoSlot(
+            this.mct1Player.inventory.bumpItemIntoSlot(
                 this.snowballSlot,
                 this.makeLigtningSnowballItemStack(1)
             )
         }
         // now make sure there aren't any duplicates
-        user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach((itemStack, i) => {
-                if (
-                    i != this.snowballSlot &&
-                    itemStack &&
-                    this.isLightningSnowballStack(itemStack)
-                ) {
-                    user(this.player).inventory.setEmpty(i)
-                }
-            })
+        this.mct1Player.inventory.getAllitemStacks().forEach((itemStack, i) => {
+            if (
+                i != this.snowballSlot &&
+                itemStack &&
+                this.isLightningSnowballStack(itemStack)
+            ) {
+                this.mct1Player.inventory.setEmpty(i)
+            }
+        })
     }
 
     public removeInfiniteSnowballs() {
-        user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach((itemStack, i) => {
-                if (itemStack && this.isLightningSnowballStack(itemStack)) {
-                    user(this.player).inventory.setEmpty(i)
-                }
-            })
+        this.mct1Player.inventory.getAllitemStacks().forEach((itemStack, i) => {
+            if (itemStack && this.isLightningSnowballStack(itemStack)) {
+                this.mct1Player.inventory.setEmpty(i)
+            }
+        })
     }
 
     public ensureInfiniteInsulin() {
-        const itemInSlot = user(this.player).inventory.getItem(this.insulinSlot)
+        const itemInSlot = this.mct1Player.inventory.getItem(this.insulinSlot)
         if (!itemInSlot || !this.isInsulinStack(itemInSlot)) {
-            user(this.player).inventory.bumpItemIntoSlot(
+            this.mct1Player.inventory.bumpItemIntoSlot(
                 this.insulinSlot,
                 this.makeInsulinStack(1)
             )
         }
         // now make sure there aren't any duplicates
-        user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach((itemStack, i) => {
-                if (
-                    i != this.insulinSlot &&
-                    itemStack &&
-                    this.isInsulinStack(itemStack)
-                ) {
-                    user(this.player).inventory.setEmpty(i)
-                }
-            })
+        this.mct1Player.inventory.getAllitemStacks().forEach((itemStack, i) => {
+            if (
+                i != this.insulinSlot &&
+                itemStack &&
+                this.isInsulinStack(itemStack)
+            ) {
+                this.mct1Player.inventory.setEmpty(i)
+            }
+        })
     }
 
     public removeInfiniteInsulin() {
-        user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach((itemStack, i) => {
-                if (itemStack && this.isInsulinStack(itemStack)) {
-                    user(this.player).inventory.setEmpty(i)
-                }
-            })
+        this.mct1Player.inventory.getAllitemStacks().forEach((itemStack, i) => {
+            if (itemStack && this.isInsulinStack(itemStack)) {
+                this.mct1Player.inventory.setEmpty(i)
+            }
+        })
     }
 
     public zapZaps() {

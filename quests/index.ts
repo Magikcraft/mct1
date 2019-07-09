@@ -1,6 +1,6 @@
 import { WorldManager } from '@magikcraft/mct1/world'
 import { Logger } from '../log'
-import { user } from '../user'
+import { makeMCT1Player } from '../user'
 import { Multiverse } from '../world/multiverse'
 import { QuestConfig } from './Quest'
 
@@ -59,7 +59,7 @@ export async function questCommand({ questName, method, player, opts }) {
     }
 
     if (questName === 'stop') {
-        const userQuest = user(player).quest
+        const userQuest = makeMCT1Player(player).quest
         if (userQuest) {
             questName = userQuest.name
             method = 'stop'
@@ -102,15 +102,15 @@ export async function questCommand({ questName, method, player, opts }) {
             }
 
             const thisQuest = new QuestClass(questConfig)
-            user(player).quest = thisQuest
+            makeMCT1Player(player).quest = thisQuest
             thisQuest.start()
             break
         case 'import':
             Multiverse.importWorld(templateWorldName)
             break
         case 'stop':
-            user(player).mct1.stop()
-            user(player).quest = undefined
+            makeMCT1Player(player).mct1.stop()
+            makeMCT1Player(player).quest = undefined
             // Deleting the world kicks the player from the world
             // This triggers the playerChangedWorld event, which calls the stop() method
             // of the quest object, doing quest cleanup.

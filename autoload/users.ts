@@ -1,7 +1,7 @@
 import * as events from 'events'
 import * as utils from 'utils'
 import { Logger } from '../log'
-import { user, userDelete } from '../user'
+import { makeMCT1Player, userDelete } from '../user'
 import { WorldManager } from '../world'
 
 const log = Logger('plugins/magikcraft/users')
@@ -22,7 +22,7 @@ events.playerQuit(({ player }) => setTimeout(() => playerQuit(player), 100))
 function playerJoin(player) {
     log('playerJoin', player.name)
     userDelete(player) // ensure clean
-    user(player) // create user
+    makeMCT1Player(player) // create user
     // user(player).continue() // ensure mct1 is not running (clear bars and effects).
 }
 function playerQuit(player) {

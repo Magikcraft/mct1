@@ -34,6 +34,7 @@ var QuestBase = /** @class */ (function () {
         this.name = conf.name;
         this.nextQuestName = conf.nextQuestName;
         this.player = conf.player;
+        this.mct1Player = user_1.makeMCT1Player(conf.player);
         this.world = conf.world;
         this.db = new db_1.default(this.world.getName());
         this.options = conf.options || {};
@@ -57,26 +58,26 @@ var QuestBase = /** @class */ (function () {
         }, 2000); // delay first track by 2 secs
     };
     QuestBase.prototype.track = function () {
-        // user(this.player).db.
+        // this.mct1Player.db.
         this.log("track quest " + this.world.getName());
-        var inventoryJSON = user_1.user(this.player).inventory.exportToJSON(user_1.user(this.player).inventory.getAllitemStacks());
+        var inventoryJSON = this.mct1Player.inventory.exportToJSON(this.mct1Player.inventory.getAllitemStacks());
         var inventory = inventoryJSON
             .map(function (item, i) { return (item ? __assign({}, item, { slot: i }) : null); })
             .filter(function (item) { return item; });
-        var mct1 = user_1.user(this.player).mct1.isStarted
+        var mct1 = this.mct1Player.mct1.isStarted
             ? {
-                bgl: user_1.user(this.player).mct1.bgl,
-                digestionQueue: user_1.user(this.player).mct1.digestionQueue.map(function (item) { return (__assign({}, item)); }),
-                hasInfiniteInsulin: user_1.user(this.player).mct1.hasInfiniteInsulin,
-                hasLightningSnowballs: user_1.user(this.player).mct1
+                bgl: this.mct1Player.mct1.bgl,
+                digestionQueue: this.mct1Player.mct1.digestionQueue.map(function (item) { return (__assign({}, item)); }),
+                hasInfiniteInsulin: this.mct1Player.mct1.hasInfiniteInsulin,
+                hasLightningSnowballs: this.mct1Player.mct1
                     .hasLightningSnowballs,
-                hasNightVision: user_1.user(this.player).mct1.hasNightVision,
-                hasSuperJump: user_1.user(this.player).mct1.hasSuperJump,
-                hasSuperSpeed: user_1.user(this.player).mct1.hasSuperSpeed,
-                insulin: user_1.user(this.player).mct1.insulin,
-                isStarted: user_1.user(this.player).mct1.isStarted,
-                isSuperCharged: user_1.user(this.player).mct1.isSuperCharged,
-                isUSA: user_1.user(this.player).mct1.isUSA,
+                hasNightVision: this.mct1Player.mct1.hasNightVision,
+                hasSuperJump: this.mct1Player.mct1.hasSuperJump,
+                hasSuperSpeed: this.mct1Player.mct1.hasSuperSpeed,
+                insulin: this.mct1Player.mct1.insulin,
+                isStarted: this.mct1Player.mct1.isStarted,
+                isSuperCharged: this.mct1Player.mct1.isSuperCharged,
+                isUSA: this.mct1Player.mct1.isUSA,
             }
             : false;
         var state = {
@@ -88,7 +89,7 @@ var QuestBase = /** @class */ (function () {
             mct1: mct1,
             player: this.player.name,
             quest: QuestBase.name,
-            session: user_1.user(this.player).sessionId,
+            session: this.mct1Player.sessionId,
             timestamp: new Date(),
             world: this.world.getName(),
         };
@@ -231,7 +232,7 @@ var QuestBase = /** @class */ (function () {
                 var key = "waypoint-" + name;
                 this_1.world.registerRegion(key, waypoint.region[0], waypoint.region[1]);
                 this_1.world.registerPlayerEnterRegionEvent(key, function (event) {
-                    user_1.user(_this.player).saveSpawn(waypoint.saveLocation);
+                    _this.mct1Player.saveSpawn(waypoint.saveLocation);
                 });
             };
             var this_1 = this;

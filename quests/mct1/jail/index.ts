@@ -1,6 +1,5 @@
 import * as items from 'items'
 import * as MobTools from '../../../mobs'
-import { user } from '../../../user'
 import { QuestConfig } from '../../Quest'
 import * as questTools from '../../quest-tools'
 import { QuestMCT1 } from '../../QuestMCT1'
@@ -29,12 +28,12 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         super.start()
         const { regions } = this.Locs
 
-        user(this.player).mct1.setFoodLevel(5)
-        user(this.player).mct1.setHealth(5)
-        user(this.player).mct1.bgl = 5
-        user(this.player).mct1.insulin = 0
+        this.mct1Player.mct1.setFoodLevel(5)
+        this.mct1Player.mct1.setHealth(5)
+        this.mct1Player.mct1.bgl = 5
+        this.mct1Player.mct1.insulin = 0
 
-        user(this.player).inventory.set([])
+        this.mct1Player.inventory.set([])
 
         // Region: jailHall.. Save player inventory
         this.world.registerRegion(
@@ -43,7 +42,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
             this.Locs.regions.jailHall[1]
         )
         this.world.registerPlayerEnterRegionEvent('jailHall', event => {
-            user(this.player).inventory.save(
+            this.mct1Player.inventory.save(
                 ChestItems.jailCell.concat([Journals.jail1])
             )
         })
@@ -146,19 +145,19 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
                 this.log('inventoryClick 2.1')
                 this.log(
                     'user(player).mct1.isInsulinStack(event.cursor)',
-                    user(this.player).mct1.isInsulinStack(event.cursor)
+                    this.mct1Player.mct1.isInsulinStack(event.cursor)
                         ? 'true'
                         : 'false'
                 )
-                if (user(this.player).mct1.isInsulinStack(event.cursor)) {
+                if (this.mct1Player.mct1.isInsulinStack(event.cursor)) {
                     this.log('inventoryClick 2.2')
                     if (event.slot === -999 || event.slot > 8) {
                         event.setCancelled(true)
                     } else {
-                        user(this.player).mct1.insulinSlot = event.slot
+                        this.mct1Player.mct1.insulinSlot = event.slot
                         this.log('inventoryClick 3')
                         this.setTimeout(() => {
-                            user(this.player).mct1.setInfiniteInsulin(true)
+                            this.mct1Player.mct1.setInfiniteInsulin(true)
                             this.state.hasInfiniteInsulin = true
                             this.log('Enable infinite Insulin!')
                             this.log('state', JSON.stringify(this.state))
@@ -179,7 +178,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
             ) {
                 // Handle case where Insulin is cursor item and chest closed via esc key
                 if (
-                    user(this.player).mct1.isInsulinStack(
+                    this.mct1Player.mct1.isInsulinStack(
                         event.itemDrop.itemStack
                     )
                 ) {
@@ -187,7 +186,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
                         // Cancel dropping insulin, instead move to inventory and setInfiniteInsulin(true).
                         event.setCancelled(true)
                         this.setTimeout(() => {
-                            user(this.player).mct1.setInfiniteInsulin(true)
+                            this.mct1Player.mct1.setInfiniteInsulin(true)
                             this.state.hasInfiniteInsulin = true
                             this.log('Enable infinite Insulin!')
                             this.log('state', JSON.stringify(this.state))

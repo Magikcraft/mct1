@@ -1,7 +1,8 @@
 import * as events from 'events'
 import { Logger } from '../log'
 import * as tools from '../tools'
-import { user } from '../user'
+import { makeMCT1Player } from '../user'
+import MCT1Player from '../user/MCT1Player'
 import ManagedWorld from '../world/ManagedWorld'
 import DB from './db'
 import { questCommand } from './index'
@@ -39,7 +40,7 @@ export class QuestBase {
     public inventory: any[] = []
     public waypoints?: any[]
     public endPortalRegion?: any[]
-
+    public mct1Player: MCT1Player
     private events: any = {}
     private intervals: any = {}
     private timers: any = {}
@@ -48,6 +49,7 @@ export class QuestBase {
         this.name = conf.name
         this.nextQuestName = conf.nextQuestName
         this.player = conf.player
+        this.mct1Player = makeMCT1Player(conf.player)
         this.world = conf.world
         this.db = new DB(this.world.getName())
         this.options = conf.options || {}
@@ -73,32 +75,32 @@ export class QuestBase {
     }
 
     public track() {
-        // user(this.player).db.
+        // this.mct1Player.db.
         this.log(`track quest ${this.world.getName()}`)
 
-        const inventoryJSON = user(this.player).inventory.exportToJSON(
-            user(this.player).inventory.getAllitemStacks()
+        const inventoryJSON = this.mct1Player.inventory.exportToJSON(
+            this.mct1Player.inventory.getAllitemStacks()
         )
         const inventory = inventoryJSON
             .map((item, i) => (item ? { ...item, slot: i } : null))
             .filter(item => item)
 
-        const mct1 = user(this.player).mct1.isStarted
+        const mct1 = this.mct1Player.mct1.isStarted
             ? {
-                  bgl: user(this.player).mct1.bgl,
-                  digestionQueue: user(this.player).mct1.digestionQueue.map(
+                  bgl: this.mct1Player.mct1.bgl,
+                  digestionQueue: this.mct1Player.mct1.digestionQueue.map(
                       item => ({ ...item })
                   ), // Clone instead of object reference
-                  hasInfiniteInsulin: user(this.player).mct1.hasInfiniteInsulin,
-                  hasLightningSnowballs: user(this.player).mct1
+                  hasInfiniteInsulin: this.mct1Player.mct1.hasInfiniteInsulin,
+                  hasLightningSnowballs: this.mct1Player.mct1
                       .hasLightningSnowballs,
-                  hasNightVision: user(this.player).mct1.hasNightVision,
-                  hasSuperJump: user(this.player).mct1.hasSuperJump,
-                  hasSuperSpeed: user(this.player).mct1.hasSuperSpeed,
-                  insulin: user(this.player).mct1.insulin,
-                  isStarted: user(this.player).mct1.isStarted,
-                  isSuperCharged: user(this.player).mct1.isSuperCharged,
-                  isUSA: user(this.player).mct1.isUSA,
+                  hasNightVision: this.mct1Player.mct1.hasNightVision,
+                  hasSuperJump: this.mct1Player.mct1.hasSuperJump,
+                  hasSuperSpeed: this.mct1Player.mct1.hasSuperSpeed,
+                  insulin: this.mct1Player.mct1.insulin,
+                  isStarted: this.mct1Player.mct1.isStarted,
+                  isSuperCharged: this.mct1Player.mct1.isSuperCharged,
+                  isUSA: this.mct1Player.mct1.isUSA,
               }
             : false
 
@@ -111,7 +113,7 @@ export class QuestBase {
             mct1,
             player: this.player.name,
             quest: QuestBase.name,
-            session: user(this.player).sessionId,
+            session: this.mct1Player.sessionId,
             timestamp: new Date(),
             world: this.world.getName(),
         }
@@ -292,7 +294,7 @@ export class QuestBase {
                     waypoint.region[1]
                 )
                 this.world.registerPlayerEnterRegionEvent(key, event => {
-                    user(this.player).saveSpawn(waypoint.saveLocation)
+                    this.mct1Player.saveSpawn(waypoint.saveLocation)
                 })
             }
         }

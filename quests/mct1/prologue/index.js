@@ -17,7 +17,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var LightingStorm = require("../../../fx/lighting-storm");
 var LightningSuperStrike = require("../../../fx/lightning-super-strike");
 var MobTools = require("../../../mobs");
-var user_1 = require("../../../user");
 var questTools = require("../../quest-tools");
 var QuestMCT1_1 = require("../../QuestMCT1");
 var Locations = require("./locs");
@@ -42,11 +41,11 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         _super.prototype.start.call(this);
         // this.registerEvents(); // called by parent
         this.player.setFoodLevel(15);
-        user_1.user(this.player).mct1.setInfiniteInsulin(false);
-        user_1.user(this.player).mct1.setFoodLevel(20);
-        user_1.user(this.player).mct1.setHealth(20);
-        user_1.user(this.player).mct1.isUSA = this.isUSA;
-        user_1.user(this.player).mct1.stop();
+        this.mct1Player.mct1.setInfiniteInsulin(false);
+        this.mct1Player.mct1.setFoodLevel(20);
+        this.mct1Player.mct1.setHealth(20);
+        this.mct1Player.mct1.isUSA = this.isUSA;
+        this.mct1Player.mct1.stop();
         this.world.setDawn();
         this.world.setSun();
         this.world.preventMobSpawning(['HUSK', 'WITHER']);
@@ -65,17 +64,16 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         this.setTimeout(function () {
             _this.log("Strike with Lightning!");
             LightningSuperStrike.kaboom(_this.player.location, 5, 20);
-            var mct1Player = user_1.user(_this.player);
-            mct1Player.mct1.bgl = 5;
-            mct1Player.mct1.insulin = 0;
-            mct1Player.mct1.setSuperCharged(true);
-            mct1Player.mct1.setInfiniteInsulin(false);
-            mct1Player.mct1.setInfiniteSnowballs(true);
-            mct1Player.mct1.setNightVision(true);
-            mct1Player.mct1.start();
+            _this.mct1Player.mct1.bgl = 5;
+            _this.mct1Player.mct1.insulin = 0;
+            _this.mct1Player.mct1.setSuperCharged(true);
+            _this.mct1Player.mct1.setInfiniteInsulin(false);
+            _this.mct1Player.mct1.setInfiniteSnowballs(true);
+            _this.mct1Player.mct1.setNightVision(true);
+            _this.mct1Player.mct1.start();
             _this.state.hasMCT1 = true;
-            mct1Player.gms(); // SURVIVAL mode so player can interact with blocks and shoot snowballs
-            mct1Player.inventory.setHeldItemSlot(0);
+            _this.mct1Player.gms(); // SURVIVAL mode so player can interact with blocks and shoot snowballs
+            _this.mct1Player.inventory.setHeldItemSlot(0);
             echo(_this.player, 'You got struck by lightning!');
         }, Math.max(45000 + intervalModifier, 0));
         this.setTimeout(function () {
@@ -92,8 +90,8 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         }, Math.max(65000 + intervalModifier, 0));
         this.setTimeout(function () {
             _this.log("Turn off God mode");
-            user_1.user(_this.player).mct1.setSuperCharged(false);
-            user_1.user(_this.player).mct1.setNightVision(false);
+            _this.mct1Player.mct1.setSuperCharged(false);
+            _this.mct1Player.mct1.setNightVision(false);
         }, Math.max(135000 + intervalModifier, 0));
         this.setTimeout(function () {
             _this.log("Make Wither hunt Player!");
@@ -122,8 +120,8 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
                 event.setCancelled(true);
                 if (!_this.state.completed) {
                     _this.state.completed = true;
-                    user_1.user(_this.player).effects.add('LEVITATION');
-                    user_1.user(_this.player).mct1.bgl = 20; // Make player go blind.
+                    _this.mct1Player.effects.add('LEVITATION');
+                    _this.mct1Player.mct1.bgl = 20; // Make player go blind.
                     setTimeout(function () {
                         _this.complete();
                     }, 5000);

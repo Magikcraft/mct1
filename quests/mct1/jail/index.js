@@ -15,7 +15,6 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var items = require("items");
 var MobTools = require("../../../mobs");
-var user_1 = require("../../../user");
 var questTools = require("../../quest-tools");
 var QuestMCT1_1 = require("../../QuestMCT1");
 var chest_items_1 = require("../chest-items");
@@ -40,15 +39,15 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         var _this = this;
         _super.prototype.start.call(this);
         var regions = this.Locs.regions;
-        user_1.user(this.player).mct1.setFoodLevel(5);
-        user_1.user(this.player).mct1.setHealth(5);
-        user_1.user(this.player).mct1.bgl = 5;
-        user_1.user(this.player).mct1.insulin = 0;
-        user_1.user(this.player).inventory.set([]);
+        this.mct1Player.mct1.setFoodLevel(5);
+        this.mct1Player.mct1.setHealth(5);
+        this.mct1Player.mct1.bgl = 5;
+        this.mct1Player.mct1.insulin = 0;
+        this.mct1Player.inventory.set([]);
         // Region: jailHall.. Save player inventory
         this.world.registerRegion('jailHall', this.Locs.regions.jailHall[0], this.Locs.regions.jailHall[1]);
         this.world.registerPlayerEnterRegionEvent('jailHall', function (event) {
-            user_1.user(_this.player).inventory.save(chest_items_1.ChestItems.jailCell.concat([journals_1.Journals.jail1]));
+            _this.mct1Player.inventory.save(chest_items_1.ChestItems.jailCell.concat([journals_1.Journals.jail1]));
         });
         // Close jail door
         questTools.closeDoorAtLocation(this.Locs.locations.jailDoor, false);
@@ -124,19 +123,19 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
             _this.log('event.cursor.type', event.cursor.type);
             if (event.cursor && event.cursor.type) {
                 _this.log('inventoryClick 2.1');
-                _this.log('user(player).mct1.isInsulinStack(event.cursor)', user_1.user(_this.player).mct1.isInsulinStack(event.cursor)
+                _this.log('user(player).mct1.isInsulinStack(event.cursor)', _this.mct1Player.mct1.isInsulinStack(event.cursor)
                     ? 'true'
                     : 'false');
-                if (user_1.user(_this.player).mct1.isInsulinStack(event.cursor)) {
+                if (_this.mct1Player.mct1.isInsulinStack(event.cursor)) {
                     _this.log('inventoryClick 2.2');
                     if (event.slot === -999 || event.slot > 8) {
                         event.setCancelled(true);
                     }
                     else {
-                        user_1.user(_this.player).mct1.insulinSlot = event.slot;
+                        _this.mct1Player.mct1.insulinSlot = event.slot;
                         _this.log('inventoryClick 3');
                         _this.setTimeout(function () {
-                            user_1.user(_this.player).mct1.setInfiniteInsulin(true);
+                            _this.mct1Player.mct1.setInfiniteInsulin(true);
                             _this.state.hasInfiniteInsulin = true;
                             _this.log('Enable infinite Insulin!');
                             _this.log('state', JSON.stringify(_this.state));
@@ -153,12 +152,12 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
             if (event.itemDrop.type == 'DROPPED_ITEM' &&
                 event.itemDrop.itemStack) {
                 // Handle case where Insulin is cursor item and chest closed via esc key
-                if (user_1.user(_this.player).mct1.isInsulinStack(event.itemDrop.itemStack)) {
+                if (_this.mct1Player.mct1.isInsulinStack(event.itemDrop.itemStack)) {
                     if (!_this.state.hasInfiniteInsulin) {
                         // Cancel dropping insulin, instead move to inventory and setInfiniteInsulin(true).
                         event.setCancelled(true);
                         _this.setTimeout(function () {
-                            user_1.user(_this.player).mct1.setInfiniteInsulin(true);
+                            _this.mct1Player.mct1.setInfiniteInsulin(true);
                             _this.state.hasInfiniteInsulin = true;
                             _this.log('Enable infinite Insulin!');
                             _this.log('state', JSON.stringify(_this.state));

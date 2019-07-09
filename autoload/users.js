@@ -24,7 +24,7 @@ events.playerQuit(function (_a) {
 function playerJoin(player) {
     log('playerJoin', player.name);
     user_1.userDelete(player); // ensure clean
-    user_1.user(player); // create user
+    user_1.makeMCT1Player(player); // create user
     // user(player).continue() // ensure mct1 is not running (clear bars and effects).
 }
 function playerQuit(player) {

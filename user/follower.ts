@@ -1,11 +1,11 @@
 import * as events from 'events'
 import * as utils from 'utils'
-import User from './user'
+import MCT1Player from './MCT1Player'
 
 export default class Follower {
     private eventHandlers: any[] = []
     private following: BukkitPlayer
-    private user: User
+    private user: MCT1Player
 
     constructor(user) {
         this.user = user

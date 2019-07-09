@@ -1,4 +1,4 @@
-import { Logger } from '@magikcraft/mct1/log'
+import { Logger } from '../log'
 const log = Logger(__filename)
 
 const PotionEffect = Java.type('org.bukkit.potion.PotionEffect')

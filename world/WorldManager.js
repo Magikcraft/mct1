@@ -43,8 +43,17 @@ var multiverse_1 = require("./multiverse");
 var log = log_1.Logger(__filename);
 /**
  * The World Manager is responsible for loading and unloading worlds.
- * It creates ManagedWorlds - cloned worlds with additional helper methods.
+ * It creates ManagedWorlds - cloned worlds with additional helper methods for
+ * use by quests.
  * Worlds are deleted when a player leaves the world, or when they leave the server.
+ *
+ * Multiplayer worlds are not fully implemented yet. The focus is on
+ * centralising the logic around the single-player worlds that we currently
+ * use. The motivation for this refactor was a bug in the previous implementation
+ * that caused OOM errors over time by not deleting worlds when players quit the
+ * server. With the previous division of responsibility it was not clear
+ * where to implement the fix.
+ *
  */
 // We use this to detect worlds that should be managed when reloading the code
 var managedPrefix = '_m_';
@@ -68,7 +77,7 @@ var WorldManagerClass = /** @class */ (function () {
         this.cullWorldsForAbsentPlayers();
     }
     /**
-     * Create a managed world for a specific player
+     * Create a managed world for a specific player, or a multiplayer world
      * @param templateWorldname The template world to clone from
      * @param playername The name of the player to create the world for. Pass in undefined for a multiplayer world
      */

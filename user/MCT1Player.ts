@@ -1,9 +1,9 @@
-import { Logger } from '@magikcraft/mct1/log'
-import { MCT1 } from '@magikcraft/mct1/mct1'
-import * as tools from '@magikcraft/mct1/tools'
-import { user } from '@magikcraft/mct1/user'
 import * as events from 'events'
+import { Logger } from '../log'
+import { MCT1 } from '../mct1'
 import { Quest } from '../quests/Quest'
+import * as tools from '../tools'
+import { makeMCT1Player } from '../user'
 import DB from './db'
 import PlayerEffects from './effects'
 import Follower from './follower'
@@ -14,7 +14,7 @@ const log = Logger(__filename)
 const GameMode = Java.type('org.bukkit.GameMode')
 
 // User class
-export default class User {
+export default class MCT1Player {
     public player: BukkitPlayer
     public sessionId
     public world // the world player is currently in
@@ -39,7 +39,7 @@ export default class User {
         this.effects = new PlayerEffects(player)
         this.setRespawnAtSpawnLocation(true)
         this.setReloadInventoryAtSpawn(true)
-        this.follower = new Follower(user)
+        this.follower = new Follower(makeMCT1Player)
         // this.cube =
     }
 
@@ -86,7 +86,7 @@ export default class User {
 
     public loadSpawn() {
         if (this.getSpawn()) {
-            user(this.player).teleport(this.getSpawn())
+            makeMCT1Player(this.player).teleport(this.getSpawn())
         }
     }
 
