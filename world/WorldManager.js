@@ -148,7 +148,9 @@ var WorldManagerClass = /** @class */ (function () {
         return this.managedWorlds.filter(function (w) { return w.playername && w.playername == playername; });
     };
     WorldManagerClass.prototype.getWorldByWorldName = function (name) {
+        log('managedWorlds', this.managedWorlds);
         var worlds = this.managedWorlds.filter(function (w) { return w.worldname == name; });
+        log('worlds', worlds);
         return worlds.length > 0 ? worlds[0] : undefined;
     };
     /**

@@ -131,7 +131,9 @@ class WorldManagerClass {
     }
 
     private getWorldByWorldName(name: string) {
+        log('managedWorlds', this.managedWorlds)
         const worlds = this.managedWorlds.filter(w => w.worldname == name)
+        log('worlds', worlds)
         return worlds.length > 0 ? worlds[0] : undefined
     }
 
