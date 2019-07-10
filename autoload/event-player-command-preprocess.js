@@ -39,8 +39,9 @@ events.playerCommandPreprocess(function (event) {
     }
     var allowed = false;
     commandWhitelist.forEach(function (c) {
-        if (command.substring(0, c.length) === c)
+        if (command.substring(0, c.length) === c) {
             allowed = true;
+        }
     });
     if (!allowed) {
         var cmdExists = __plugin.server.getPluginCommand(command.replace('/', ''));

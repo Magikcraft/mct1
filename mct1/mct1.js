@@ -5,7 +5,6 @@ var inventory = require("inventory");
 var items = require("items");
 var bossbar_1 = require("../bossbar");
 var log_1 = require("../log");
-var user_1 = require("../user");
 var activities_1 = require("./activities");
 var foods_1 = require("./foods");
 var log = log_1.Logger(__filename);
@@ -14,7 +13,7 @@ var Food = {};
 foods_1.default.forEach(function (item) { return (Food[item.type] = item); });
 var _bar = undefined;
 var MCT1 = /** @class */ (function () {
-    function MCT1(player) {
+    function MCT1(mct1Player) {
         var _this = this;
         this.isSprinting = false;
         this.bgl = 4;
@@ -364,9 +363,9 @@ var MCT1 = /** @class */ (function () {
                 _this.setFoodLevel(event.foodLevel);
             }
         };
-        this.player = player;
-        this.mct1Player = user_1.MCT1PlayerCache.getMct1Player(player);
-        this.name = player.name;
+        this.player = mct1Player.player;
+        this.mct1Player = mct1Player;
+        this.name = this.player.name;
         this.foodLevel = this.player.foodLevel;
     }
     MCT1.prototype.start = function () {

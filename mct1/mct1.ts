@@ -4,7 +4,6 @@ import * as items from 'items'
 import { BossBar } from '../bossbar'
 import { IBossBar } from '../bossbar/bossbar'
 import { Logger } from '../log'
-import { MCT1PlayerCache } from '../user'
 import MCT1Player from '../user/MCT1Player'
 import { activityCosts, activityTypes } from './activities'
 import foods from './foods'
@@ -63,10 +62,10 @@ export class MCT1 {
     public isStarted: boolean = false
     public mct1Player: MCT1Player
 
-    constructor(player) {
-        this.player = player
-        this.mct1Player = MCT1PlayerCache.getMct1Player(player)
-        this.name = player.name
+    constructor(mct1Player: MCT1Player) {
+        this.player = mct1Player.player
+        this.mct1Player = mct1Player
+        this.name = this.player.name
         this.foodLevel = this.player.foodLevel
     }
 

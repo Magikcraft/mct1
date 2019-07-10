@@ -23,6 +23,7 @@ export default class MCT1Player {
     public effects: PlayerEffects
     public follower: Follower
     public quest: Quest | undefined
+    public locale: any
     // cube: Follower
 
     private timers
@@ -32,13 +33,14 @@ export default class MCT1Player {
     constructor(player) {
         this.player = player
         this.sessionId = tools.uuid()
-        this.mct1 = new MCT1(player)
+        this.mct1 = new MCT1(this)
         this.db = new DB(player)
         this.inventory = new PlayerInventory(player)
         this.effects = new PlayerEffects(player)
         this.setRespawnAtSpawnLocation(true)
         this.setReloadInventoryAtSpawn(true)
         this.follower = new Follower(this)
+        this.locale = player.spigot().getLocale()
         // this.cube =
     }
 

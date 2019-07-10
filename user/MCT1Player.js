@@ -25,13 +25,14 @@ var MCT1Player = /** @class */ (function () {
         };
         this.player = player;
         this.sessionId = tools.uuid();
-        this.mct1 = new mct1_1.MCT1(player);
+        this.mct1 = new mct1_1.MCT1(this);
         this.db = new db_1.default(player);
         this.inventory = new inventory_1.default(player);
         this.effects = new effects_1.default(player);
         this.setRespawnAtSpawnLocation(true);
         this.setReloadInventoryAtSpawn(true);
         this.follower = new follower_1.default(this);
+        this.locale = player.spigot().getLocale();
         // this.cube =
     }
     MCT1Player.prototype.cleanse = function () {
