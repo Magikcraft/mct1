@@ -9,6 +9,10 @@ var MCT1PlayerManagerClass = /** @class */ (function () {
     function MCT1PlayerManagerClass() {
         var _this = this;
         this.cache = {};
+        this.flushMct1Player = function (player) {
+            _this.deleteMct1Player(player);
+            return _this.getMct1Player(player);
+        };
         this.onPlayerJoin = function (_a) {
             var player = _a.player;
             return setTimeout(function () {
@@ -43,10 +47,6 @@ var MCT1PlayerManagerClass = /** @class */ (function () {
             this.cache[player.name].cleanse();
             this.cache[player.name] = undefined;
         }
-    };
-    MCT1PlayerManagerClass.prototype.flushMct1Player = function (player) {
-        this.deleteMct1Player(player);
-        return this.getMct1Player(player);
     };
     return MCT1PlayerManagerClass;
 }());

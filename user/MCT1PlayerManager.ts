@@ -35,7 +35,7 @@ class MCT1PlayerManagerClass {
         }
     }
 
-    public flushMct1Player(player: BukkitPlayer) {
+    public flushMct1Player = (player: BukkitPlayer) => {
         this.deleteMct1Player(player)
         return this.getMct1Player(player)
     }
