@@ -61,10 +61,12 @@ class WorldManagerClass {
             ? `${managedPrefix}-${templateWorldname}${playerPrefix}${playername}`
             : `${managedPrefix}-${templateWorldname}-multi`
 
+        log('managedWorldName', managedWorldName) // @DEBUG
         // Case 0: We are already managing this world.
         const managedWorld = this.getWorldByWorldName(managedWorldName)
         const worldAlreadyUnderManagement = !!managedWorld
         if (worldAlreadyUnderManagement) {
+            log('Case 0') // @DEBUG
             return managedWorld
         }
 
@@ -73,10 +75,14 @@ class WorldManagerClass {
         const unmanagedWorldAlreadyExists = !!unmanagedWorld
 
         if (unmanagedWorldAlreadyExists) {
+            log('Case 1') // @DEBUG
+
             return this.manageExistingWorld(unmanagedWorld)
         }
 
         // Case 2: World does not exist yet.
+        log('Case 2') // @DEBUG
+
         const newWorld = await Multiverse.cloneWorld({
             targetWorldname: managedWorldName,
             templateWorldname,
