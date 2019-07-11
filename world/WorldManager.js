@@ -83,7 +83,7 @@ var WorldManagerClass = /** @class */ (function () {
      */
     WorldManagerClass.prototype.createManagedWorld = function (templateWorldname, playername) {
         return __awaiter(this, void 0, void 0, function () {
-            var managedWorldName, managedWorld, worldAlreadyUnderManagement, unmanagedWorld, unmanagedWorldAlreadyExists, newWorld;
+            var managedWorldName, managedWorld, worldAlreadyUnderManagement, unmanagedWorld, unmanagedWorldAlreadyExists, newWorld, world;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -117,7 +117,9 @@ var WorldManagerClass = /** @class */ (function () {
                         }
                         log("Quest world " + managedWorldName + " intialized.");
                         this.manageExistingWorld(newWorld);
-                        return [2 /*return*/, this.getWorldByWorldName(managedWorldName)];
+                        world = this.getWorldByWorldName(managedWorldName);
+                        log(world.getBukkitWorld());
+                        return [2 /*return*/, world];
                 }
             });
         });
@@ -140,6 +142,7 @@ var WorldManagerClass = /** @class */ (function () {
     };
     WorldManagerClass.prototype.deleteWorldsForPlayer = function (playername) {
         var _this = this;
+        log("Deleting worlds for " + playername);
         this.getWorldsForPlayer(playername).forEach(function (worldname) {
             return _this.deleteWorld(worldname);
         });
@@ -149,6 +152,7 @@ var WorldManagerClass = /** @class */ (function () {
         return Object.keys(this.managedWorlds).filter(function (n) { return _this.managedWorlds[n].playername == playername; });
     };
     WorldManagerClass.prototype.getWorldByWorldName = function (name) {
+        log("Retrieving " + name + "...");
         return this.managedWorlds[name];
     };
     /**
@@ -160,6 +164,7 @@ var WorldManagerClass = /** @class */ (function () {
             .worlds()
             .filter(isManagedWorld)
             .forEach(function (w) { return _this.manageExistingWorld(w); });
+        log("Worlds under management: " + Object.keys(this.managedWorlds));
     };
     WorldManagerClass.prototype.manageExistingWorld = function (world) {
         var worldname = world.name;
@@ -169,6 +174,7 @@ var WorldManagerClass = /** @class */ (function () {
         var newlyManagedWorld = new ManagedWorld_1.default(world, playername);
         this.registerPlayerLeftWorldListener(worldname, playername);
         this.managedWorlds[worldname] = newlyManagedWorld;
+        log("Managed Worlds: " + Object.keys(this.managedWorlds));
         return newlyManagedWorld;
     };
     /**

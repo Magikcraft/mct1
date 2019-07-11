@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
-var utils = require("utils");
 var log_1 = require("../log");
 var MCT1Player_1 = require("./MCT1Player");
 var log = log_1.Logger(__filename);
@@ -27,10 +26,8 @@ var MCT1PlayerManagerClass = /** @class */ (function () {
                 log("Deleted MCT1 Player for " + player.name);
             }, 100);
         };
-        var players = utils.players();
-        players.forEach(this.flushMct1Player);
-        events.playerQuit(this.onPlayerQuit);
-        events.playerJoin(this.onPlayerJoin);
+        events.playerQuit(function (event) { return _this.onPlayerQuit(event); });
+        events.playerJoin(function (event) { return _this.onPlayerJoin(event); });
     }
     MCT1PlayerManagerClass.prototype.getMct1Player = function (player) {
         if (!player) {

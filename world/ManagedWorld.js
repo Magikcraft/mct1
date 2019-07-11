@@ -7,7 +7,7 @@ var server = require("../utils/server");
 var Biome = Java.type('org.bukkit.block.Biome');
 var log = log_1.Logger(__filename);
 var ManagedWorld = /** @class */ (function () {
-    function ManagedWorld(world, playername) {
+    function ManagedWorld(bukkitWorld, playername) {
         var _this = this;
         this.started = false;
         this.regions = [];
@@ -16,17 +16,18 @@ var ManagedWorld = /** @class */ (function () {
         this.intervals = {};
         this.timers = {};
         // setTime = (time: 'dawn' | 'day' | 'dusk' | 'night') => server.executeCommand(`time ${time} ${this.world.name}`)
-        this.setDawn = function () { return _this.world.setTime(6000); };
-        this.setDay = function () { return _this.world.setTime(12000); };
-        this.setDusk = function () { return _this.world.setTime(18000); };
-        this.setNight = function () { return _this.world.setTime(20000); };
+        this.setDawn = function () { return _this.bukkitWorld.setTime(6000); };
+        this.setDay = function () { return _this.bukkitWorld.setTime(12000); };
+        this.setDusk = function () { return _this.bukkitWorld.setTime(18000); };
+        this.setNight = function () { return _this.bukkitWorld.setTime(20000); };
         this.setSun = function () {
-            return _this.world.setStorm(false) || _this.world.setThundering(false);
+            return _this.bukkitWorld.setStorm(false) ||
+                _this.bukkitWorld.setThundering(false);
         };
         this.setStorm = function () {
-            return _this.world.setThundering(true) || _this.world.setStorm(true);
+            return _this.bukkitWorld.setThundering(true) || _this.bukkitWorld.setStorm(true);
         };
-        this.setRain = function () { return _this.world.setStorm(true); };
+        this.setRain = function () { return _this.bukkitWorld.setStorm(true); };
         this.registerPlayerEnterRegionEvent = function (regionName, handler, player) {
             _this._registerPlayerRegionEvent('enter', regionName, handler, player);
         };
@@ -37,10 +38,11 @@ var ManagedWorld = /** @class */ (function () {
             var k = key || tools.uuid();
             this.intervals[k] = setInterval(callback, interval);
         };
-        this.world = world;
-        this.worldname = world.name;
+        this.bukkitWorld = bukkitWorld;
+        this.logger = log_1.Logger("world--" + this.bukkitWorld.name);
+        this.worldname = bukkitWorld.name;
+        log("Creating ManagedWorld " + this.worldname);
         this.playername = playername;
-        this.logger = log_1.Logger("world--" + this.world.name);
         this._watchPlayersJoinWorld();
     }
     ManagedWorld.prototype.start = function () {
@@ -61,16 +63,16 @@ var ManagedWorld = /** @class */ (function () {
         this.clearAllIntervals();
     };
     ManagedWorld.prototype.getBukkitWorld = function () {
-        return this.world;
+        return this.bukkitWorld;
     };
     ManagedWorld.prototype.getName = function () {
-        return this.world.name;
+        return this.bukkitWorld.name;
     };
     ManagedWorld.prototype.killAll = function (type) {
-        server.executeCommand("killall " + type + " " + this.world.name);
+        server.executeCommand("killall " + type + " " + this.bukkitWorld.name);
     };
     ManagedWorld.prototype.setChunkBiome = function (loc, biome) {
-        var chunk = this.world.getChunkAt(loc);
+        var chunk = this.bukkitWorld.getChunkAt(loc);
         for (var x = 0; x < 16; x++) {
             for (var z = 0; z < 16; z++) {
                 var block = chunk.getBlock(x, 0, z);
@@ -114,7 +116,7 @@ var ManagedWorld = /** @class */ (function () {
         var _this = this;
         if (except === void 0) { except = []; }
         this.registerEvent('blockBreak', function (event) {
-            if (event.block.world.name !== _this.world.name) {
+            if (event.block.world.name !== _this.bukkitWorld.name) {
                 return;
             }
             var blockType = event.block.type.toString();
@@ -129,7 +131,7 @@ var ManagedWorld = /** @class */ (function () {
         if (except === void 0) { except = []; }
         this.unregisterEvent('preventMobSpawning');
         this.registerEvent('creatureSpawn', function (event) {
-            if (event.entity.world.name !== _this.world.name) {
+            if (event.entity.world.name !== _this.bukkitWorld.name) {
                 return;
             }
             var mobType = event.entity.type.toString();
@@ -188,7 +190,7 @@ var ManagedWorld = /** @class */ (function () {
         this.events[k] = events[type](callback);
     };
     ManagedWorld.prototype.spawnEntity = function (location, entityType) {
-        this.world.spawnEntity(location, entityType);
+        this.bukkitWorld.spawnEntity(location, entityType);
     };
     ManagedWorld.prototype.unregisterEvent = function (key) {
         if (this.events[key]) {
@@ -226,22 +228,24 @@ var ManagedWorld = /** @class */ (function () {
     };
     ManagedWorld.prototype._watchPlayersJoinWorld = function () {
         var _this = this;
-        this.world.players.forEach(function (player) { return _this._playerJoinedWorld(player); });
+        this.bukkitWorld.players.forEach(function (player) {
+            return _this._playerJoinedWorld(player);
+        });
         this.registerEvent('playerJoin', function (event) {
-            if (event.player.world.name !== _this.world.name) {
+            if (event.player.world.name !== _this.bukkitWorld.name) {
                 return;
             }
             _this._playerJoinedWorld(event.player);
         });
         this.registerEvent('playerChangedWorld', function (event) {
-            if (event.player.world.name !== _this.world.name) {
+            if (event.player.world.name !== _this.bukkitWorld.name) {
                 return;
             }
             _this._playerJoinedWorld(event.player);
         });
     };
     ManagedWorld.prototype._playerJoinedWorld = function (player) {
-        this.log("player " + player.name + " joined world " + this.world.name);
+        this.log("player " + player.name + " joined world " + this.bukkitWorld.name);
         var worldPlayer = {
             inRegionNames: [],
             moveCount: 0,
@@ -259,7 +263,7 @@ var ManagedWorld = /** @class */ (function () {
     ManagedWorld.prototype._watchPlayersMove = function () {
         var _this = this;
         this.registerEvent('playerMove', function (event) {
-            if (event.player.world.name !== _this.world.name) {
+            if (event.player.world.name !== _this.bukkitWorld.name) {
                 return;
             }
             if (!_this.regions.length) {

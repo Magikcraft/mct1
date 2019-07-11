@@ -26,7 +26,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
     __extends(QuestMCT1Prologue, _super);
     function QuestMCT1Prologue(conf) {
         var _this = _super.call(this, conf) || this;
-        _this.Locs = Locations.getLocations(_this.world);
+        _this.Locs = Locations.getLocations(_this.world.getBukkitWorld());
         _this.state = {
             combolockOpen: false,
             hasInfiniteInsulin: false,

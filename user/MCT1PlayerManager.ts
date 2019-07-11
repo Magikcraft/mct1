@@ -1,5 +1,4 @@
 import * as events from 'events'
-import * as utils from 'utils'
 import { Logger } from '../log'
 import MCT1Player from './MCT1Player'
 
@@ -11,10 +10,8 @@ class MCT1PlayerManagerClass {
     } = {}
 
     constructor() {
-        const players = utils.players()
-        players.forEach(this.flushMct1Player)
-        events.playerQuit(this.onPlayerQuit)
-        events.playerJoin(this.onPlayerJoin)
+        events.playerQuit(event => this.onPlayerQuit(event))
+        events.playerJoin(event => this.onPlayerJoin(event))
     }
 
     public getMct1Player(player: BukkitPlayer) {

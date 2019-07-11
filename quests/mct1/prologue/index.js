@@ -16,19 +16,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // const intervalModifier = -90000 // Useful for testing!
 var LightingStorm = require("../../../fx/lighting-storm");
 var LightningSuperStrike = require("../../../fx/lightning-super-strike");
+var log_1 = require("../../../log");
 var MobTools = require("../../../mobs");
 var questTools = require("../../quest-tools");
 var QuestMCT1_1 = require("../../QuestMCT1");
 var Locations = require("./locs");
 var wither_1 = require("./wither");
 var intervalModifier = 60000; // Useful for testing!
+var log = log_1.Logger(__filename);
 var QuestMCT1Prologue = /** @class */ (function (_super) {
     __extends(QuestMCT1Prologue, _super);
     function QuestMCT1Prologue(conf) {
         var _this = _super.call(this, conf) || this;
         _this.isUSA = false;
+        log('Creating MCT1 Prologue quest');
         _this.isUSA = (conf.options.units || 'mmolL').toLowerCase() === 'mgdl';
-        _this.Locs = Locations.getLocations(_this.world);
+        _this.Locs = Locations.getLocations(_this.world.getBukkitWorld());
         _this.state = {
             completed: false,
             hasMCT1: false,

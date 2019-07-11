@@ -1,6 +1,7 @@
 // const intervalModifier = -90000 // Useful for testing!
 import * as LightingStorm from '../../../fx/lighting-storm'
 import * as LightningSuperStrike from '../../../fx/lightning-super-strike'
+import { Logger } from '../../../log'
 import * as MobTools from '../../../mobs'
 import { QuestConfig } from '../../Quest'
 import * as questTools from '../../quest-tools'
@@ -10,14 +11,17 @@ import Wither from './wither'
 
 const intervalModifier = 60000 // Useful for testing!
 
+const log = Logger(__filename)
+
 export default class QuestMCT1Prologue extends QuestMCT1 {
     public wither: any
     public isUSA: boolean = false
 
     constructor(conf: QuestConfig) {
         super(conf)
+        log('Creating MCT1 Prologue quest')
         this.isUSA = (conf.options.units || 'mmolL').toLowerCase() === 'mgdl'
-        this.Locs = Locations.getLocations(this.world)
+        this.Locs = Locations.getLocations(this.world.getBukkitWorld())
         this.state = {
             completed: false,
             hasMCT1: false,

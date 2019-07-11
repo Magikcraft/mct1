@@ -58,6 +58,7 @@ export class QuestBase {
     }
 
     public start() {
+        this.log('Starting quest')
         this.stop() // stop and restart, in case already running.
         this.registerEvents()
         this.setupWayPoints()
@@ -141,6 +142,7 @@ export class QuestBase {
     }
 
     public stop() {
+        this.log('Stopping quest')
         this.world.killAll('*')
         this.unregisterAllEvents()
         this.clearAllIntervals()

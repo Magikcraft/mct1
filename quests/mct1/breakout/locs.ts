@@ -2,7 +2,8 @@ const Location = Java.type('org.bukkit.Location')
 import { Logger } from '../../../log'
 const log = Logger(__filename)
 
-export const getLocations = world => {
+export const getLocations = managedWorld => {
+    const world = managedWorld.getBukkitWorld()
     return {
         world,
         locations: {

@@ -19,7 +19,7 @@ var QuestMCT1Sunken = /** @class */ (function (_super) {
     __extends(QuestMCT1Sunken, _super);
     function QuestMCT1Sunken(conf) {
         var _this = _super.call(this, conf) || this;
-        _this.Locs = Locations.getLocations(_this.world);
+        _this.Locs = Locations.getLocations(_this.world.getBukkitWorld());
         _super.prototype.registerEvents.call(_this);
         return _this;
     }

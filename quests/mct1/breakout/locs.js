@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Location = Java.type('org.bukkit.Location');
 var log_1 = require("../../../log");
 var log = log_1.Logger(__filename);
-exports.getLocations = function (world) {
+exports.getLocations = function (managedWorld) {
+    var world = managedWorld.getBukkitWorld();
     return {
         world: world,
         locations: {

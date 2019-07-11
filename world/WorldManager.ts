@@ -95,7 +95,9 @@ class WorldManagerClass {
         log(`Quest world ${managedWorldName} intialized.`)
         this.manageExistingWorld(newWorld)
 
-        return this.getWorldByWorldName(managedWorldName)!
+        const world = this.getWorldByWorldName(managedWorldName)!
+        log(world.getBukkitWorld() as any)
+        return world
     }
 
     /**
@@ -117,6 +119,7 @@ class WorldManagerClass {
     }
 
     public deleteWorldsForPlayer(playername: string) {
+        log(`Deleting worlds for ${playername}`)
         this.getWorldsForPlayer(playername).forEach(worldname =>
             this.deleteWorld(worldname)
         )
@@ -129,6 +132,7 @@ class WorldManagerClass {
     }
 
     private getWorldByWorldName(name: string) {
+        log(`Retrieving ${name}...`)
         return this.managedWorlds[name]
     }
 
@@ -140,6 +144,7 @@ class WorldManagerClass {
             .worlds()
             .filter(isManagedWorld)
             .forEach(w => this.manageExistingWorld(w))
+        log(`Worlds under management: ${Object.keys(this.managedWorlds)}`)
     }
 
     private manageExistingWorld(world: BukkitWorld) {
@@ -152,6 +157,7 @@ class WorldManagerClass {
         this.registerPlayerLeftWorldListener(worldname, playername)
 
         this.managedWorlds[worldname] = newlyManagedWorld
+        log(`Managed Worlds: ${Object.keys(this.managedWorlds)}`)
         return newlyManagedWorld
     }
 

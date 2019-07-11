@@ -2,7 +2,7 @@ import { Logger } from '../log'
 import { MCT1PlayerCache } from '../user'
 import { WorldManager } from '../world'
 import { Multiverse } from '../world/multiverse'
-import { QuestConfig } from './Quest'
+import { Quest, QuestConfig } from './Quest'
 
 const log = Logger(__filename)
 
@@ -83,12 +83,12 @@ export async function questCommand({ questName, method, player, opts }) {
         case 'start':
             echo(player, `Starting quest ${questName}...`)
             log(`Starting quest ${questName} for ${player}`)
-            const world = await WorldManager.createManagedWorld(
+            const managedWorld = await WorldManager.createManagedWorld(
                 templateWorldName,
-                playername
+                player.name
             )
 
-            if (!world) {
+            if (!managedWorld) {
                 return
             }
 
@@ -99,10 +99,10 @@ export async function questCommand({ questName, method, player, opts }) {
                 nextQuestName: quests[questName].nextQuestName,
                 options: opts,
                 player,
-                world,
+                world: managedWorld,
             }
 
-            const thisQuest = new QuestClass(questConfig)
+            const thisQuest: Quest = new QuestClass(questConfig)
             mct1Player.quest = thisQuest
             thisQuest.start()
             break

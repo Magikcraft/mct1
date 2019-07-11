@@ -88,7 +88,7 @@ var availableQuests = Object.keys(quests)
 function questCommand(_a) {
     var questName = _a.questName, method = _a.method, player = _a.player, opts = _a.opts;
     return __awaiter(this, void 0, void 0, function () {
-        var userQuest, quest, templateWorldName, playername, mct1Player, _b, world, QuestClass, questConfig, thisQuest;
+        var userQuest, quest, templateWorldName, playername, mct1Player, _b, managedWorld, QuestClass, questConfig, thisQuest;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -124,10 +124,10 @@ function questCommand(_a) {
                 case 1:
                     echo(player, "Starting quest " + questName + "...");
                     log("Starting quest " + questName + " for " + player);
-                    return [4 /*yield*/, world_1.WorldManager.createManagedWorld(templateWorldName, playername)];
+                    return [4 /*yield*/, world_1.WorldManager.createManagedWorld(templateWorldName, player.name)];
                 case 2:
-                    world = _c.sent();
-                    if (!world) {
+                    managedWorld = _c.sent();
+                    if (!managedWorld) {
                         return [2 /*return*/];
                     }
                     QuestClass = require(quests[questName].filePath).default;
@@ -136,7 +136,7 @@ function questCommand(_a) {
                         nextQuestName: quests[questName].nextQuestName,
                         options: opts,
                         player: player,
-                        world: world,
+                        world: managedWorld,
                     };
                     thisQuest = new QuestClass(questConfig);
                     mct1Player.quest = thisQuest;

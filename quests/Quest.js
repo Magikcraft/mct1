@@ -42,6 +42,7 @@ var QuestBase = /** @class */ (function () {
         this.verbose = (conf.options && conf.options.verbose) || false;
     }
     QuestBase.prototype.start = function () {
+        this.log('Starting quest');
         this.stop(); // stop and restart, in case already running.
         this.registerEvents();
         this.setupWayPoints();
@@ -113,6 +114,7 @@ var QuestBase = /** @class */ (function () {
         this.log(logs.join(' | '));
     };
     QuestBase.prototype.stop = function () {
+        this.log('Stopping quest');
         this.world.killAll('*');
         this.unregisterAllEvents();
         this.clearAllIntervals();
