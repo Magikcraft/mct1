@@ -71,7 +71,8 @@ var WorldManagerClass = /** @class */ (function () {
         // Prevents the memory leak that has been crashing the server.
         events.playerQuit(function (_a) {
             var player = _a.player;
-            return _this.deleteWorldsForPlayer(player.name);
+            log("WorldManager player quit server handler");
+            _this.deleteWorldsForPlayer(player.name);
         });
         this.rebuildManagementState();
         this.cullWorldsForAbsentPlayers();
@@ -130,9 +131,9 @@ var WorldManagerClass = /** @class */ (function () {
     WorldManagerClass.prototype.deleteWorld = function (worldname) {
         var managedWorld = this.getWorldByWorldName(worldname);
         if (managedWorld) {
-            managedWorld.cleanse();
-            multiverse_1.Multiverse.destroyWorld(worldname);
+            managedWorld.destroy();
             this.unregisterPlayerLeftWorldListener(worldname);
+            multiverse_1.Multiverse.destroyWorld(worldname);
             // Remove the world from the in-memory state
             delete this.managedWorlds[worldname];
         }
@@ -146,7 +147,10 @@ var WorldManagerClass = /** @class */ (function () {
     };
     WorldManagerClass.prototype.getWorldsForPlayer = function (playername) {
         var _this = this;
-        return Object.keys(this.managedWorlds).filter(function (n) { return _this.managedWorlds[n].playername == playername; });
+        return Object.keys(this.managedWorlds).filter(function (n) {
+            return _this.managedWorlds[n] &&
+                _this.managedWorlds[n].playername == playername;
+        });
     };
     WorldManagerClass.prototype.getWorldByWorldName = function (name) {
         log("Retrieving " + name + "...");
@@ -201,6 +205,7 @@ var WorldManagerClass = /** @class */ (function () {
         this.listeners[worldname] = events.playerChangedWorld(function (event) {
             var isThisWorld = event.from.name == worldname && event.player.name == playername;
             if (isThisWorld) {
+                log("WorldManager player quit world handler");
                 setTimeout(function () { return _this.deleteWorld(worldname); }, 3000);
             }
         });

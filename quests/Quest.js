@@ -126,12 +126,7 @@ var QuestBase = /** @class */ (function () {
         this.registerEvent('playerChangedWorld', function (event) {
             if (event.player.name == _this.player.name &&
                 event.from.name == _this.world.getName()) {
-                _this.stop();
-            }
-        });
-        // playerQuit
-        this.registerEvent('playerQuit', function (event) {
-            if (event.player.name == _this.player.name) {
+                _this.log('Quest player changed world handler');
                 _this.stop();
             }
         });

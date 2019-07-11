@@ -40,9 +40,10 @@ class WorldManagerClass {
 
         // This handler destroys all player-specific worlds when a player quits the server.
         // Prevents the memory leak that has been crashing the server.
-        events.playerQuit(({ player }) =>
+        events.playerQuit(({ player }) => {
+            log(`WorldManager player quit server handler`)
             this.deleteWorldsForPlayer(player.name)
-        )
+        })
 
         this.rebuildManagementState()
         this.cullWorldsForAbsentPlayers()
@@ -106,9 +107,9 @@ class WorldManagerClass {
     public deleteWorld(worldname: string) {
         const managedWorld = this.getWorldByWorldName(worldname)
         if (managedWorld) {
-            managedWorld.cleanse()
-            Multiverse.destroyWorld(worldname)
+            managedWorld.destroy()
             this.unregisterPlayerLeftWorldListener(worldname)
+            Multiverse.destroyWorld(worldname)
             // Remove the world from the in-memory state
             delete this.managedWorlds[worldname]
         }
@@ -189,6 +190,7 @@ class WorldManagerClass {
             const isThisWorld =
                 event.from.name == worldname && event.player.name == playername
             if (isThisWorld) {
+                log(`WorldManager player quit world handler`)
                 setTimeout(() => this.deleteWorld(worldname), 3000)
             }
         })

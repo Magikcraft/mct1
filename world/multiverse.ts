@@ -21,7 +21,6 @@ class MultiverseClass {
     }
 
     public async destroyWorld(worldName: string) {
-        log(`Destroying world ${worldName}...`)
         const world = utils.world(worldName)
         if (world) {
             log(`Deleting world ${worldName} from registry...`)

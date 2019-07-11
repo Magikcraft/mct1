@@ -45,6 +45,7 @@ class MCT1PlayerManagerClass {
 
     private onPlayerQuit = ({ player }) =>
         setTimeout(() => {
+            log(`MCT1PlayerManager player quit handler`)
             this.deleteMct1Player(player)
             log(`Deleted MCT1 Player for ${player.name}`)
         }, 100)

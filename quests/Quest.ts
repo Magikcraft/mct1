@@ -156,13 +156,7 @@ export class QuestBase {
                 event.player.name == this.player.name &&
                 event.from.name == this.world.getName()
             ) {
-                this.stop()
-            }
-        })
-
-        // playerQuit
-        this.registerEvent('playerQuit', event => {
-            if (event.player.name == this.player.name) {
+                this.log('Quest player changed world handler')
                 this.stop()
             }
         })

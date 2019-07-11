@@ -22,6 +22,7 @@ var MCT1PlayerManagerClass = /** @class */ (function () {
         this.onPlayerQuit = function (_a) {
             var player = _a.player;
             return setTimeout(function () {
+                log("MCT1PlayerManager player quit handler");
                 _this.deleteMct1Player(player);
                 log("Deleted MCT1 Player for " + player.name);
             }, 100);

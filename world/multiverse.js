@@ -53,7 +53,6 @@ var MultiverseClass = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var world;
             return __generator(this, function (_a) {
-                log("Destroying world " + worldName + "...");
                 world = utils.world(worldName);
                 if (world) {
                     log("Deleting world " + worldName + " from registry...");

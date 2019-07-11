@@ -7,25 +7,6 @@ const Biome = Java.type('org.bukkit.block.Biome')
 
 const log = Logger(__filename)
 
-interface IWorldRegion {
-    name: string
-    loc1: any // region
-    loc2: any
-    enterEventHandlers: IWorldRegionEventHandler[]
-    exitEventHandlers: IWorldRegionEventHandler[]
-}
-
-interface IWorldRegionEventHandler {
-    handler: any
-    player?: any
-}
-
-interface IWorldPlayer {
-    player: any
-    moveCount: number
-    inRegionNames: string[]
-}
-
 export default class ManagedWorld {
     public playername?: string
     public worldname: string
@@ -34,6 +15,7 @@ export default class ManagedWorld {
     private regions: IWorldRegion[] = []
     private regionEvents
     private worldPlayers: IWorldPlayer[] = []
+    private destroyed = false
 
     private logger
 
@@ -70,6 +52,11 @@ export default class ManagedWorld {
         this.clearAllIntervals()
     }
 
+    public destroy() {
+        log(`Destroying ManagedWorld ${this.getName()}`)
+        this.destroyed = true
+        this.cleanse()
+    }
     public getBukkitWorld() {
         return this.bukkitWorld
     }
@@ -90,6 +77,9 @@ export default class ManagedWorld {
     public setRain = () => this.bukkitWorld.setStorm(true)
 
     public killAll(type: '*' | 'mobs' | 'monsters') {
+        if (this.destroyed) {
+            return
+        }
         server.executeCommand(`killall ${type} ${this.bukkitWorld.name}`)
     }
 
@@ -437,4 +427,23 @@ export default class ManagedWorld {
         }
         return false
     }
+}
+
+interface IWorldRegion {
+    name: string
+    loc1: any // region
+    loc2: any
+    enterEventHandlers: IWorldRegionEventHandler[]
+    exitEventHandlers: IWorldRegionEventHandler[]
+}
+
+interface IWorldRegionEventHandler {
+    handler: any
+    player?: any
+}
+
+interface IWorldPlayer {
+    player: any
+    moveCount: number
+    inRegionNames: string[]
 }

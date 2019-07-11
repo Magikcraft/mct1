@@ -12,6 +12,7 @@ var ManagedWorld = /** @class */ (function () {
         this.started = false;
         this.regions = [];
         this.worldPlayers = [];
+        this.destroyed = false;
         this.events = {};
         this.intervals = {};
         this.timers = {};
@@ -62,6 +63,11 @@ var ManagedWorld = /** @class */ (function () {
         this.clearAllTimeouts();
         this.clearAllIntervals();
     };
+    ManagedWorld.prototype.destroy = function () {
+        log("Destroying ManagedWorld " + this.getName());
+        this.destroyed = true;
+        this.cleanse();
+    };
     ManagedWorld.prototype.getBukkitWorld = function () {
         return this.bukkitWorld;
     };
@@ -69,6 +75,9 @@ var ManagedWorld = /** @class */ (function () {
         return this.bukkitWorld.name;
     };
     ManagedWorld.prototype.killAll = function (type) {
+        if (this.destroyed) {
+            return;
+        }
         server.executeCommand("killall " + type + " " + this.bukkitWorld.name);
     };
     ManagedWorld.prototype.setChunkBiome = function (loc, biome) {
