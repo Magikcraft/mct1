@@ -1,7 +1,7 @@
 import * as events from 'events'
 import * as utils from 'utils'
 import { Logger } from '../log'
-import World from './ManagedWorld'
+import ManagedWorld from './ManagedWorld'
 import { Multiverse } from './multiverse'
 
 const log = Logger(__filename)
@@ -31,11 +31,11 @@ const isPlayerWorld = (w: BukkitWorld) => w.name.includes(playerPrefix)
 const playernameFromWorld = (w: BukkitWorld) => w.name.split(playerPrefix)[1]
 
 class WorldManagerClass {
-    private managedWorlds: World[]
+    private managedWorlds: { [worldname: string]: ManagedWorld }
     private listeners: { [worldname: string]: any }
 
     constructor() {
-        this.managedWorlds = []
+        this.managedWorlds = {}
         this.listeners = {}
 
         // This handler destroys all player-specific worlds when a player quits the server.
@@ -112,29 +112,24 @@ class WorldManagerClass {
 
             this.unregisterPlayerLeftWorldListener(worldname)
             // Remove the world from the in-memory state
-            this.managedWorlds = this.managedWorlds.filter(
-                w => w.worldname != worldname
-            )
+            this.managedWorlds[worldname] = undefined as any
         }
     }
 
     public deleteWorldsForPlayer(playername: string) {
-        this.getWorldsForPlayer(playername).forEach(w =>
-            this.deleteWorld(w.getName())
+        this.getWorldsForPlayer(playername).forEach(worldname =>
+            this.deleteWorld(worldname)
         )
     }
 
     private getWorldsForPlayer(playername: string) {
-        return this.managedWorlds.filter(
-            w => w.playername && w.playername == playername
+        return Object.keys(this.managedWorlds).filter(
+            n => this.managedWorlds[n].playername == playername
         )
     }
 
     private getWorldByWorldName(name: string) {
-        log('managedWorlds', this.managedWorlds)
-        const worlds = this.managedWorlds.filter(w => w.worldname == name)
-        log('worlds', worlds)
-        return worlds.length > 0 ? worlds[0] : undefined
+        return this.managedWorlds[name]
     }
 
     /**
@@ -152,11 +147,11 @@ class WorldManagerClass {
         const playername = isPlayerWorld
             ? worldname.split(playerPrefix)[1]
             : undefined
-        const newlyManagedWorld = new World(world, playername)
+        const newlyManagedWorld = new ManagedWorld(world, playername)
 
         this.registerPlayerLeftWorldListener(worldname, playername)
 
-        this.managedWorlds.push(newlyManagedWorld)
+        this.managedWorlds[worldname] = newlyManagedWorld
         return newlyManagedWorld
     }
 

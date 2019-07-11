@@ -65,7 +65,7 @@ var playernameFromWorld = function (w) { return w.name.split(playerPrefix)[1]; }
 var WorldManagerClass = /** @class */ (function () {
     function WorldManagerClass() {
         var _this = this;
-        this.managedWorlds = [];
+        this.managedWorlds = {};
         this.listeners = {};
         // This handler destroys all player-specific worlds when a player quits the server.
         // Prevents the memory leak that has been crashing the server.
@@ -135,23 +135,21 @@ var WorldManagerClass = /** @class */ (function () {
             // server.executeCommand(`mvconfirm`)
             this.unregisterPlayerLeftWorldListener(worldname);
             // Remove the world from the in-memory state
-            this.managedWorlds = this.managedWorlds.filter(function (w) { return w.worldname != worldname; });
+            this.managedWorlds[worldname] = undefined;
         }
     };
     WorldManagerClass.prototype.deleteWorldsForPlayer = function (playername) {
         var _this = this;
-        this.getWorldsForPlayer(playername).forEach(function (w) {
-            return _this.deleteWorld(w.getName());
+        this.getWorldsForPlayer(playername).forEach(function (worldname) {
+            return _this.deleteWorld(worldname);
         });
     };
     WorldManagerClass.prototype.getWorldsForPlayer = function (playername) {
-        return this.managedWorlds.filter(function (w) { return w.playername && w.playername == playername; });
+        var _this = this;
+        return Object.keys(this.managedWorlds).filter(function (n) { return _this.managedWorlds[n].playername == playername; });
     };
     WorldManagerClass.prototype.getWorldByWorldName = function (name) {
-        log('managedWorlds', this.managedWorlds);
-        var worlds = this.managedWorlds.filter(function (w) { return w.worldname == name; });
-        log('worlds', worlds);
-        return worlds.length > 0 ? worlds[0] : undefined;
+        return this.managedWorlds[name];
     };
     /**
      * Bring all existing worlds under management. This is used to rebuild the in-memory state of the WorldManager when it has been reloaded.
@@ -170,7 +168,7 @@ var WorldManagerClass = /** @class */ (function () {
             : undefined;
         var newlyManagedWorld = new ManagedWorld_1.default(world, playername);
         this.registerPlayerLeftWorldListener(worldname, playername);
-        this.managedWorlds.push(newlyManagedWorld);
+        this.managedWorlds[worldname] = newlyManagedWorld;
         return newlyManagedWorld;
     };
     /**
