@@ -28,7 +28,7 @@ class MCT1PlayerManagerClass {
     public deleteMct1Player(player: BukkitPlayer) {
         if (this.cache[player.name]) {
             this.cache[player.name].cleanse()
-            this.cache[player.name] = undefined as any
+            delete this.cache[player.name]
         }
     }
 

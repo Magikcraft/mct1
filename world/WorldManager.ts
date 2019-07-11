@@ -108,13 +108,9 @@ class WorldManagerClass {
         if (managedWorld) {
             managedWorld.cleanse()
             Multiverse.destroyWorld(worldname)
-            // I think the above command accomplishes the below
-            // server.executeCommand(`mv delete ${this.world.name}`)
-            // server.executeCommand(`mvconfirm`)
-
             this.unregisterPlayerLeftWorldListener(worldname)
             // Remove the world from the in-memory state
-            this.managedWorlds[worldname] = undefined as any
+            delete this.managedWorlds[worldname]
         }
     }
 
