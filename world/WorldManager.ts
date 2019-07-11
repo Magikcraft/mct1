@@ -123,7 +123,9 @@ class WorldManagerClass {
 
     private getWorldsForPlayer(playername: string) {
         return Object.keys(this.managedWorlds).filter(
-            n => this.managedWorlds[n].playername == playername
+            n =>
+                this.managedWorlds[n] &&
+                this.managedWorlds[n].playername == playername
         )
     }
 

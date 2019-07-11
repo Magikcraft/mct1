@@ -42,7 +42,7 @@ var MCT1PlayerManagerClass = /** @class */ (function () {
     MCT1PlayerManagerClass.prototype.deleteMct1Player = function (player) {
         if (this.cache[player.name]) {
             this.cache[player.name].cleanse();
-            this.cache[player.name] = undefined;
+            delete this.cache[player.name];
         }
     };
     return MCT1PlayerManagerClass;
