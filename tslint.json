@@ -3,7 +3,12 @@
     "extends": ["tslint:latest", "tslint-config-prettier"],
     "jsRules": {},
     "rules": {
-        "no-unused-variable": true
+        "no-unused-variable": true,
+        "triple-equals": false,
+        "no-implicit-dependencies": false,
+        "interface-name": false,
+        "forin": false,
+        "variable-name": false
     },
     "rulesDirectory": []
 }

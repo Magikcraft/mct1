@@ -1,6 +1,6 @@
+import { QuestConfig } from '../../Quest'
+import { QuestMCT1 } from '../../QuestMCT1'
 import * as Locations from './locs'
-import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
-import { worldly } from '@magikcraft/mct1/world'
 
 export default class QuestMCT1Breakout extends QuestMCT1 {
     constructor(conf: QuestConfig) {
@@ -9,10 +9,10 @@ export default class QuestMCT1Breakout extends QuestMCT1 {
         this.endPortalRegion = this.Locs.regions.endPortal
     }
 
-    start() {
+    public start() {
         super.start()
         super.registerEvents()
         this.setMCT1SuperPowers(true)
-        worldly(this.world).allowMobSpawning()
+        this.world.allowMobSpawning()
     }
 }

@@ -1,5 +1,5 @@
 const Location = Java.type('org.bukkit.Location')
-import { Logger } from '@magikcraft/mct1/log'
+import { Logger } from '../log'
 const log = Logger(__filename)
 
 export function kaboom(loc, distance = 10, delay = 100) {

@@ -37,24 +37,6 @@ var Vector3 = /** @class */ (function () {
         return new Vector3(JSONlocation.x, JSONlocation.y, JSONlocation.z, JSONlocation.world);
     };
     /**
-     * toJSON
-     * @return {object} - JSON Location
-     *
-     * Will return a JSON object based of the objects values
-     * If no world as been assigned previously, it will default to 'world'
-     */
-    Vector3.prototype.toJSON = function () {
-        var loc = {
-            world: this.world || '',
-            x: this.x,
-            y: this.y,
-            z: this.z,
-            yaw: 0.0,
-            pitch: 0.0,
-        };
-        return loc;
-    };
-    /**
      * FromLocation
      * @param {object} location - Minecraft/Scriptcrat location object
      * @return {Vector3} - Generated Vector3 from location
@@ -62,25 +44,8 @@ var Vector3 = /** @class */ (function () {
      * Will create a Vector3 object based on a location object
      */
     Vector3.FromLocation = function (location) {
-        var JSONloc = utils.locationToJSON(location);
-        return new Vector3(JSONloc.x, JSONloc.y, JSONloc.z, JSONloc.world);
-    };
-    /**
-     * toLocation
-     * @return {object} - location
-     *
-     * Will create a location object based from the vector
-     */
-    Vector3.prototype.toLocation = function () {
-        var loc = {
-            world: this.world,
-            x: this.x,
-            y: this.y,
-            z: this.z,
-            yaw: 0.0,
-            pitch: 0.0,
-        };
-        return utils.locationFromJSON(loc);
+        var JsonLocation = utils.locationToJSON(location);
+        return new Vector3(JsonLocation.x, JsonLocation.y, JsonLocation.z, JsonLocation.world);
     };
     /**
      * FromArray
@@ -94,20 +59,6 @@ var Vector3 = /** @class */ (function () {
         }
         else {
             return new Vector3(array[0], array[1], array[2]);
-        }
-    };
-    /**
-     * toArray
-     * @return {Array} - Vector Array
-     *
-     * Will return an array from a Vector3 object
-     */
-    Vector3.prototype.toArray = function () {
-        if (this.world == '') {
-            return [this.x, this.y, this.z];
-        }
-        else {
-            return [this.x, this.y, this.z, this.world];
         }
     };
     /**
@@ -173,114 +124,6 @@ var Vector3 = /** @class */ (function () {
      */
     Vector3.unit = function () {
         return new Vector3(1, 1, 1);
-    };
-    // Properties
-    // ----------------------------------------------------------------------------
-    // If this is made as a class, these will return based on its own values
-    /**
-     * magnitude
-     * @return {number} - Magnitude of the vector
-     *
-     * Will calculate the magnitude of the vector using Pythagorean Theorem
-     */
-    Vector3.prototype.magnitude = function () {
-        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
-    };
-    /**
-     * normalized
-     * @return {Vector3} - Normalized Vector
-     *
-     * Will scale the vector so that its magnitude is 1.
-     * Clamps the vector into a unit circle
-     */
-    Vector3.prototype.normalized = function () {
-        var ratio = 1 / this.magnitude();
-        return new Vector3(this.x * ratio, this.y * ratio, this.z * ratio);
-    };
-    /**
-     * getWorld
-     * @param {boolean} worldObj
-     *
-     * Will return various instances of the world
-     * If given: worldObj = true,       then returns a bukkit world object
-     *           worldObj = false/null, then returns a string
-     */
-    Vector3.prototype.getWorld = function (worldObj) {
-        worldObj = worldObj || false;
-        if (worldObj) {
-            return utils.world(this.world);
-        }
-        else {
-            return this.world;
-        }
-    };
-    /**
-     * set
-     * @param {number} x - X axis value
-     * @param {number} y - X axis value
-     * @param {number} z - X axis value
-     * @param {string} [world] - world axis value
-     *
-     * Allows you to reassign the vector from its core components
-     */
-    Vector3.prototype.set = function (x, y, z, world) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.world = world || '';
-    };
-    /**
-     * toString
-     * @return {string} - Stringified vector object
-     *
-     * A custom function that outputs a string
-     * Will ommit world if this.world is not set
-     */
-    Vector3.prototype.toString = function () {
-        if (this.world == '') {
-            return '[' + this.x + ', ' + this.y + ', ' + this.z + ']';
-        }
-        else {
-            return ('[' +
-                this.x +
-                ', ' +
-                this.y +
-                ', ' +
-                this.z +
-                ', ' +
-                this.world +
-                ']');
-        }
-    };
-    /**
-     * exportWorld
-     * @return {string|any}- Returns the world
-     */
-    Vector3.prototype.exportWorld = function () {
-        if (typeof this.world != 'string') {
-            return this.world;
-        }
-        else {
-            return utils.world(this.world);
-        }
-    };
-    /**
-     * setWorldHeight
-     * @return {Vector3}
-     *
-     * Will set the vector.y to world top (128)
-     */
-    Vector3.prototype.setWorldHeight = function () {
-        return new Vector3(this.x || 0, 128, this.z || 0, this.world);
-    };
-    /**
-     * setWorldBottom
-     * @return {Vector3}
-     *
-     * Will set the vector.y to world bottom (0)
-     */
-    Vector3.prototype.setWorldBottom = function () {
-        return new Vector3(this.x || 0, 0, this.z || 0, this.world);
     };
     // Operands
     // ----------------------------------------------------------------------------
@@ -617,6 +460,7 @@ var Vector3 = /** @class */ (function () {
         }
         else {
             var vector = new Vector3(0, 0, 0, this.GetWorldsArray(vectors));
+            // tslint:disable-next-line: prefer-for-of
             for (var i = 0; i < vectors.length; i++) {
                 vector = Vector3.Add(vector, vectors[i]);
             }
@@ -670,6 +514,7 @@ var Vector3 = /** @class */ (function () {
         }
         // Due to the way the logic works, remove blank strings ('')
         var finalWorlds = [];
+        // tslint:disable-next-line: prefer-for-of
         for (var k = 0; k < uniqueWorlds.length; k++) {
             if (uniqueWorlds[k] !== (undefined || null || '')) {
                 finalWorlds.push(uniqueWorlds[k]);
@@ -698,6 +543,163 @@ var Vector3 = /** @class */ (function () {
         return finalPoint;
     };
     /**
+     * toJSON
+     * @return {object} - JSON Location
+     *
+     * Will return a JSON object based of the objects values
+     * If no world as been assigned previously, it will default to 'world'
+     */
+    Vector3.prototype.toJSON = function () {
+        var loc = {
+            pitch: 0.0,
+            world: this.world || '',
+            x: this.x,
+            y: this.y,
+            yaw: 0.0,
+            z: this.z,
+        };
+        return loc;
+    };
+    /**
+     * toLocation
+     * @return {object} - location
+     *
+     * Will create a location object based from the vector
+     */
+    Vector3.prototype.toLocation = function () {
+        var loc = {
+            pitch: 0.0,
+            world: this.world,
+            x: this.x,
+            y: this.y,
+            yaw: 0.0,
+            z: this.z,
+        };
+        return utils.locationFromJSON(loc);
+    };
+    // Properties
+    // ----------------------------------------------------------------------------
+    // If this is made as a class, these will return based on its own values
+    /**
+     * toArray
+     * @return {Array} - Vector Array
+     *
+     * Will return an array from a Vector3 object
+     */
+    Vector3.prototype.toArray = function () {
+        if (this.world == '') {
+            return [this.x, this.y, this.z];
+        }
+        else {
+            return [this.x, this.y, this.z, this.world];
+        }
+    };
+    /**
+     * magnitude
+     * @return {number} - Magnitude of the vector
+     *
+     * Will calculate the magnitude of the vector using Pythagorean Theorem
+     */
+    Vector3.prototype.magnitude = function () {
+        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
+    };
+    /**
+     * normalized
+     * @return {Vector3} - Normalized Vector
+     *
+     * Will scale the vector so that its magnitude is 1.
+     * Clamps the vector into a unit circle
+     */
+    Vector3.prototype.normalized = function () {
+        var ratio = 1 / this.magnitude();
+        return new Vector3(this.x * ratio, this.y * ratio, this.z * ratio);
+    };
+    /**
+     * getWorld
+     * @param {boolean} worldObj
+     *
+     * Will return various instances of the world
+     * If given: worldObj = true,       then returns a bukkit world object
+     *           worldObj = false/null, then returns a string
+     */
+    Vector3.prototype.getWorld = function (worldObj) {
+        worldObj = worldObj || false;
+        if (worldObj) {
+            return utils.world(this.world);
+        }
+        else {
+            return this.world;
+        }
+    };
+    /**
+     * set
+     * @param {number} x - X axis value
+     * @param {number} y - X axis value
+     * @param {number} z - X axis value
+     * @param {string} [world] - world axis value
+     *
+     * Allows you to reassign the vector from its core components
+     */
+    Vector3.prototype.set = function (x, y, z, world) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.world = world || '';
+    };
+    /**
+     * toString
+     * @return {string} - Stringified vector object
+     *
+     * A custom function that outputs a string
+     * Will ommit world if this.world is not set
+     */
+    Vector3.prototype.toString = function () {
+        if (this.world == '') {
+            return '[' + this.x + ', ' + this.y + ', ' + this.z + ']';
+        }
+        else {
+            return ('[' +
+                this.x +
+                ', ' +
+                this.y +
+                ', ' +
+                this.z +
+                ', ' +
+                this.world +
+                ']');
+        }
+    };
+    /**
+     * exportWorld
+     * @return {string|any}- Returns the world
+     */
+    Vector3.prototype.exportWorld = function () {
+        if (typeof this.world != 'string') {
+            return this.world;
+        }
+        else {
+            return utils.world(this.world);
+        }
+    };
+    /**
+     * setWorldHeight
+     * @return {Vector3}
+     *
+     * Will set the vector.y to world top (128)
+     */
+    Vector3.prototype.setWorldHeight = function () {
+        return new Vector3(this.x || 0, 128, this.z || 0, this.world);
+    };
+    /**
+     * setWorldBottom
+     * @return {Vector3}
+     *
+     * Will set the vector.y to world bottom (0)
+     */
+    Vector3.prototype.setWorldBottom = function () {
+        return new Vector3(this.x || 0, 0, this.z || 0, this.world);
+    };
+    /**
      * one
      * @return {Vector3} - Vector3(1,1,1)
      * @alias unit
@@ -712,9 +714,7 @@ var Vector3 = /** @class */ (function () {
      * Will return a new Vector3(0,0,0)
      * Same as calling the constructor without parameters
      */
-    Vector3.zero = function () {
-        return new Vector3(0, 0, 0);
-    };
+    Vector3.zero = function () { return new Vector3(0, 0, 0); };
     /**
      * negativeInfinity
      * @return {Vector3} - Vector3(-Infinity,-Infinity,-Infinity)
@@ -730,13 +730,13 @@ var Vector3 = /** @class */ (function () {
      *
      * Will return a new Vector3(Infinity,Infinity,Infinity)
      */
-    Vector3.infinity = function () {
-        return new Vector3(Infinity, Infinity, Infinity);
-    };
+    Vector3.infinity = function () { return new Vector3(Infinity, Infinity, Infinity); };
     Vector3.NotEqualsComponent = function (vectorA, vectorB) {
         return !Vector3.EqualsComponent(vectorA, vectorB);
     };
-    Vector3.NotEquals = function (vectorA, vectorB) { return !Vector3.Equals(vectorA, vectorB); };
+    Vector3.NotEquals = function (vectorA, vectorB) {
+        return !Vector3.Equals(vectorA, vectorB);
+    };
     return Vector3;
 }());
 exports.Vector3 = Vector3;

@@ -1,10 +1,10 @@
-import { BossBar } from '@magikcraft/mct1/bossbar'
-import { IBossBar } from '@magikcraft/mct1/bossbar/bossbar'
-import { user } from '@magikcraft/mct1/user'
 import * as events from 'events'
 import * as inventory from 'inventory'
 import * as items from 'items'
+import { BossBar } from '../bossbar'
+import { IBossBar } from '../bossbar/bossbar'
 import { Logger } from '../log'
+import MCT1Player from '../user/MCT1Player'
 import { activityCosts, activityTypes } from './activities'
 import foods from './foods'
 
@@ -15,59 +15,75 @@ const Color = Java.type('org.bukkit.Color')
 const Food: any = {}
 foods.forEach(item => (Food[item.type] = item))
 
-let _bar: IBossBar
+const _bar: IBossBar = (undefined as unknown) as IBossBar
+
+interface MatchItem<T> {
+    lower: number
+    upper: number
+    value: T
+}
+
+const check = (measure: number) => (lower: number, upper: number) =>
+    measure >= lower && measure <= upper
+function match(measure: number) {
+    return function matched<T>(matches: Array<MatchItem<T>>): T {
+        return matches.filter(m => check(measure)(m.lower, m.upper))[0].value
+    }
+}
 
 export class MCT1 {
-    player: BukkitPlayer
+    public player: BukkitPlayer
 
-    isSprinting: boolean = false
+    public isSprinting: boolean = false
 
-    bgl: number = 4
-    insulin: number = 0
+    public bgl: number = 4
+    public insulin: number = 0
     // this is an abstraction of the native food level which seems to get rounded to nearest 0.5.
     // It is used to gain a more fine grained control of player food level
-    foodLevel: number
-    digestionQueue: any = []
-    insulinSensitivityMultiplier: number = 1
+    public foodLevel: number
+    public digestionQueue: any = []
+    public insulinSensitivityMultiplier: number = 1
 
-    digestionTimer: any
-    eventListeners: any = []
+    public digestionTimer: any
+    public eventListeners: any = []
 
-    isUSA: boolean = false
-    bars = {
+    public isUSA: boolean = false
+    public bars = {
         bgl: _bar,
-        insulin: _bar,
         digestion1: _bar,
         digestion2: _bar,
+        insulin: _bar,
     }
 
-    moveActivityLog: any = []
-    nonMoveActivityLog: any = []
-    superActivityMultiplier: number = 1.1
+    public moveActivityLog: any = []
+    public nonMoveActivityLog: any = []
+    public superActivityMultiplier: number = 1.1
 
-    name: string
+    public name: string
 
-    isSuperCharged: boolean = false
-    debugMode: boolean = false
+    public isSuperCharged: boolean = false
+    public debugMode: boolean = false
 
-    hasLightningSnowballs: boolean = true
-    hasInfiniteInsulin: boolean = true
-    hasSuperSpeed: boolean = true
-    hasSuperJump: boolean = true
-    hasNightVision: boolean = false
+    public hasLightningSnowballs: boolean = true
+    public hasInfiniteInsulin: boolean = true
+    public hasSuperSpeed: boolean = true
+    public hasSuperJump: boolean = true
+    public hasNightVision: boolean = false
 
-    snowballSlot: number = 0
-    insulinSlot: number = 1
+    public snowballSlot: number = 0
+    public insulinSlot: number = 1
 
-    isStarted: boolean = false
+    public isStarted: boolean = false
+    public mct1Player: MCT1Player
 
-    constructor(player) {
-        this.player = player
-        this.name = player.name
+    constructor(mct1Player: MCT1Player) {
+        this.player = mct1Player.player
+        this.mct1Player = mct1Player
+        this.name = this.player.name
         this.foodLevel = this.player.foodLevel
     }
 
-    start() {
+    public start() {
         this.stop() // first stop, in case already running
 
         this.bgl = 5
@@ -80,16 +96,22 @@ export class MCT1 {
         this.renderBars()
         this.doEffects()
 
-        if (this.hasLightningSnowballs) this.ensureInfiniteSnowballs()
-        else this.removeInfiniteSnowballs()
+        if (this.hasLightningSnowballs) {
+            this.ensureInfiniteSnowballs()
+        } else {
+            this.removeInfiniteSnowballs()
+        }
 
-        if (this.hasInfiniteInsulin) this.ensureInfiniteInsulin()
-        else this.removeInfiniteInsulin()
+        if (this.hasInfiniteInsulin) {
+            this.ensureInfiniteInsulin()
+        } else {
+            this.removeInfiniteInsulin()
+        }
 
         this.isStarted = true
     }
 
-    stop() {
+    public stop() {
         this.unregisterEvents()
         this.stopDigestion()
         this.removeBars()
@@ -97,7 +119,7 @@ export class MCT1 {
         this.isStarted = false
     }
 
-    setDebugMode(bool: boolean) {
+    public setDebugMode(bool: boolean) {
         if (bool) {
             echo(this.player, `MCT1 debug ON`)
             this.debugMode = true
@@ -113,38 +135,44 @@ export class MCT1 {
         }
     }
 
-    setSuperSpeed = (bool: boolean) => (this.hasSuperSpeed = bool)
-    setSuperJump = (bool: boolean) => (this.hasSuperJump = bool)
-    setNightVision = (bool: boolean) => (this.hasNightVision = bool)
+    public setSuperSpeed = (bool: boolean) => (this.hasSuperSpeed = bool)
+    public setSuperJump = (bool: boolean) => (this.hasSuperJump = bool)
+    public setNightVision = (bool: boolean) => (this.hasNightVision = bool)
 
-    setFoodLevel(float: number) {
+    public setFoodLevel(float: number) {
         this.foodLevel = Math.min(float, 20)
         this.player.setFoodLevel(Math.round(this.foodLevel * 2) / 2)
     }
 
-    setHealth(float: number) {
+    public setHealth(float: number) {
         this.player.setHealth(float)
     }
 
-    setInfiniteSnowballs(bool: boolean) {
+    public setInfiniteSnowballs(bool: boolean) {
         this.hasLightningSnowballs = bool
         // If MCT1 is running, update inventory, else will be done on start.
         if (this.isStarted) {
-            if (bool) this.ensureInfiniteSnowballs()
-            else this.removeInfiniteSnowballs()
+            if (bool) {
+                this.ensureInfiniteSnowballs()
+            } else {
+                this.removeInfiniteSnowballs()
+            }
         }
     }
 
-    setInfiniteInsulin(bool: boolean) {
+    public setInfiniteInsulin(bool: boolean) {
         this.hasInfiniteInsulin = bool
         // If MCT1 is running, update inventory, else will be done on start.
         if (this.isStarted) {
-            if (bool) this.ensureInfiniteInsulin()
-            else this.removeInfiniteInsulin()
+            if (bool) {
+                this.ensureInfiniteInsulin()
+            } else {
+                this.removeInfiniteInsulin()
+            }
         }
     }
 
-    setSuperCharged(bool: boolean) {
+    public setSuperCharged(bool: boolean) {
         if (bool) {
             // this.cancelNegativeEffects()
             // this.cancelSuperPowers()
@@ -153,19 +181,19 @@ export class MCT1 {
             this.player.setHealth(20)
             this.setFoodLevel(20)
             // server.dispatchCommand(sender, `god ${this.player.name} ON`)
-            user(this.player).setGodMode(true)
+            this.mct1Player.setGodMode(true)
             this.giveSuperPowers()
         } else {
             this.isSuperCharged = false
-            user(this.player).setGodMode(false)
+            this.mct1Player.setGodMode(false)
             // server.dispatchCommand(sender, `god ${this.player.name} OFF`)
             this.cancelSuperPowers()
         }
     }
 
-    inHealthyRange = () => this.bgl >= 4 && this.bgl <= 8
+    public inHealthyRange = () => this.bgl >= 4 && this.bgl <= 8
 
-    registerEvents() {
+    public registerEvents() {
         log('registerEvents')
         this.eventListeners.push(
             events.playerItemConsume(this._playerItemConsume),
@@ -186,7 +214,7 @@ export class MCT1 {
         )
     }
 
-    unregisterEvents = () => {
+    public unregisterEvents = () => {
         log(`Unregistering events for ${this.name}`)
         this.eventListeners.forEach((listener, i) => {
             listener.unregister()
@@ -194,24 +222,19 @@ export class MCT1 {
         })
     }
 
-    renderBars() {
+    public renderBars() {
         // bars.bgl color
-        let color = 'GREEN'
-        if (this.bgl >= 4 && this.bgl <= 8) {
-            color = 'GREEN'
-        } else if (
-            (this.bgl < 4 && this.bgl > 2) ||
-            (this.bgl > 8 && this.bgl <= 12)
-        ) {
-            color = 'YELLOW'
-        } else {
-            color = 'RED'
-        }
+        const color = match(this.bgl)([
+            { lower: 4, upper: 8, value: 'GREEN' },
+            { lower: 2, upper: 4, value: 'YELLOW' },
+            { lower: 8, upper: 12, value: 'YELLOW' },
+            { lower: 0, upper: 100, value: 'RED' },
+        ])
+
         // bars.bgl
-        let bgl = Math.round(this.bgl * 10) / 10
-        if (this.isUSA) {
-            bgl = Math.round(bgl * 18)
-        }
+        const bgl = this.isUSA
+            ? Math.round(this.bgl * 18) / 10
+            : Math.round(this.bgl * 10) / 10
 
         if (!this.bars.bgl) {
             this.bars.bgl = BossBar.bar('', this.player)
@@ -250,10 +273,12 @@ export class MCT1 {
 
         // digestion Bar(s)
         const digestionItems = this.digestionQueue.slice(0, 2)
-        if (!digestionItems[0] && this.bars.digestion1)
+        if (!digestionItems[0] && this.bars.digestion1) {
             this.bars.digestion1.remove()
-        if (!digestionItems[1] && this.bars.digestion2)
+        }
+        if (!digestionItems[1] && this.bars.digestion2) {
             this.bars.digestion2.remove()
+        }
 
         digestionItems.forEach((item, i) => {
             const index = `digestion${i + 1}`
@@ -283,26 +308,22 @@ export class MCT1 {
         })
     }
 
-    removeBars() {
-        if (this.bars.bgl) {
-            this.bars.bgl.remove()
-            this.bars.bgl = undefined as any
-        }
-        if (this.bars.insulin) {
-            this.bars.insulin.remove()
-            this.bars.insulin = undefined as any
-        }
-        if (this.bars.digestion1) {
-            this.bars.digestion1.remove()
-            this.bars.digestion1 = undefined as any
-        }
-        if (this.bars.digestion2) {
-            this.bars.digestion2.remove()
-            this.bars.digestion2 = undefined as any
+    public removeBars() {
+        const remove = bar => (bar ? bar.remove() : undefined)
+
+        remove(this.bars.bgl)
+        remove(this.bars.insulin)
+        remove(this.bars.digestion1)
+        remove(this.bars.digestion2)
+        this.bars = {
+            bgl: _bar,
+            digestion1: _bar,
+            digestion2: _bar,
+            insulin: _bar,
         }
     }
 
-    startDigestion(tickCount = 1) {
+    public startDigestion(tickCount = 1) {
         this.digestionTimer = setInterval(() => {
             // Do digestion if not dead!
             if (!this.player.isDead()) {
@@ -312,14 +333,14 @@ export class MCT1 {
         }, 1000)
     }
 
-    stopDigestion() {
+    public stopDigestion() {
         if (this.digestionTimer) {
             clearInterval(this.digestionTimer)
             this.digestionTimer = undefined
         }
     }
 
-    digestion(tickCount) {
+    public digestion(tickCount) {
         if (tickCount % 5 === 0) {
             const totalActivityCost = this.calculateTotalActivityCost()
             this.resetActivityLogs()
@@ -407,53 +428,64 @@ export class MCT1 {
         }
     }
 
-    doEffects() {
-        if (this.bgl >= 4 && this.bgl <= 8) {
-            // Healthy Range
-            this.cancelNegativeEffects()
-            this.giveSuperPowers()
-        } else {
-            // Out of range...
-            this.cancelSuperPowers()
-            this.giveNegativeEffects()
-        }
+    public doEffects() {
+        const fns = match(this.bgl)([
+            {
+                // healthy range
+                lower: 4,
+                upper: 8,
+                value: [this.cancelNegativeEffects, this.giveSuperPowers],
+            },
+            {
+                // default case
+                lower: 1,
+                upper: 100,
+                value: [this.cancelSuperPowers, this.giveNegativeEffects],
+            },
+        ])
+        fns.forEach(fn => fn.bind(this)())
     }
 
-    cancelEffects() {
+    public cancelEffects() {
         this.cancelNegativeEffects()
         this.cancelSuperPowers()
     }
 
-    giveNegativeEffects() {
-        // Confusion!
-        if (
-            (this.bgl < 4 && this.bgl >= 3) ||
-            (this.bgl > 8 && this.bgl <= 12)
-        ) {
-            this._makeEffect('CONFUSION', 3500)
-        }
-        // More Confusion!
-        else if (this.bgl < 3 || this.bgl > 16) {
-            this._makeEffect('CONFUSION', 6000)
-        }
-        // Layer additional effects.
-        if (this.bgl <= 2 || this.bgl >= 16) {
-            this._makeEffect('BLINDNESS', 5000)
-            this._makeEffect('POISON', 5000)
-        }
+    public giveNegativeEffects() {
+        const CONFUSION_MILD = { effect: 'CONFUSION', strength: 3500 }
+        const CONFUSION_HEAVY = { effect: 'CONFUSION', strength: 6000 }
+        const BLINDNESS = { effect: 'BLINDNESS', strength: 5000 }
+        const POISON = { effect: 'POISON', strength: 5000 }
+
+        const effects = match(this.bgl)([
+            { lower: 1, upper: 2.1, value: [BLINDNESS, POISON] },
+            { lower: 2.11, upper: 2.99, value: [CONFUSION_HEAVY] },
+            { lower: 3, upper: 3.99, value: [CONFUSION_MILD] },
+            { lower: 4, upper: 8, value: [] },
+            { lower: 8.01, upper: 12, value: [CONFUSION_MILD] },
+            { lower: 12.1, upper: 15.99, value: [CONFUSION_HEAVY] },
+            { lower: 16, upper: 100, value: [BLINDNESS, POISON] },
+        ])
+
+        effects.forEach(e => this._makeEffect(e.effect, e.strength))
     }
 
-    cancelNegativeEffects() {
-        this._cancelEffect('CONFUSION')
-        this._cancelEffect('BLINDNESS')
-        this._cancelEffect('POISON')
+    public cancelNegativeEffects() {
+        ;['CONFUSION', 'BLINDNESS', 'POISON'].forEach(e =>
+            this._cancelEffect(e)
+        )
     }
 
-    giveSuperPowers() {
-        if (this.hasSuperSpeed) this._makeEffect('SPEED', 10000000, 'WHITE', 2)
-        if (this.hasSuperJump) this._makeEffect('JUMP', 10000000, 'WHITE', 1)
-        if (this.hasNightVision)
+    public giveSuperPowers() {
+        if (this.hasSuperSpeed) {
+            this._makeEffect('SPEED', 10000000, 'WHITE', 2)
+        }
+        if (this.hasSuperJump) {
+            this._makeEffect('JUMP', 10000000, 'WHITE', 1)
+        }
+        if (this.hasNightVision) {
             this._makeEffect('NIGHT_VISION', 10000000, 'WHITE', 1)
+        }
 
         if (this.isSuperCharged) {
             this._makeEffect('GLOWING', 10000000, 'WHITE')
@@ -461,15 +493,13 @@ export class MCT1 {
         }
     }
 
-    cancelSuperPowers() {
-        this._cancelEffect('SPEED')
-        this._cancelEffect('JUMP')
-        this._cancelEffect('GLOWING')
-        this._cancelEffect('NIGHT_VISION')
-        this._cancelEffect('REGENERATION')
+    public cancelSuperPowers() {
+        ;['SPEED', 'JUMP', 'GLOWING', 'NIGHT_VISION', 'REGENERATION'].forEach(
+            e => this._cancelEffect(e)
+        )
     }
 
-    _makeEffect(type, milliseconds, color = 'GREEN', amplifier = 1) {
+    public _makeEffect(type, milliseconds, color = 'GREEN', amplifier = 1) {
         const PotionEffectType = Java.type('org.bukkit.potion.PotionEffectType')
         if (
             this.player &&
@@ -480,7 +510,6 @@ export class MCT1 {
         }
 
         const PotionEffect = Java.type('org.bukkit.potion.PotionEffect')
-        const Color = Java.type('org.bukkit.Color')
         const duration = (milliseconds / 1000) * 40 // 20 tick. 1 tick = 0.05 seconds
         const c = Color[color]
         const l = PotionEffectType[type]
@@ -488,7 +517,7 @@ export class MCT1 {
         this.player.addPotionEffect(effect)
     }
 
-    _cancelEffect(type) {
+    public _cancelEffect(type) {
         const PotionEffectType = Java.type('org.bukkit.potion.PotionEffectType')
         if (
             this.player &&
@@ -498,12 +527,12 @@ export class MCT1 {
         }
     }
 
-    resetActivityLogs() {
+    public resetActivityLogs() {
         this.moveActivityLog = []
         this.nonMoveActivityLog = []
     }
 
-    calculateTotalActivityCost() {
+    public calculateTotalActivityCost() {
         const moveActivities = this.extractActivitiesFromMoveLog()
         const nonMoveActivities = this.nonMoveActivityLog
 
@@ -529,20 +558,17 @@ export class MCT1 {
         return totalActivityCost
     }
 
-    setInsulinSensitivity(totalActivityCost) {
-        if (totalActivityCost >= 0 && totalActivityCost <= 0.075) {
-            this.insulinSensitivityMultiplier = 1
-        } else if (totalActivityCost > 0.075 && totalActivityCost <= 0.5) {
-            this.insulinSensitivityMultiplier = 1.2
-        } else if (totalActivityCost > 0.5 && totalActivityCost <= 1.25) {
-            this.insulinSensitivityMultiplier = 1.5
-        } else if (totalActivityCost > 1.25) {
-            this.insulinSensitivityMultiplier = 1.8
-        }
+    public setInsulinSensitivity(totalActivityCost) {
+        this.insulinSensitivityMultiplier = match(totalActivityCost)([
+            { lower: 0, upper: 0.075, value: 1 },
+            { lower: 0.075, upper: 0.5, value: 1.2 },
+            { lower: 0.5, upper: 1.25, value: 1.5 },
+            { lower: 1.25, upper: 100, value: 1.8 },
+        ])
     }
 
-    extractActivitiesFromMoveLog() {
-        let activities: any = []
+    public extractActivitiesFromMoveLog() {
+        const activities: any = []
 
         // iterate over moveActivityLog and determine activities
         let distTravelled = 0
@@ -550,19 +576,25 @@ export class MCT1 {
             const isUpward = mLog.to.y.toFixed(2) > mLog.from.y.toFixed(2)
 
             let activity
-            if (mLog.blockType == 'LADDER')
+            if (mLog.blockType == 'LADDER') {
                 activity = activityTypes.CLIMB_LADDER
-            else if (mLog.blockType == 'VINE')
+            } else if (mLog.blockType == 'VINE') {
                 activity = activityTypes.CLIMB_VINE
-            else if (mLog.blockType.includes('WATER'))
+            } else if (mLog.blockType.includes('WATER')) {
                 activity = activityTypes.SWIM
-            else if (isUpward && mLog.isSprinting)
+            } else if (isUpward && mLog.isSprinting) {
                 activity = activityTypes.SPRINT_JUMP
-            else if (isUpward) activity = activityTypes.JUMP
-            else if (mLog.isSprinting) activity = activityTypes.SPRINT
-            else activity = activityTypes.WALK
+            } else if (isUpward) {
+                activity = activityTypes.JUMP
+            } else if (mLog.isSprinting) {
+                activity = activityTypes.SPRINT
+            } else {
+                activity = activityTypes.WALK
+            }
 
-            if (mLog.isSuper) activity = `SUPER_${activity}`
+            if (mLog.isSuper) {
+                activity = `SUPER_${activity}`
+            }
 
             // calc distTravelled
             const xDiff = mLog.to.x - mLog.from.x
@@ -583,7 +615,9 @@ export class MCT1 {
                     activity == activityTypes.JUMP
                 ) {
                     const lastActitiy = activities[activities.length - 1]
-                    if (activity != lastActitiy) activities.push(activity)
+                    if (activity != lastActitiy) {
+                        activities.push(activity)
+                    }
                 } else {
                     activities.push(activity)
                 }
@@ -593,18 +627,141 @@ export class MCT1 {
         return activities
     }
 
+    public setDemoInventory() {
+        const server = __plugin.server
+        const sender = __plugin.server.consoleSender
+
+        server.dispatchCommand(sender, `clear ${this.player.name}`)
+
+        foods.forEach(item => {
+            // server.dispatchCommand(
+            //     sender,
+            //     `give ${this.player.name} ${item.type}`
+            // )
+        })
+        server.dispatchCommand(
+            sender,
+            `give ${this.player.name} cooked_chicken 1`
+        )
+        if (this.hasLightningSnowballs) {
+            this.ensureInfiniteSnowballs()
+        }
+        if (this.hasInfiniteInsulin) {
+            this.ensureInfiniteInsulin()
+        }
+    }
+
+    public ensureInfiniteSnowballs() {
+        const itemInSlot = this.mct1Player.inventory.getItem(this.snowballSlot)
+        if (!itemInSlot || !this.isLightningSnowballStack(itemInSlot)) {
+            this.mct1Player.inventory.bumpItemIntoSlot(
+                this.snowballSlot,
+                this.makeLigtningSnowballItemStack(1)
+            )
+        }
+        // now make sure there aren't any duplicates
+        this.mct1Player.inventory.getAllitemStacks().forEach((itemStack, i) => {
+            if (
+                i != this.snowballSlot &&
+                itemStack &&
+                this.isLightningSnowballStack(itemStack)
+            ) {
+                this.mct1Player.inventory.setEmpty(i)
+            }
+        })
+    }
+
+    public removeInfiniteSnowballs() {
+        this.mct1Player.inventory.getAllitemStacks().forEach((itemStack, i) => {
+            if (itemStack && this.isLightningSnowballStack(itemStack)) {
+                this.mct1Player.inventory.setEmpty(i)
+            }
+        })
+    }
+
+    public ensureInfiniteInsulin() {
+        const itemInSlot = this.mct1Player.inventory.getItem(this.insulinSlot)
+        if (!itemInSlot || !this.isInsulinStack(itemInSlot)) {
+            this.mct1Player.inventory.bumpItemIntoSlot(
+                this.insulinSlot,
+                this.makeInsulinStack(1)
+            )
+        }
+        // now make sure there aren't any duplicates
+        this.mct1Player.inventory.getAllitemStacks().forEach((itemStack, i) => {
+            if (
+                i != this.insulinSlot &&
+                itemStack &&
+                this.isInsulinStack(itemStack)
+            ) {
+                this.mct1Player.inventory.setEmpty(i)
+            }
+        })
+    }
+
+    public removeInfiniteInsulin() {
+        this.mct1Player.inventory.getAllitemStacks().forEach((itemStack, i) => {
+            if (itemStack && this.isInsulinStack(itemStack)) {
+                this.mct1Player.inventory.setEmpty(i)
+            }
+        })
+    }
+
+    public zapZaps() {
+        return ['ZAP!', 'BAM!', 'POW!', 'BOOM!', 'CRASH!', 'ZAP!', 'ZAP!']
+    }
+
+    public makeLigtningSnowballItemStack = num => {
+        const item = items.snowball(num)
+        const itemMeta = item.getItemMeta()
+        const zapzaps = this.zapZaps()
+        const zapzap = zapzaps[Math.floor(Math.random() * zapzaps.length)]
+        itemMeta.setDisplayName(zapzap)
+        item.setItemMeta(itemMeta)
+        return item
+    }
+
+    public makeInsulinStack(num = 1) {
+        const potion = items.potion(num)
+        const potionMeta = potion.getItemMeta()
+        potionMeta.setDisplayName('Insulin')
+        potionMeta.setColor(Color.AQUA)
+        potion.setItemMeta(potionMeta)
+        return potion
+    }
+
+    public isInsulinStack(itemStack) {
+        return (
+            itemStack.type == 'POTION' &&
+            itemStack.itemMeta &&
+            itemStack.itemMeta.displayName &&
+            itemStack.itemMeta.displayName == 'Insulin'
+        )
+    }
+
+    public isLightningSnowballStack(itemStack) {
+        return (
+            itemStack.type == 'SNOW_BALL' &&
+            itemStack.itemMeta &&
+            itemStack.itemMeta.displayName &&
+            this.zapZaps().includes(itemStack.itemMeta.displayName)
+        )
+    }
+
     private _playerItemConsume = event => {
         // Skip if not this.player
-        if (event.player.name != this.player.name) return
+        if (event.player.name != this.player.name) {
+            return
+        }
 
         log(`${this.player.name} ate a ${event.item.type}!`)
 
         // Act on know FOOD eat...
         if (Food[event.item.type]) {
             const item = {
-                timestamp: Math.floor(Date.now() / 1000),
-                food: Food[event.item.type],
                 carbsDigested: 0,
+                food: Food[event.item.type],
+                timestamp: Math.floor(Date.now() / 1000),
             }
             this.digestionQueue.push(item)
             this.renderBars()
@@ -628,7 +785,9 @@ export class MCT1 {
             setTimeout(() => {
                 // log('clean-up inventory');
                 inventory(this.player).remove(items.glassBottle(1))
-                if (this.hasInfiniteInsulin) this.ensureInfiniteInsulin()
+                if (this.hasInfiniteInsulin) {
+                    this.ensureInfiniteInsulin()
+                }
             }, 1)
 
             if (this.debugMode) {
@@ -639,13 +798,17 @@ export class MCT1 {
 
     private _playerToggleSprint = event => {
         // Skip if not this.player
-        if (event.player.name != this.player.name) return
+        if (event.player.name != this.player.name) {
+            return
+        }
         this.isSprinting = event.isSprinting()
     }
 
     private _playerMove = event => {
         // Skip if not this.player
-        if (event.player.name != this.player.name) return
+        if (event.player.name != this.player.name) {
+            return
+        }
 
         let blockType = event.to.block.type.toString()
 
@@ -658,26 +821,32 @@ export class MCT1 {
         }
 
         this.moveActivityLog.push({
-            to: event.to, // location
+            blockType, // blockType
             from: event.from, // location
-            blockType: blockType, // blockType
             isSprinting: this.isSprinting, // boolean
             isSuper: this.inHealthyRange(),
+            to: event.to, // location
         })
     }
 
     private _blockBreak = event => {
         // Skip if not this.player
-        if (event.player.name != this.player.name) return
+        if (event.player.name != this.player.name) {
+            return
+        }
         // Log into nonMoveActivityLog
         this.nonMoveActivityLog.push(activityTypes.BLOCK_BREAK)
     }
 
     private _entityShootBow = event => {
         // Skip if entity is not PLAYER
-        if (event.entity.type != 'PLAYER') return
+        if (event.entity.type != 'PLAYER') {
+            return
+        }
         // Skip if not this.player
-        if (event.entity.name != this.player.name) return
+        if (event.entity.name != this.player.name) {
+            return
+        }
         // Log into nonMoveActivityLog
         this.nonMoveActivityLog.push(activityTypes.SHOOT_BOW)
     }
@@ -687,10 +856,10 @@ export class MCT1 {
             if (event.clickedBlock.type == 'CAKE_BLOCK') {
                 echo(this.player, 'HERE')
                 this._playerItemConsume({
-                    player: event.player,
                     item: {
                         type: 'CAKE_SLICE',
                     },
+                    player: event.player,
                 })
             }
         }
@@ -726,8 +895,12 @@ export class MCT1 {
     }
 
     private _projectileLaunch = event => {
-        if (event.entity.type != 'SNOWBALL') return
-        if (!this.hasLightningSnowballs) return
+        if (event.entity.type != 'SNOWBALL') {
+            return
+        }
+        if (!this.hasLightningSnowballs) {
+            return
+        }
 
         const eloc = {
             x: Math.round(event.entity.location.x),
@@ -768,22 +941,32 @@ export class MCT1 {
     }
 
     private _projectileHit = event => {
-        if (event.entity.shooter.type != 'PLAYER') return
-        if (event.entity.shooter.name !== this.player.name) return
-        if (!this.hasLightningSnowballs) return
-        if (event.entity.type != 'SNOWBALL') return
+        if (event.entity.shooter.type != 'PLAYER') {
+            return
+        }
+        if (event.entity.shooter.name !== this.player.name) {
+            return
+        }
+        if (!this.hasLightningSnowballs) {
+            return
+        }
+        if (event.entity.type != 'SNOWBALL') {
+            return
+        }
 
         if (event.hitEntity) {
-            var location = event.hitEntity.location
+            const location = event.hitEntity.location
             location.world.strikeLightning(location)
         } else if (event.hitBlock) {
-            var location = event.hitBlock.location
+            const location = event.hitBlock.location
             location.world.strikeLightning(location)
         }
     }
 
     private _inventoryClick = event => {
-        if (event.whoClicked.name !== this.player.name) return
+        if (event.whoClicked.name !== this.player.name) {
+            return
+        }
         // Make sure players cannot move snowballs and insulin into other, non-player inventories
         if (event.clickedInventory && event.clickedInventory.type != 'PLAYER') {
             if (this.isLightningSnowballStack(event.cursor)) {
@@ -822,7 +1005,9 @@ export class MCT1 {
     }
 
     private _playerDropItem = event => {
-        if (event.player.name !== this.player.name) return
+        if (event.player.name !== this.player.name) {
+            return
+        }
         if (event.itemDrop.type == 'DROPPED_ITEM' && event.itemDrop.itemStack) {
             // Cancel drop snowballs
             if (
@@ -842,8 +1027,12 @@ export class MCT1 {
     }
 
     private _playerDeath = event => {
-        if (event.entity.type != 'PLAYER') return
-        if (event.entity.name !== this.player.name) return
+        if (event.entity.type != 'PLAYER') {
+            return
+        }
+        if (event.entity.name !== this.player.name) {
+            return
+        }
 
         // Clean-up dropped items
         setTimeout(() => {
@@ -863,7 +1052,9 @@ export class MCT1 {
     }
 
     private _playerRespawn = event => {
-        if (event.player.name !== this.player.name) return
+        if (event.player.name !== this.player.name) {
+            return
+        }
 
         // Ensure infinite snowballs ever present
         if (this.hasLightningSnowballs) {
@@ -883,8 +1074,12 @@ export class MCT1 {
     }
 
     private _entityRegainHealth = event => {
-        if (event.entity.type != 'PLAYER') return
-        if (event.entity.name !== this.player.name) return
+        if (event.entity.type != 'PLAYER') {
+            return
+        }
+        if (event.entity.name !== this.player.name) {
+            return
+        }
 
         // Ensure /heal command effects internal this.foodlevel
         setTimeout(() => {
@@ -893,139 +1088,16 @@ export class MCT1 {
     }
 
     private _foodLevelChange = event => {
-        if (event.entity.type != 'PLAYER') return
-        if (event.entity.name !== this.player.name) return
+        if (event.entity.type != 'PLAYER') {
+            return
+        }
+        if (event.entity.name !== this.player.name) {
+            return
+        }
 
         // Ensure eating effects internal this.foodlevel
         if (event.foodLevel > this.player.foodLevel) {
             this.setFoodLevel(event.foodLevel)
         }
-    }
-
-    setDemoInventory() {
-        const server = __plugin.server
-        const sender = __plugin.server.consoleSender
-
-        server.dispatchCommand(sender, `clear ${this.player.name}`)
-
-        foods.forEach(item => {
-            // server.dispatchCommand(
-            //     sender,
-            //     `give ${this.player.name} ${item.type}`
-            // )
-        })
-        server.dispatchCommand(
-            sender,
-            `give ${this.player.name} cooked_chicken 1`
-        )
-        if (this.hasLightningSnowballs) this.ensureInfiniteSnowballs()
-        if (this.hasInfiniteInsulin) this.ensureInfiniteInsulin()
-    }
-
-    ensureInfiniteSnowballs() {
-        const itemInSlot = user(this.player).inventory.getItem(
-            this.snowballSlot
-        )
-        if (!itemInSlot || !this.isLightningSnowballStack(itemInSlot)) {
-            user(this.player).inventory.bumpItemIntoSlot(
-                this.snowballSlot,
-                this.makeLigtningSnowballItemStack(1)
-            )
-        }
-        // now make sure there aren't any duplicates
-        user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach((itemStack, i) => {
-                if (
-                    i != this.snowballSlot &&
-                    itemStack &&
-                    this.isLightningSnowballStack(itemStack)
-                ) {
-                    user(this.player).inventory.setEmpty(i)
-                }
-            })
-    }
-
-    removeInfiniteSnowballs() {
-        user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach((itemStack, i) => {
-                if (itemStack && this.isLightningSnowballStack(itemStack)) {
-                    user(this.player).inventory.setEmpty(i)
-                }
-            })
-    }
-
-    ensureInfiniteInsulin() {
-        const itemInSlot = user(this.player).inventory.getItem(this.insulinSlot)
-        if (!itemInSlot || !this.isInsulinStack(itemInSlot)) {
-            user(this.player).inventory.bumpItemIntoSlot(
-                this.insulinSlot,
-                this.makeInsulinStack(1)
-            )
-        }
-        // now make sure there aren't any duplicates
-        user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach((itemStack, i) => {
-                if (
-                    i != this.insulinSlot &&
-                    itemStack &&
-                    this.isInsulinStack(itemStack)
-                ) {
-                    user(this.player).inventory.setEmpty(i)
-                }
-            })
-    }
-
-    removeInfiniteInsulin() {
-        user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach((itemStack, i) => {
-                if (itemStack && this.isInsulinStack(itemStack)) {
-                    user(this.player).inventory.setEmpty(i)
-                }
-            })
-    }
-
-    zapZaps() {
-        return ['ZAP!', 'BAM!', 'POW!', 'BOOM!', 'CRASH!', 'ZAP!', 'ZAP!']
-    }
-
-    makeLigtningSnowballItemStack = num => {
-        const item = items.snowball(num)
-        const itemMeta = item.getItemMeta()
-        const zapzaps = this.zapZaps()
-        const zapzap = zapzaps[Math.floor(Math.random() * zapzaps.length)]
-        itemMeta.setDisplayName(zapzap)
-        item.setItemMeta(itemMeta)
-        return item
-    }
-
-    makeInsulinStack(num = 1) {
-        const potion = items.potion(num)
-        const potionMeta = potion.getItemMeta()
-        potionMeta.setDisplayName('Insulin')
-        potionMeta.setColor(Color.AQUA)
-        potion.setItemMeta(potionMeta)
-        return potion
-    }
-
-    isInsulinStack(itemStack) {
-        return (
-            itemStack.type == 'POTION' &&
-            itemStack.itemMeta &&
-            itemStack.itemMeta.displayName &&
-            itemStack.itemMeta.displayName == 'Insulin'
-        )
-    }
-
-    isLightningSnowballStack(itemStack) {
-        return (
-            itemStack.type == 'SNOW_BALL' &&
-            itemStack.itemMeta &&
-            itemStack.itemMeta.displayName &&
-            this.zapZaps().includes(itemStack.itemMeta.displayName)
-        )
     }
 }

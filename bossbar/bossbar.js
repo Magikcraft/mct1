@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var environment = require("@magikcraft/mct1/utils/environment");
+var environment = require("../utils/environment");
 var hasBukkitBossBar = environment.HAS_BOSSBAR_BUKKIT;
 var JavaChatColor = hasBukkitBossBar
     ? Java.type('net.md_5.bungee.api.ChatColor')

@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @param namespace
  */
 exports.Logger = function (namespace) { return function (msg, toLog) {
-    var ns = "[" + namespace.replace('/server/scriptcraft-plugins/', '') + "] ";
+    var ns = "[" + namespace.replace('/_server_/scriptcraft-plugins/', '') + "] ";
     var message = toLog ? ns + " " + msg + " " + toLog : ns + " " + msg;
     console.log(message); // tslint:disable-line
 }; };

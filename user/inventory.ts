@@ -1,8 +1,8 @@
-import { Logger } from '@magikcraft/mct1/log'
-import * as tools from '@magikcraft/mct1/tools'
-import { user } from '@magikcraft/mct1/user'
 import * as events from 'events'
 import * as items from 'items'
+import { Logger } from '../log'
+import * as tools from '../tools'
+import { MCT1PlayerCache } from '../user'
 
 const log = Logger(__filename)
 
@@ -29,11 +29,10 @@ const indexMap = {
 }
 
 export default class PlayerInventory {
-    player
-    private events = {}
+    public player
     // indexMap: any
 
-    indexMap = {
+    public indexMap = {
         hotbarFirst: 0,
         hotbarLast: 8,
         inventoryFirst: 9, // top right
@@ -55,11 +54,13 @@ export default class PlayerInventory {
         shield: 40,
     }
 
+    private events = {}
+
     constructor(player) {
         this.player = player
     }
 
-    logOutAll() {
+    public logOutAll() {
         this.getAllitemStacks().forEach((itemStack, i) => {
             if (itemStack) {
                 log(
@@ -73,7 +74,7 @@ export default class PlayerInventory {
         })
     }
 
-    getAllitemStacks() {
+    public getAllitemStacks() {
         const itemStacks: any[] = []
         for (let i = 0; i <= 40; i++) {
             const itemStack = this.getItem(i) || undefined
@@ -82,71 +83,82 @@ export default class PlayerInventory {
         return itemStacks
     }
 
-    exportToJSON = itemStacks => {
+    public exportToJSON = itemStacks => {
         // Important - using .map causes problems when this is called from
         // inside an event listener, use forEach instead to be safe!
         const itemStacksJSON: any[] = []
         itemStacks.forEach(itemStack => {
-            if (itemStack) itemStacksJSON.push(tools.itemStackToJSON(itemStack))
-            else itemStacksJSON.push(undefined)
+            if (itemStack) {
+                itemStacksJSON.push(tools.itemStackToJSON(itemStack))
+            } else {
+                itemStacksJSON.push(undefined)
+            }
         })
         return itemStacksJSON
     }
 
-    importFromJSON(itemStacksJSON) {
+    public importFromJSON(itemStacksJSON) {
         // Important - using .map causes problems when this is called from
         // inside an event listener, use forEach instead to be safe!
         const itemStacks: any[] = []
         itemStacksJSON.forEach(itemStackJSON => {
-            if (itemStackJSON)
+            if (itemStackJSON) {
                 itemStacks.push(tools.itemStackFromJSON(itemStackJSON))
-            else itemStacks.push(undefined)
+            } else {
+                itemStacks.push(undefined)
+            }
         })
         return itemStacks
     }
 
-    clear() {
+    public clear() {
         this.player.inventory.clear()
     }
 
-    set(itemStacks: any[]) {
+    public set(itemStacks: any[]) {
         this.clear()
         itemStacks.forEach((itemStack, i) => {
-            if (itemStack) this.setItem(i, itemStack)
-            else this.setEmpty(i)
+            if (itemStack) {
+                this.setItem(i, itemStack)
+            } else {
+                this.setEmpty(i)
+            }
         })
     }
 
-    save(itemStacks: any[]) {
-        user(this.player).db.set(
+    public save(itemStacks: any[]) {
+        MCT1PlayerCache.getMct1Player(this.player).db.set(
             'savedInventory',
             this.exportToJSON(itemStacks)
         )
     }
 
-    saveCurrent() {
+    public saveCurrent() {
         this.save(this.getAllitemStacks())
     }
 
-    loadSaved() {
-        const itemStacksJSON = user(this.player).db.get('savedInventory') || []
+    public loadSaved() {
+        const itemStacksJSON =
+            MCT1PlayerCache.getMct1Player(this.player).db.get(
+                'savedInventory'
+            ) || []
         this.set(this.importFromJSON(itemStacksJSON))
     }
 
-    getItem(slotIndex) {
+    public getItem(slotIndex) {
         return this.player.inventory.getItem(slotIndex)
     }
 
-    setItem(slotIndex: number, itemStack) {
+    public setItem(slotIndex: number, itemStack) {
         this.player.inventory.setItem(slotIndex, itemStack)
     }
 
-    setEmpty(slotIndex: number) {
+    public setEmpty(slotIndex: number) {
         this.setItem(slotIndex, items.air(1))
     }
 
     // Inject itemStack at slotIndex, and if necessary bump exising items along to accomodate.
-    bumpItemIntoSlot(slotIndex: number, itemStack) {
+    public bumpItemIntoSlot(slotIndex: number, itemStack) {
         if (this.getItem(slotIndex)) {
             if (this.getItem(slotIndex).type != itemStack.type) {
                 this.bumpItemIntoSlot(slotIndex + 1, this.getItem(slotIndex))
@@ -155,18 +167,20 @@ export default class PlayerInventory {
         this.setItem(slotIndex, itemStack)
     }
 
-    setHeldItemSlot(slotIndex: number) {
+    public setHeldItemSlot(slotIndex: number) {
         this.player.inventory.setHeldItemSlot(slotIndex)
     }
 
-    setReloadAtSpawn(bool: boolean) {
+    public setReloadAtSpawn(bool: boolean) {
         const key = 'setReloadAtSpawn.playerRespawn'
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent(
                     'playerRespawn',
                     event => {
-                        if (event.player.name !== this.player.name) return
+                        if (event.player.name !== this.player.name) {
+                            return
+                        }
                         this.loadSaved()
                     },
                     key
@@ -181,22 +195,27 @@ export default class PlayerInventory {
         this.setCleanupDeathDrops(bool)
     }
 
-    setCleanupDeathDrops(bool: boolean) {
+    public setCleanupDeathDrops(bool: boolean) {
         const key = 'setCleanupDeathDrops.playerDeath'
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent(
                     'playerDeath',
                     event => {
-                        if (event.entity.type != 'PLAYER') return
-                        if (event.entity.name !== this.player.name) return
+                        if (event.entity.type != 'PLAYER') {
+                            return
+                        }
+                        if (event.entity.name !== this.player.name) {
+                            return
+                        }
                         setTimeout(() => {
                             // Clean-up dropped items
                             event.entity
                                 .getNearbyEntities(2, 2, 2)
                                 .forEach(entity => {
-                                    if (entity.type == 'DROPPED_ITEM')
+                                    if (entity.type == 'DROPPED_ITEM') {
                                         entity.remove()
+                                    }
                                 })
                         }, 500)
                     },
@@ -217,6 +236,8 @@ export default class PlayerInventory {
     }
 
     private unregisterEvent(key: string) {
-        if (this.events[key]) this.events[key].unregister()
+        if (this.events[key]) {
+            this.events[key].unregister()
+        }
     }
 }

@@ -13,9 +13,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Quest_1 = require("@magikcraft/mct1/quests/Quest");
-var world_1 = require("@magikcraft/mct1/world");
 var questTools = require("../../quest-tools");
+var QuestMCT1_1 = require("../../QuestMCT1");
 var Locations = require("./locs");
 var Location = Java.type('org.bukkit.Location');
 var Material = Java.type('org.bukkit.Material');
@@ -31,36 +30,37 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
         var _this = this;
         _super.prototype.start.call(this);
         this.registerEvents();
-        var _a = this, player = _a.player, world = _a.world, log = _a.log, options = _a.options, Locs = _a.Locs, state = _a.state;
         [1, 2, 3, 4, 5].forEach(function (i) {
             var key = "run" + i;
-            world_1.worldly(world).registerRegion(key, Locs.waypoints[key].region[0], Locs.waypoints[key].region[1]);
-            world_1.worldly(world).registerPlayerEnterRegionEvent(key, function (event) {
+            _this.world.registerRegion(key, _this.Locs.waypoints[key].region[0], _this.Locs.waypoints[key].region[1]);
+            _this.world.registerPlayerEnterRegionEvent(key, function (event) {
                 _this.activeRuns.push(i);
-                log('this.activeRuns', _this.activeRuns);
+                _this.log('this.activeRuns', _this.activeRuns);
             });
-            world_1.worldly(world).registerPlayerExitRegionEvent(key, function (event) {
+            _this.world.registerPlayerExitRegionEvent(key, function (event) {
                 _this.activeRuns = _this.activeRuns.filter(function (j) { return j !== i; });
-                log('this.activeRuns', _this.activeRuns);
+                _this.log('this.activeRuns', _this.activeRuns);
             });
         });
         var interval;
         interval = 170;
         this.setInterval(function () {
             _this.activeRuns.forEach(function (key) {
-                if (key != '1' && key != '2' && key != '3')
+                if (key != '1' && key != '2' && key != '3') {
                     return;
+                }
                 var dispenseType = 'ARROW';
-                _this.activateRun(Locs.locations["run" + key], dispenseType, interval);
+                _this.activateRun(_this.Locs.locations["run" + key], dispenseType, interval);
             });
         }, 35 * interval);
         interval = 170;
         this.setInterval(function () {
             _this.activeRuns.forEach(function (key) {
-                if (key != '4' && key != '5')
+                if (key != '4' && key != '5') {
                     return;
+                }
                 var dispenseType = 'LEGACY_FIREBALL';
-                _this.activateRun(Locs.locations["run" + key], dispenseType, interval);
+                _this.activateRun(_this.Locs.locations["run" + key], dispenseType, interval);
             });
         }, 35 * interval);
     };
@@ -91,8 +91,9 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
                                 _this.Locs.world
                                     .getNearbyEntities(targetLoc, 5, 10, 5)
                                     .forEach(function (e) {
-                                    if (e.type == 'ARROW')
+                                    if (e.type == 'ARROW') {
                                         e.remove();
+                                    }
                                 });
                             }
                         }
@@ -102,17 +103,20 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
         });
     };
     QuestMCT1Magmarun.prototype.registerEvents = function () {
+        var _this = this;
         _super.prototype.registerEvents.call(this);
-        var _a = this, player = _a.player, world = _a.world;
         // playerPickupItem
         this.registerEvent('playerPickupItem', function (event) {
-            if (event.player.name != player.name)
+            if (event.player.name != _this.player.name) {
                 return;
-            if (event.player.world.name != world.name)
+            }
+            if (event.player.world.name != _this.world.getName()) {
                 return;
+            }
             // Cancel arrow pickup event.
-            if (event.item.itemStack.type == 'ARROW')
+            if (event.item.itemStack.type == 'ARROW') {
                 event.setCancelled(true);
+            }
         });
     };
     QuestMCT1Magmarun.prototype.getBlocksInRadius = function (loc, radius, filterTypes) {
@@ -136,5 +140,5 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
         return blocks;
     };
     return QuestMCT1Magmarun;
-}(Quest_1.QuestMCT1));
+}(QuestMCT1_1.QuestMCT1));
 exports.default = QuestMCT1Magmarun;

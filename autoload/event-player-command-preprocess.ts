@@ -1,8 +1,8 @@
 import * as events from 'events'
 import { Logger } from '../log'
-const log = Logger('player-quit-event')
+import { isAdminUser, isTestUser, MCT1PlayerCache } from '../user'
 import * as server from '../utils/server'
-import { isAdminUser, isTestUser, user } from '../user'
+const log = Logger(__filename)
 
 const commandWhitelist = [
     '/jsp quest',
@@ -17,11 +17,13 @@ events.playerCommandPreprocess(event => {
     const command = message
     const commandStr = command.replace('jsp ', '')
 
+    const mct1Player = MCT1PlayerCache.getMct1Player(player)
+
     if (command === '/heal') {
-        if (user(player).mct1.isStarted) {
-            user(player).mct1.bgl = 5
-            user(player).mct1.insulin = 0
-            user(player).mct1.digestionQueue = []
+        if (mct1Player.mct1.isStarted) {
+            mct1Player.mct1.bgl = 5
+            mct1Player.mct1.insulin = 0
+            mct1Player.mct1.digestionQueue = []
         }
     }
 
@@ -42,7 +44,9 @@ events.playerCommandPreprocess(event => {
 
     let allowed = false
     commandWhitelist.forEach(c => {
-        if (command.substring(0, c.length) === c) allowed = true
+        if (command.substring(0, c.length) === c) {
+            allowed = true
+        }
     })
 
     if (!allowed) {

@@ -1,19 +1,17 @@
+import { QuestConfig, QuestMCT1 } from '../../../quests/QuestMCT1'
 import * as Locations from './locs'
-import { worldly } from '@magikcraft/mct1/world'
-import { QuestConfig, QuestMCT1 } from '@magikcraft/mct1/quests/Quest'
 
 export default class QuestMCT1Village extends QuestMCT1 {
     constructor(conf: QuestConfig) {
         super(conf)
-        this.Locs = Locations.getLocations(this.world)
+        this.Locs = Locations.getLocations(this.world.getBukkitWorld())
         super.registerEvents()
     }
 
-    start() {
+    public start() {
         super.start()
-        const { world } = this
-        worldly(world).setDay()
-        worldly(world).setSun()
+        this.world.setDay()
+        this.world.setSun()
         this.setMCT1SuperPowers(true)
     }
 }

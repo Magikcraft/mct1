@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var vector3_1 = require("@magikcraft/mct1/vector3");
 var utils = require("utils");
+var vector3_1 = require("../../../vector3");
 var Material = Java.type('org.bukkit.Material');
 var ArenaStairs = /** @class */ (function () {
     function ArenaStairs(region) {

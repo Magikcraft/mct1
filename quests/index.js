@@ -36,47 +36,48 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("../log");
-var multiverse_1 = require("../world/multiverse");
 var user_1 = require("../user");
+var world_1 = require("../world");
+var multiverse_1 = require("../world/multiverse");
 var log = log_1.Logger(__filename);
 var quests = {
     'mct1-prologue': {
-        filePath: '@magikcraft/mct1/quests/mct1/prologue',
+        filePath: '../quests/mct1/prologue',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-jail',
     },
     'mct1-jail': {
-        filePath: '@magikcraft/mct1/quests/mct1/jail',
+        filePath: '../quests/mct1/jail',
         worldName: 'mct1-jail',
         nextQuestName: 'mct1-sunken',
     },
     'mct1-sunken': {
-        filePath: '@magikcraft/mct1/quests/mct1/sunken',
+        filePath: '../quests/mct1/sunken',
         worldName: 'mct1-sunken-v2',
         nextQuestName: 'mct1-magmarun',
     },
     'mct1-magmarun': {
-        filePath: '@magikcraft/mct1/quests/mct1/magmarun',
+        filePath: '../quests/mct1/magmarun',
         worldName: 'mct1-magmarun',
         nextQuestName: 'mct1-magmaboss',
     },
     'mct1-magmaboss': {
-        filePath: '@magikcraft/mct1/quests/mct1/magmaboss',
+        filePath: '../quests/mct1/magmaboss',
         worldName: 'mct1-magmaboss',
         nextQuestName: 'mct1-breakout',
     },
     'mct1-breakout': {
-        filePath: '@magikcraft/mct1/quests/mct1/breakout',
+        filePath: '../quests/mct1/breakout',
         worldName: 'mct1-breakout',
         nextQuestName: 'mct1-village',
     },
     'mct1-village': {
-        filePath: '@magikcraft/mct1/quests/mct1/village',
+        filePath: '../quests/mct1/village',
         worldName: 'mct1-start',
         nextQuestName: 'mct1-breakout2',
     },
     'mct1-breakout2': {
-        filePath: '@magikcraft/mct1/quests/mct1/breakout2',
+        filePath: '../quests/mct1/breakout2',
         worldName: 'mct1-breakout',
         nextQuestName: 'mct1-village',
     },
@@ -84,17 +85,18 @@ var quests = {
 var availableQuests = Object.keys(quests)
     .sort()
     .reduce(function (prev, current) { return prev + ", " + current; });
-function questCommand(questName, method, player, opts) {
+function questCommand(_a) {
+    var questName = _a.questName, method = _a.method, player = _a.player, opts = _a.opts;
     return __awaiter(this, void 0, void 0, function () {
-        var userQuest, quest, templateWorldName, worldName, _a, world, QuestClass, questConfig, quest_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var userQuest, quest, templateWorldName, playername, mct1Player, _b, managedWorld, QuestClass, questConfig, thisQuest;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     if (questName === 'mct1') {
                         questName = 'mct1-prologue';
                     }
                     if (questName === 'stop') {
-                        userQuest = user_1.user(player).quest;
+                        userQuest = user_1.MCT1PlayerCache.getMct1Player(player).quest;
                         if (userQuest) {
                             questName = userQuest.name;
                             method = 'stop';
@@ -110,11 +112,10 @@ function questCommand(questName, method, player, opts) {
                         return [2 /*return*/, echo(player, "Available quests: " + availableQuests)];
                     }
                     templateWorldName = quests[questName].worldName;
-                    worldName = opts.mode === 'single'
-                        ? templateWorldName + "--" + player.name
-                        : templateWorldName + "-multi";
-                    _a = method;
-                    switch (_a) {
+                    playername = opts.mode === 'single' ? player.name : undefined;
+                    mct1Player = user_1.MCT1PlayerCache.getMct1Player(player);
+                    _b = method;
+                    switch (_b) {
                         case 'start': return [3 /*break*/, 1];
                         case 'import': return [3 /*break*/, 3];
                         case 'stop': return [3 /*break*/, 4];
@@ -123,36 +124,34 @@ function questCommand(questName, method, player, opts) {
                 case 1:
                     echo(player, "Starting quest " + questName + "...");
                     log("Starting quest " + questName + " for " + player);
-                    return [4 /*yield*/, multiverse_1.Multiverse.cloneWorld(worldName, templateWorldName)];
+                    return [4 /*yield*/, world_1.WorldManager.createManagedWorld(templateWorldName, player.name)];
                 case 2:
-                    world = _b.sent();
-                    if (!world) {
-                        log("Failed to setup world " + worldName + ". Aborting.");
+                    managedWorld = _c.sent();
+                    if (!managedWorld) {
                         return [2 /*return*/];
                     }
-                    log("Quest world " + worldName + " intialized.");
                     QuestClass = require(quests[questName].filePath).default;
                     questConfig = {
                         name: questName,
                         nextQuestName: quests[questName].nextQuestName,
-                        player: player,
-                        world: world,
                         options: opts,
+                        player: player,
+                        world: managedWorld,
                     };
-                    quest_1 = new QuestClass(questConfig);
-                    user_1.user(player).quest = quest_1;
-                    quest_1.start();
+                    thisQuest = new QuestClass(questConfig);
+                    mct1Player.quest = thisQuest;
+                    thisQuest.start();
                     return [3 /*break*/, 5];
                 case 3:
                     multiverse_1.Multiverse.importWorld(templateWorldName);
                     return [3 /*break*/, 5];
                 case 4:
-                    user_1.user(player).mct1.stop();
-                    user_1.user(player).quest = undefined;
+                    mct1Player.mct1.stop();
+                    mct1Player.quest = undefined;
                     // Deleting the world kicks the player from the world
                     // This triggers the playerChangedWorld event, which calls the stop() method
                     // of the quest object, doing quest cleanup.
-                    multiverse_1.Multiverse.destroyWorld(worldName);
+                    world_1.WorldManager.deleteWorldsForPlayer(player.name);
                     return [3 /*break*/, 5];
                 case 5: return [2 /*return*/];
             }

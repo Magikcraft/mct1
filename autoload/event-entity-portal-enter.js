@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
 var log_1 = require("../log");
 var quests_1 = require("../quests");
-var log = log_1.Logger('event-entity-portal-enter');
+var log = log_1.Logger(__filename);
 log('############ register entityPortalEnter');
 events.playerPortal(function (event) {
     log('playerPortal');
@@ -22,7 +22,12 @@ events.playerPortal(function (event) {
         z >= 217 &&
         z <= 218) {
         log("Entered Portal MCT1 AU / NZ");
-        quests_1.questCommand('mct1', 'start', event.player, { mode: 'single' });
+        quests_1.questCommand({
+            method: 'start',
+            opts: { mode: 'single' },
+            player: event.player,
+            questName: 'mct1',
+        });
         event.setCancelled(true);
     }
     if (world.name == 'world' &&
@@ -33,9 +38,14 @@ events.playerPortal(function (event) {
         z >= 212 &&
         z <= 213) {
         log("Entered Portal MCT1 USA");
-        quests_1.questCommand('mct1', 'start', event.player, {
-            mode: 'single',
-            units: 'mgdl',
+        quests_1.questCommand({
+            method: 'start',
+            opts: {
+                mode: 'single',
+                units: 'mgdl',
+            },
+            player: event.player,
+            questName: 'mct1',
         });
         event.setCancelled(true);
     }

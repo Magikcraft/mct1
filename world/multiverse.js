@@ -53,7 +53,6 @@ var MultiverseClass = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var world;
             return __generator(this, function (_a) {
-                log("Destroying world " + worldName + "...");
                 world = utils.world(worldName);
                 if (world) {
                     log("Deleting world " + worldName + " from registry...");
@@ -97,29 +96,30 @@ var MultiverseClass = /** @class */ (function () {
             });
         });
     };
-    MultiverseClass.prototype.cloneWorld = function (worldName, templateWorldName) {
+    MultiverseClass.prototype.cloneWorld = function (_a) {
+        var targetWorldname = _a.targetWorldname, templateWorldname = _a.templateWorldname;
         return __awaiter(this, void 0, void 0, function () {
             var templateWorld, cloned, world;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.destroyWorld(worldName)];
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.destroyWorld(targetWorldname)];
                     case 1:
-                        _a.sent();
-                        log("Cloning world " + worldName);
-                        return [4 /*yield*/, this.importWorld(templateWorldName)];
+                        _b.sent();
+                        log("Cloning world " + targetWorldname);
+                        return [4 /*yield*/, this.importWorld(templateWorldname)];
                     case 2:
-                        templateWorld = _a.sent();
+                        templateWorld = _b.sent();
                         if (!templateWorld) {
-                            log("Cannot clone " + worldName + ". " + templateWorldName + " not found.");
+                            log("Cannot clone " + targetWorldname + ". " + templateWorldname + " not found.");
                             return [2 /*return*/];
                         }
-                        cloned = this.multiversePlugin.cloneWorld(templateWorldName, worldName, 'normal');
+                        cloned = this.multiversePlugin.cloneWorld(templateWorldname, targetWorldname, 'normal');
                         if (!cloned) {
-                            log("Failed to clone world " + templateWorldName);
+                            log("Failed to clone world " + templateWorldname);
                             return [2 /*return*/];
                         }
-                        world = utils.world(worldName);
-                        log("World clone complete for " + worldName);
+                        world = utils.world(targetWorldname);
+                        log("World clone complete for " + targetWorldname);
                         // Have to do this to ensure world fully built.
                         return [2 /*return*/, new Promise(function (resolve) { return setTimeout(function () { return resolve(world); }, 1); })];
                 }

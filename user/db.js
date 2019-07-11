@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("@magikcraft/mct1/utils/fs");
-var log_1 = require("@magikcraft/mct1/log");
+var log_1 = require("../log");
+var fs = require("../utils/fs");
 var log = log_1.Logger(__filename);
 var DB = /** @class */ (function () {
     function DB(player) {

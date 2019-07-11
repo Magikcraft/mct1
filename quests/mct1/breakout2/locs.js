@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Location = Java.type('org.bukkit.Location');
 exports.getLocations = function (world) {
     return {
-        world: world,
         locations: {
             spawn: new Location(world, 208, 66, 131, 3, -4),
         },
@@ -13,5 +12,6 @@ exports.getLocations = function (world) {
                 new Location(world, 202, 68, 130),
             ],
         },
+        world: world,
     };
 };

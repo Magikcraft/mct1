@@ -2,7 +2,7 @@ import * as events from 'events'
 import { Logger } from '../log'
 import { questCommand } from '../quests'
 
-const log = Logger('event-entity-portal-enter')
+const log = Logger(__filename)
 
 log('############ register entityPortalEnter')
 events.playerPortal(event => {
@@ -29,7 +29,12 @@ events.playerPortal(event => {
         z <= 218
     ) {
         log(`Entered Portal MCT1 AU / NZ`)
-        questCommand('mct1', 'start', event.player, { mode: 'single' })
+        questCommand({
+            method: 'start',
+            opts: { mode: 'single' },
+            player: event.player,
+            questName: 'mct1',
+        })
         event.setCancelled(true)
     }
     if (
@@ -42,9 +47,14 @@ events.playerPortal(event => {
         z <= 213
     ) {
         log(`Entered Portal MCT1 USA`)
-        questCommand('mct1', 'start', event.player, {
-            mode: 'single',
-            units: 'mgdl',
+        questCommand({
+            method: 'start',
+            opts: {
+                mode: 'single',
+                units: 'mgdl',
+            },
+            player: event.player,
+            questName: 'mct1',
         })
         event.setCancelled(true)
     }

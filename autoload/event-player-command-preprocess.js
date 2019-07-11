@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
 var log_1 = require("../log");
-var log = log_1.Logger('player-quit-event');
-var server = require("../utils/server");
 var user_1 = require("../user");
+var server = require("../utils/server");
+var log = log_1.Logger(__filename);
 var commandWhitelist = [
     '/jsp quest',
     '/jsp cast',
@@ -16,11 +16,12 @@ events.playerCommandPreprocess(function (event) {
     var message = event.message, player = event.player;
     var command = message;
     var commandStr = command.replace('jsp ', '');
+    var mct1Player = user_1.MCT1PlayerCache.getMct1Player(player);
     if (command === '/heal') {
-        if (user_1.user(player).mct1.isStarted) {
-            user_1.user(player).mct1.bgl = 5;
-            user_1.user(player).mct1.insulin = 0;
-            user_1.user(player).mct1.digestionQueue = [];
+        if (mct1Player.mct1.isStarted) {
+            mct1Player.mct1.bgl = 5;
+            mct1Player.mct1.insulin = 0;
+            mct1Player.mct1.digestionQueue = [];
         }
     }
     if (command === '/js refresh()') {
@@ -38,8 +39,9 @@ events.playerCommandPreprocess(function (event) {
     }
     var allowed = false;
     commandWhitelist.forEach(function (c) {
-        if (command.substring(0, c.length) === c)
+        if (command.substring(0, c.length) === c) {
             allowed = true;
+        }
     });
     if (!allowed) {
         var cmdExists = __plugin.server.getPluginCommand(command.replace('/', ''));

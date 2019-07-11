@@ -1,14 +1,35 @@
 import * as events from 'events'
 import * as utils from 'utils'
-import User from './user'
+import MCT1Player from './MCT1Player'
 
 export default class Follower {
     private eventHandlers: any[] = []
     private following: BukkitPlayer
-    private user: User
+    private mct1Player: MCT1Player
 
-    constructor(user) {
-        this.user = user
+    constructor(mct1Player: MCT1Player) {
+        this.mct1Player = mct1Player
+    }
+
+    public startFollowing(whoToFollow: BukkitPlayer) {
+        const nooneToFollow = !!whoToFollow || !utils.player(whoToFollow)
+        if (nooneToFollow) {
+            return
+        }
+        this.stopFollowing()
+        this.following = whoToFollow
+        this._registerEventHandlers()
+        this._follow()
+        this.mct1Player.tell(`Following ${whoToFollow.name}`)
+    }
+
+    public stopFollowing() {
+        if (this.following) {
+            this._unregisterEventHandlers()
+            this.mct1Player.gmc()
+            this.following = undefined
+            this.mct1Player.tell(`Follow mode off`)
+        }
     }
 
     private listener = event => {
@@ -24,10 +45,10 @@ export default class Follower {
         }
         const playerQuit = !!event.who // playerQuit has a who field,
         if (playerQuit && isTarget(event.who)) {
-            this.user.tell(`${event.who.name} quit the server`)
+            this.mct1Player.tell(`${event.who.name} quit the server`)
             return this.stopFollowing()
         }
-        if (playerQuit && event.who.name == this.user.player.name) {
+        if (playerQuit && event.who.name == this.mct1Player.player.name) {
             this._unregisterEventHandlers()
         }
     }
@@ -45,34 +66,13 @@ export default class Follower {
     }
 
     private _follow() {
-        this.user.gmc()
-        this.user.gmsp()
-        this.user.teleport(this.following)
+        this.mct1Player.gmc()
+        this.mct1Player.gmsp()
+        this.mct1Player.teleport(this.following)
         const TELEPORT_RESETTLE_DELAY = 750
         setTimeout(
-            () => this.user.player.setSpectatorTarget(this.following),
+            () => this.mct1Player.player.setSpectatorTarget(this.following),
             TELEPORT_RESETTLE_DELAY
         )
-    }
-
-    startFollowing(whoToFollow: BukkitPlayer) {
-        const nooneToFollow = !!whoToFollow || !utils.player(whoToFollow)
-        if (nooneToFollow) {
-            return
-        }
-        this.stopFollowing()
-        this.following = whoToFollow
-        this._registerEventHandlers()
-        this._follow()
-        this.user.tell(`Following ${whoToFollow.name}`)
-    }
-
-    stopFollowing() {
-        if (this.following) {
-            this._unregisterEventHandlers()
-            this.user.gmc()
-            this.following = undefined
-            this.user.tell(`Follow mode off`)
-        }
     }
 }

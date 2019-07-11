@@ -1,10 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var bossbar_1 = require("@magikcraft/mct1/bossbar");
-var user_1 = require("@magikcraft/mct1/user");
 var events = require("events");
 var inventory = require("inventory");
 var items = require("items");
+var bossbar_1 = require("../bossbar");
 var log_1 = require("../log");
 var activities_1 = require("./activities");
 var foods_1 = require("./foods");
@@ -12,9 +11,17 @@ var log = log_1.Logger(__filename);
 var Color = Java.type('org.bukkit.Color');
 var Food = {};
 foods_1.default.forEach(function (item) { return (Food[item.type] = item); });
-var _bar;
+var _bar = undefined;
+var check = function (measure) { return function (lower, upper) {
+    return measure >= lower && measure <= upper;
+}; };
+function match(measure) {
+    return function matched(matches) {
+        return matches.filter(function (m) { return check(measure)(m.lower, m.upper); })[0].value;
+    };
+}
 var MCT1 = /** @class */ (function () {
-    function MCT1(player) {
+    function MCT1(mct1Player) {
         var _this = this;
         this.isSprinting = false;
         this.bgl = 4;
@@ -25,9 +32,9 @@ var MCT1 = /** @class */ (function () {
         this.isUSA = false;
         this.bars = {
             bgl: _bar,
-            insulin: _bar,
             digestion1: _bar,
             digestion2: _bar,
+            insulin: _bar,
         };
         this.moveActivityLog = [];
         this.nonMoveActivityLog = [];
@@ -53,17 +60,27 @@ var MCT1 = /** @class */ (function () {
                 delete _this.eventListeners[i];
             });
         };
+        this.makeLigtningSnowballItemStack = function (num) {
+            var item = items.snowball(num);
+            var itemMeta = item.getItemMeta();
+            var zapzaps = _this.zapZaps();
+            var zapzap = zapzaps[Math.floor(Math.random() * zapzaps.length)];
+            itemMeta.setDisplayName(zapzap);
+            item.setItemMeta(itemMeta);
+            return item;
+        };
         this._playerItemConsume = function (event) {
             // Skip if not this.player
-            if (event.player.name != _this.player.name)
+            if (event.player.name != _this.player.name) {
                 return;
+            }
             log(_this.player.name + " ate a " + event.item.type + "!");
             // Act on know FOOD eat...
             if (Food[event.item.type]) {
                 var item = {
-                    timestamp: Math.floor(Date.now() / 1000),
-                    food: Food[event.item.type],
                     carbsDigested: 0,
+                    food: Food[event.item.type],
+                    timestamp: Math.floor(Date.now() / 1000),
                 };
                 _this.digestionQueue.push(item);
                 _this.renderBars();
@@ -80,8 +97,9 @@ var MCT1 = /** @class */ (function () {
                 setTimeout(function () {
                     // log('clean-up inventory');
                     inventory(_this.player).remove(items.glassBottle(1));
-                    if (_this.hasInfiniteInsulin)
+                    if (_this.hasInfiniteInsulin) {
                         _this.ensureInfiniteInsulin();
+                    }
                 }, 1);
                 if (_this.debugMode) {
                     echo(_this.player, "You drank an INSULIN POTION!");
@@ -90,14 +108,16 @@ var MCT1 = /** @class */ (function () {
         };
         this._playerToggleSprint = function (event) {
             // Skip if not this.player
-            if (event.player.name != _this.player.name)
+            if (event.player.name != _this.player.name) {
                 return;
+            }
             _this.isSprinting = event.isSprinting();
         };
         this._playerMove = function (event) {
             // Skip if not this.player
-            if (event.player.name != _this.player.name)
+            if (event.player.name != _this.player.name) {
                 return;
+            }
             var blockType = event.to.block.type.toString();
             if (blockType.includes('WATER')) {
                 // If "in block" is water, check for "standing on" block instead...
@@ -107,27 +127,30 @@ var MCT1 = /** @class */ (function () {
                 blockType = blockLoc.block.type.toString();
             }
             _this.moveActivityLog.push({
-                to: event.to,
-                from: event.from,
                 blockType: blockType,
+                from: event.from,
                 isSprinting: _this.isSprinting,
                 isSuper: _this.inHealthyRange(),
+                to: event.to,
             });
         };
         this._blockBreak = function (event) {
             // Skip if not this.player
-            if (event.player.name != _this.player.name)
+            if (event.player.name != _this.player.name) {
                 return;
+            }
             // Log into nonMoveActivityLog
             _this.nonMoveActivityLog.push(activities_1.activityTypes.BLOCK_BREAK);
         };
         this._entityShootBow = function (event) {
             // Skip if entity is not PLAYER
-            if (event.entity.type != 'PLAYER')
+            if (event.entity.type != 'PLAYER') {
                 return;
+            }
             // Skip if not this.player
-            if (event.entity.name != _this.player.name)
+            if (event.entity.name != _this.player.name) {
                 return;
+            }
             // Log into nonMoveActivityLog
             _this.nonMoveActivityLog.push(activities_1.activityTypes.SHOOT_BOW);
         };
@@ -136,10 +159,10 @@ var MCT1 = /** @class */ (function () {
                 if (event.clickedBlock.type == 'CAKE_BLOCK') {
                     echo(_this.player, 'HERE');
                     _this._playerItemConsume({
-                        player: event.player,
                         item: {
                             type: 'CAKE_SLICE',
                         },
+                        player: event.player,
                     });
                 }
             }
@@ -167,10 +190,12 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this._projectileLaunch = function (event) {
-            if (event.entity.type != 'SNOWBALL')
+            if (event.entity.type != 'SNOWBALL') {
                 return;
-            if (!_this.hasLightningSnowballs)
+            }
+            if (!_this.hasLightningSnowballs) {
                 return;
+            }
             var eloc = {
                 x: Math.round(event.entity.location.x),
                 y: Math.round(event.entity.location.y),
@@ -205,14 +230,18 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this._projectileHit = function (event) {
-            if (event.entity.shooter.type != 'PLAYER')
+            if (event.entity.shooter.type != 'PLAYER') {
                 return;
-            if (event.entity.shooter.name !== _this.player.name)
+            }
+            if (event.entity.shooter.name !== _this.player.name) {
                 return;
-            if (!_this.hasLightningSnowballs)
+            }
+            if (!_this.hasLightningSnowballs) {
                 return;
-            if (event.entity.type != 'SNOWBALL')
+            }
+            if (event.entity.type != 'SNOWBALL') {
                 return;
+            }
             if (event.hitEntity) {
                 var location = event.hitEntity.location;
                 location.world.strikeLightning(location);
@@ -223,8 +252,9 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this._inventoryClick = function (event) {
-            if (event.whoClicked.name !== _this.player.name)
+            if (event.whoClicked.name !== _this.player.name) {
                 return;
+            }
             // Make sure players cannot move snowballs and insulin into other, non-player inventories
             if (event.clickedInventory && event.clickedInventory.type != 'PLAYER') {
                 if (_this.isLightningSnowballStack(event.cursor)) {
@@ -259,8 +289,9 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this._playerDropItem = function (event) {
-            if (event.player.name !== _this.player.name)
+            if (event.player.name !== _this.player.name) {
                 return;
+            }
             if (event.itemDrop.type == 'DROPPED_ITEM' && event.itemDrop.itemStack) {
                 // Cancel drop snowballs
                 if (_this.hasLightningSnowballs &&
@@ -275,10 +306,12 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this._playerDeath = function (event) {
-            if (event.entity.type != 'PLAYER')
+            if (event.entity.type != 'PLAYER') {
                 return;
-            if (event.entity.name !== _this.player.name)
+            }
+            if (event.entity.name !== _this.player.name) {
                 return;
+            }
             // Clean-up dropped items
             setTimeout(function () {
                 event.entity.getNearbyEntities(1, 1, 1).forEach(function (entity) {
@@ -296,8 +329,9 @@ var MCT1 = /** @class */ (function () {
             }, 500);
         };
         this._playerRespawn = function (event) {
-            if (event.player.name !== _this.player.name)
+            if (event.player.name !== _this.player.name) {
                 return;
+            }
             // Ensure infinite snowballs ever present
             if (_this.hasLightningSnowballs) {
                 _this.ensureInfiniteSnowballs();
@@ -314,36 +348,32 @@ var MCT1 = /** @class */ (function () {
             }
         };
         this._entityRegainHealth = function (event) {
-            if (event.entity.type != 'PLAYER')
+            if (event.entity.type != 'PLAYER') {
                 return;
-            if (event.entity.name !== _this.player.name)
+            }
+            if (event.entity.name !== _this.player.name) {
                 return;
+            }
             // Ensure /heal command effects internal this.foodlevel
             setTimeout(function () {
                 _this.setFoodLevel(_this.player.foodLevel);
             }, 1);
         };
         this._foodLevelChange = function (event) {
-            if (event.entity.type != 'PLAYER')
+            if (event.entity.type != 'PLAYER') {
                 return;
-            if (event.entity.name !== _this.player.name)
+            }
+            if (event.entity.name !== _this.player.name) {
                 return;
+            }
             // Ensure eating effects internal this.foodlevel
             if (event.foodLevel > _this.player.foodLevel) {
                 _this.setFoodLevel(event.foodLevel);
             }
         };
-        this.makeLigtningSnowballItemStack = function (num) {
-            var item = items.snowball(num);
-            var itemMeta = item.getItemMeta();
-            var zapzaps = _this.zapZaps();
-            var zapzap = zapzaps[Math.floor(Math.random() * zapzaps.length)];
-            itemMeta.setDisplayName(zapzap);
-            item.setItemMeta(itemMeta);
-            return item;
-        };
-        this.player = player;
-        this.name = player.name;
+        this.player = mct1Player.player;
+        this.mct1Player = mct1Player;
+        this.name = this.player.name;
         this.foodLevel = this.player.foodLevel;
     }
     MCT1.prototype.start = function () {
@@ -356,14 +386,18 @@ var MCT1 = /** @class */ (function () {
         this.startDigestion();
         this.renderBars();
         this.doEffects();
-        if (this.hasLightningSnowballs)
+        if (this.hasLightningSnowballs) {
             this.ensureInfiniteSnowballs();
-        else
+        }
+        else {
             this.removeInfiniteSnowballs();
-        if (this.hasInfiniteInsulin)
+        }
+        if (this.hasInfiniteInsulin) {
             this.ensureInfiniteInsulin();
-        else
+        }
+        else {
             this.removeInfiniteInsulin();
+        }
         this.isStarted = true;
     };
     MCT1.prototype.stop = function () {
@@ -400,20 +434,24 @@ var MCT1 = /** @class */ (function () {
         this.hasLightningSnowballs = bool;
         // If MCT1 is running, update inventory, else will be done on start.
         if (this.isStarted) {
-            if (bool)
+            if (bool) {
                 this.ensureInfiniteSnowballs();
-            else
+            }
+            else {
                 this.removeInfiniteSnowballs();
+            }
         }
     };
     MCT1.prototype.setInfiniteInsulin = function (bool) {
         this.hasInfiniteInsulin = bool;
         // If MCT1 is running, update inventory, else will be done on start.
         if (this.isStarted) {
-            if (bool)
+            if (bool) {
                 this.ensureInfiniteInsulin();
-            else
+            }
+            else {
                 this.removeInfiniteInsulin();
+            }
         }
     };
     MCT1.prototype.setSuperCharged = function (bool) {
@@ -425,12 +463,12 @@ var MCT1 = /** @class */ (function () {
             this.player.setHealth(20);
             this.setFoodLevel(20);
             // server.dispatchCommand(sender, `god ${this.player.name} ON`)
-            user_1.user(this.player).setGodMode(true);
+            this.mct1Player.setGodMode(true);
             this.giveSuperPowers();
         }
         else {
             this.isSuperCharged = false;
-            user_1.user(this.player).setGodMode(false);
+            this.mct1Player.setGodMode(false);
             // server.dispatchCommand(sender, `god ${this.player.name} OFF`)
             this.cancelSuperPowers();
         }
@@ -442,22 +480,16 @@ var MCT1 = /** @class */ (function () {
     MCT1.prototype.renderBars = function () {
         var _this = this;
         // bars.bgl color
-        var color = 'GREEN';
-        if (this.bgl >= 4 && this.bgl <= 8) {
-            color = 'GREEN';
-        }
-        else if ((this.bgl < 4 && this.bgl > 2) ||
-            (this.bgl > 8 && this.bgl <= 12)) {
-            color = 'YELLOW';
-        }
-        else {
-            color = 'RED';
-        }
+        var color = match(this.bgl)([
+            { lower: 4, upper: 8, value: 'GREEN' },
+            { lower: 2, upper: 4, value: 'YELLOW' },
+            { lower: 8, upper: 12, value: 'YELLOW' },
+            { lower: 0, upper: 100, value: 'RED' },
+        ]);
         // bars.bgl
-        var bgl = Math.round(this.bgl * 10) / 10;
-        if (this.isUSA) {
-            bgl = Math.round(bgl * 18);
-        }
+        var bgl = this.isUSA
+            ? Math.round(this.bgl * 18) / 10
+            : Math.round(this.bgl * 10) / 10;
         if (!this.bars.bgl) {
             this.bars.bgl = bossbar_1.BossBar.bar('', this.player);
             this.bars.bgl.style(bossbar_1.BossBar.style.NOTCHED_20).render();
@@ -485,10 +517,12 @@ var MCT1 = /** @class */ (function () {
         this.digestionQueue = highGIItems.concat(lowGIItems);
         // digestion Bar(s)
         var digestionItems = this.digestionQueue.slice(0, 2);
-        if (!digestionItems[0] && this.bars.digestion1)
+        if (!digestionItems[0] && this.bars.digestion1) {
             this.bars.digestion1.remove();
-        if (!digestionItems[1] && this.bars.digestion2)
+        }
+        if (!digestionItems[1] && this.bars.digestion2) {
             this.bars.digestion2.remove();
+        }
         digestionItems.forEach(function (item, i) {
             var index = "digestion" + (i + 1);
             var percentDigested = (item.carbsDigested / item.food.carbs) * 100;
@@ -510,22 +544,17 @@ var MCT1 = /** @class */ (function () {
         });
     };
     MCT1.prototype.removeBars = function () {
-        if (this.bars.bgl) {
-            this.bars.bgl.remove();
-            this.bars.bgl = undefined;
-        }
-        if (this.bars.insulin) {
-            this.bars.insulin.remove();
-            this.bars.insulin = undefined;
-        }
-        if (this.bars.digestion1) {
-            this.bars.digestion1.remove();
-            this.bars.digestion1 = undefined;
-        }
-        if (this.bars.digestion2) {
-            this.bars.digestion2.remove();
-            this.bars.digestion2 = undefined;
-        }
+        var remove = function (bar) { return bar ? bar.remove() : undefined; };
+        remove(this.bars.bgl);
+        remove(this.bars.insulin);
+        remove(this.bars.digestion1);
+        remove(this.bars.digestion2);
+        this.bars = {
+            bgl: _bar,
+            digestion1: _bar,
+            digestion2: _bar,
+            insulin: _bar,
+        };
     };
     MCT1.prototype.startDigestion = function (tickCount) {
         var _this = this;
@@ -617,60 +646,70 @@ var MCT1 = /** @class */ (function () {
         }
     };
     MCT1.prototype.doEffects = function () {
-        if (this.bgl >= 4 && this.bgl <= 8) {
-            // Healthy Range
-            this.cancelNegativeEffects();
-            this.giveSuperPowers();
-        }
-        else {
-            // Out of range...
-            this.cancelSuperPowers();
-            this.giveNegativeEffects();
-        }
+        var _this = this;
+        var fns = match(this.bgl)([
+            {
+                // healthy range
+                lower: 4,
+                upper: 8,
+                value: [this.cancelNegativeEffects, this.giveSuperPowers],
+            },
+            {
+                // default case
+                lower: 1,
+                upper: 100,
+                value: [this.cancelSuperPowers, this.giveNegativeEffects],
+            },
+        ]);
+        fns.forEach(function (fn) { return fn.bind(_this)(); });
     };
     MCT1.prototype.cancelEffects = function () {
         this.cancelNegativeEffects();
         this.cancelSuperPowers();
     };
     MCT1.prototype.giveNegativeEffects = function () {
-        // Confusion!
-        if ((this.bgl < 4 && this.bgl >= 3) ||
-            (this.bgl > 8 && this.bgl <= 12)) {
-            this._makeEffect('CONFUSION', 3500);
-        }
-        // More Confusion!
-        else if (this.bgl < 3 || this.bgl > 16) {
-            this._makeEffect('CONFUSION', 6000);
-        }
-        // Layer additional effects.
-        if (this.bgl <= 2 || this.bgl >= 16) {
-            this._makeEffect('BLINDNESS', 5000);
-            this._makeEffect('POISON', 5000);
-        }
+        var _this = this;
+        var CONFUSION_MILD = { effect: 'CONFUSION', strength: 3500 };
+        var CONFUSION_HEAVY = { effect: 'CONFUSION', strength: 6000 };
+        var BLINDNESS = { effect: 'BLINDNESS', strength: 5000 };
+        var POISON = { effect: 'POISON', strength: 5000 };
+        var effects = match(this.bgl)([
+            { lower: 1, upper: 2.1, value: [BLINDNESS, POISON] },
+            { lower: 2.11, upper: 2.99, value: [CONFUSION_HEAVY] },
+            { lower: 3, upper: 3.99, value: [CONFUSION_MILD] },
+            { lower: 4, upper: 8, value: [] },
+            { lower: 8.01, upper: 12, value: [CONFUSION_MILD] },
+            { lower: 12.1, upper: 15.99, value: [CONFUSION_HEAVY] },
+            { lower: 16, upper: 100, value: [BLINDNESS, POISON] },
+        ]);
+        effects.forEach(function (e) { return _this._makeEffect(e.effect, e.strength); });
     };
     MCT1.prototype.cancelNegativeEffects = function () {
-        this._cancelEffect('CONFUSION');
-        this._cancelEffect('BLINDNESS');
-        this._cancelEffect('POISON');
+        var _this = this;
+        ;
+        ['CONFUSION', 'BLINDNESS', 'POISON'].forEach(function (e) {
+            return _this._cancelEffect(e);
+        });
     };
     MCT1.prototype.giveSuperPowers = function () {
-        if (this.hasSuperSpeed)
+        if (this.hasSuperSpeed) {
             this._makeEffect('SPEED', 10000000, 'WHITE', 2);
-        if (this.hasSuperJump)
+        }
+        if (this.hasSuperJump) {
             this._makeEffect('JUMP', 10000000, 'WHITE', 1);
-        if (this.hasNightVision)
+        }
+        if (this.hasNightVision) {
             this._makeEffect('NIGHT_VISION', 10000000, 'WHITE', 1);
+        }
         if (this.isSuperCharged) {
             this._makeEffect('GLOWING', 10000000, 'WHITE');
             this._makeEffect('REGENERATION', 10000000, 'WHITE');
         }
     };
     MCT1.prototype.cancelSuperPowers = function () {
-        this._cancelEffect('SPEED');
-        this._cancelEffect('JUMP');
-        this._cancelEffect('GLOWING');
-        this._cancelEffect('NIGHT_VISION');
-        this._cancelEffect('REGENERATION');
+        var _this = this;
+        ;
+        ['SPEED', 'JUMP', 'GLOWING', 'NIGHT_VISION', 'REGENERATION'].forEach(function (e) { return _this._cancelEffect(e); });
     };
     MCT1.prototype._makeEffect = function (type, milliseconds, color, amplifier) {
         if (color === void 0) { color = 'GREEN'; }
@@ -682,7 +721,6 @@ var MCT1 = /** @class */ (function () {
             return;
         }
         var PotionEffect = Java.type('org.bukkit.potion.PotionEffect');
-        var Color = Java.type('org.bukkit.Color');
         var duration = (milliseconds / 1000) * 40; // 20 tick. 1 tick = 0.05 seconds
         var c = Color[color];
         var l = PotionEffectType[type];
@@ -723,18 +761,12 @@ var MCT1 = /** @class */ (function () {
         return totalActivityCost;
     };
     MCT1.prototype.setInsulinSensitivity = function (totalActivityCost) {
-        if (totalActivityCost >= 0 && totalActivityCost <= 0.075) {
-            this.insulinSensitivityMultiplier = 1;
-        }
-        else if (totalActivityCost > 0.075 && totalActivityCost <= 0.5) {
-            this.insulinSensitivityMultiplier = 1.2;
-        }
-        else if (totalActivityCost > 0.5 && totalActivityCost <= 1.25) {
-            this.insulinSensitivityMultiplier = 1.5;
-        }
-        else if (totalActivityCost > 1.25) {
-            this.insulinSensitivityMultiplier = 1.8;
-        }
+        this.insulinSensitivityMultiplier = match(totalActivityCost)([
+            { lower: 0, upper: 0.075, value: 1 },
+            { lower: 0.075, upper: 0.5, value: 1.2 },
+            { lower: 0.5, upper: 1.25, value: 1.5 },
+            { lower: 1.25, upper: 100, value: 1.8 },
+        ]);
     };
     MCT1.prototype.extractActivitiesFromMoveLog = function () {
         var activities = [];
@@ -743,22 +775,30 @@ var MCT1 = /** @class */ (function () {
         this.moveActivityLog.forEach(function (mLog, i) {
             var isUpward = mLog.to.y.toFixed(2) > mLog.from.y.toFixed(2);
             var activity;
-            if (mLog.blockType == 'LADDER')
+            if (mLog.blockType == 'LADDER') {
                 activity = activities_1.activityTypes.CLIMB_LADDER;
-            else if (mLog.blockType == 'VINE')
+            }
+            else if (mLog.blockType == 'VINE') {
                 activity = activities_1.activityTypes.CLIMB_VINE;
-            else if (mLog.blockType.includes('WATER'))
+            }
+            else if (mLog.blockType.includes('WATER')) {
                 activity = activities_1.activityTypes.SWIM;
-            else if (isUpward && mLog.isSprinting)
+            }
+            else if (isUpward && mLog.isSprinting) {
                 activity = activities_1.activityTypes.SPRINT_JUMP;
-            else if (isUpward)
+            }
+            else if (isUpward) {
                 activity = activities_1.activityTypes.JUMP;
-            else if (mLog.isSprinting)
+            }
+            else if (mLog.isSprinting) {
                 activity = activities_1.activityTypes.SPRINT;
-            else
+            }
+            else {
                 activity = activities_1.activityTypes.WALK;
-            if (mLog.isSuper)
+            }
+            if (mLog.isSuper) {
                 activity = "SUPER_" + activity;
+            }
             // calc distTravelled
             var xDiff = mLog.to.x - mLog.from.x;
             var yDiff = mLog.to.y - mLog.from.y;
@@ -772,8 +812,9 @@ var MCT1 = /** @class */ (function () {
                 if (activity == activities_1.activityTypes.SPRINT_JUMP ||
                     activity == activities_1.activityTypes.JUMP) {
                     var lastActitiy = activities[activities.length - 1];
-                    if (activity != lastActitiy)
+                    if (activity != lastActitiy) {
                         activities.push(activity);
+                    }
                 }
                 else {
                     activities.push(activity);
@@ -793,62 +834,56 @@ var MCT1 = /** @class */ (function () {
             // )
         });
         server.dispatchCommand(sender, "give " + this.player.name + " cooked_chicken 1");
-        if (this.hasLightningSnowballs)
+        if (this.hasLightningSnowballs) {
             this.ensureInfiniteSnowballs();
-        if (this.hasInfiniteInsulin)
+        }
+        if (this.hasInfiniteInsulin) {
             this.ensureInfiniteInsulin();
+        }
     };
     MCT1.prototype.ensureInfiniteSnowballs = function () {
         var _this = this;
-        var itemInSlot = user_1.user(this.player).inventory.getItem(this.snowballSlot);
+        var itemInSlot = this.mct1Player.inventory.getItem(this.snowballSlot);
         if (!itemInSlot || !this.isLightningSnowballStack(itemInSlot)) {
-            user_1.user(this.player).inventory.bumpItemIntoSlot(this.snowballSlot, this.makeLigtningSnowballItemStack(1));
+            this.mct1Player.inventory.bumpItemIntoSlot(this.snowballSlot, this.makeLigtningSnowballItemStack(1));
         }
         // now make sure there aren't any duplicates
-        user_1.user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach(function (itemStack, i) {
+        this.mct1Player.inventory.getAllitemStacks().forEach(function (itemStack, i) {
             if (i != _this.snowballSlot &&
                 itemStack &&
                 _this.isLightningSnowballStack(itemStack)) {
-                user_1.user(_this.player).inventory.setEmpty(i);
+                _this.mct1Player.inventory.setEmpty(i);
             }
         });
     };
     MCT1.prototype.removeInfiniteSnowballs = function () {
         var _this = this;
-        user_1.user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach(function (itemStack, i) {
+        this.mct1Player.inventory.getAllitemStacks().forEach(function (itemStack, i) {
             if (itemStack && _this.isLightningSnowballStack(itemStack)) {
-                user_1.user(_this.player).inventory.setEmpty(i);
+                _this.mct1Player.inventory.setEmpty(i);
             }
         });
     };
     MCT1.prototype.ensureInfiniteInsulin = function () {
         var _this = this;
-        var itemInSlot = user_1.user(this.player).inventory.getItem(this.insulinSlot);
+        var itemInSlot = this.mct1Player.inventory.getItem(this.insulinSlot);
         if (!itemInSlot || !this.isInsulinStack(itemInSlot)) {
-            user_1.user(this.player).inventory.bumpItemIntoSlot(this.insulinSlot, this.makeInsulinStack(1));
+            this.mct1Player.inventory.bumpItemIntoSlot(this.insulinSlot, this.makeInsulinStack(1));
         }
         // now make sure there aren't any duplicates
-        user_1.user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach(function (itemStack, i) {
+        this.mct1Player.inventory.getAllitemStacks().forEach(function (itemStack, i) {
             if (i != _this.insulinSlot &&
                 itemStack &&
                 _this.isInsulinStack(itemStack)) {
-                user_1.user(_this.player).inventory.setEmpty(i);
+                _this.mct1Player.inventory.setEmpty(i);
             }
         });
     };
     MCT1.prototype.removeInfiniteInsulin = function () {
         var _this = this;
-        user_1.user(this.player)
-            .inventory.getAllitemStacks()
-            .forEach(function (itemStack, i) {
+        this.mct1Player.inventory.getAllitemStacks().forEach(function (itemStack, i) {
             if (itemStack && _this.isInsulinStack(itemStack)) {
-                user_1.user(_this.player).inventory.setEmpty(i);
+                _this.mct1Player.inventory.setEmpty(i);
             }
         });
     };

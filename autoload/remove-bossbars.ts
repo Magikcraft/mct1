@@ -1,7 +1,7 @@
-import * as environment from '@magikcraft/mct1/utils/environment'
 import * as utils from 'utils'
+import { Logger } from '../log'
+import * as environment from '../utils/environment'
 
-import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)
 
 if (environment.HAS_BOSSBAR) {

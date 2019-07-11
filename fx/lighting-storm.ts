@@ -1,4 +1,4 @@
-import { Region } from '@magikcraft/mct1/regions'
+import { Region } from '../regions'
 
 let region: Region
 let delayMin: number

@@ -13,9 +13,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+var QuestMCT1_1 = require("../../QuestMCT1");
 var Locations = require("./locs");
-var Quest_1 = require("@magikcraft/mct1/quests/Quest");
-var world_1 = require("@magikcraft/mct1/world");
 var QuestMCT1Breakout = /** @class */ (function (_super) {
     __extends(QuestMCT1Breakout, _super);
     function QuestMCT1Breakout(conf) {
@@ -28,8 +27,8 @@ var QuestMCT1Breakout = /** @class */ (function (_super) {
         _super.prototype.start.call(this);
         _super.prototype.registerEvents.call(this);
         this.setMCT1SuperPowers(true);
-        world_1.worldly(this.world).allowMobSpawning();
+        this.world.allowMobSpawning();
     };
     return QuestMCT1Breakout;
-}(Quest_1.QuestMCT1));
+}(QuestMCT1_1.QuestMCT1));
 exports.default = QuestMCT1Breakout;

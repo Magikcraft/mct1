@@ -1,31 +1,29 @@
 import * as events from 'events'
-
-import { Logger } from '@magikcraft/mct1/log'
-const log = Logger(__filename)
-
-import { MCT1 } from '@magikcraft/mct1/mct1'
-import * as tools from '@magikcraft/mct1/tools'
-import DB from './db'
-import PlayerInventory from './inventory'
-import PlayerEffects from './effects'
-import { user } from '@magikcraft/mct1/user'
-import Follower from './follower'
-
+import { Logger } from '../log'
+import { MCT1 } from '../mct1'
 import { Quest } from '../quests/Quest'
+import * as tools from '../tools'
+import DB from './db'
+import PlayerEffects from './effects'
+import Follower from './follower'
+import PlayerInventory from './inventory'
+
+const log = Logger(__filename)
 
 const GameMode = Java.type('org.bukkit.GameMode')
 
 // User class
-export default class User {
-    player: BukkitPlayer
-    sessionId
-    world // the world player is currently in
-    mct1: MCT1
-    db: DB // player database
-    inventory: PlayerInventory
-    effects: PlayerEffects
-    follower: Follower
-    quest: Quest | undefined
+export default class MCT1Player {
+    public player: BukkitPlayer
+    public sessionId
+    public world // the world player is currently in
+    public mct1: MCT1
+    public db: DB // player database
+    public inventory: PlayerInventory
+    public effects: PlayerEffects
+    public follower: Follower
+    public quest: Quest | undefined
+    public locale: any
     // cube: Follower
 
     private timers
@@ -35,34 +33,35 @@ export default class User {
     constructor(player) {
         this.player = player
         this.sessionId = tools.uuid()
-        this.mct1 = new MCT1(player)
+        this.mct1 = new MCT1(this)
         this.db = new DB(player)
         this.inventory = new PlayerInventory(player)
         this.effects = new PlayerEffects(player)
         this.setRespawnAtSpawnLocation(true)
         this.setReloadInventoryAtSpawn(true)
-        this.follower = new Follower(user)
+        this.follower = new Follower(this)
+        this.locale = player.spigot().getLocale()
         // this.cube =
     }
 
-    cleanse() {
+    public cleanse() {
         this.unregisterAllEvents()
         this.clearAllTimeouts()
         this.clearAllIntervals()
         this.mct1.stop()
     }
 
-    teleport(location) {
+    public teleport(location) {
         // Player cannot teleport with a passenger. See https://www.spigotmc.org/threads/catch-a-player-teleport-attempt-while-passenger-is-set.95710/
         this.player.eject()
         log(`Teleporting ${this.player.name}`)
         this.player.teleport(location)
     }
 
-    gms = () => this.player.setGameMode(GameMode.SURVIVAL)
-    gmc = () => this.player.setGameMode(GameMode.CREATIVE)
-    gmsp = () => this.player.setGameMode(GameMode.SPECTATOR)
-    gma = () => this.player.setGameMode(GameMode.ADVENTURE)
+    public gms = () => this.player.setGameMode(GameMode.SURVIVAL)
+    public gmc = () => this.player.setGameMode(GameMode.CREATIVE)
+    public gmsp = () => this.player.setGameMode(GameMode.SPECTATOR)
+    public gma = () => this.player.setGameMode(GameMode.ADVENTURE)
 
     // continue () {
     // 	// if player is part way through a quest, restart quest at last waypoint.
@@ -78,36 +77,43 @@ export default class User {
     // 		: undefined
     // }
 
-    setSpawn() {
+    public setSpawn() {
         this.saveSpawn(this.player.location)
     }
 
-    saveSpawn(location) {
+    public saveSpawn(location) {
         this.db.set('spawnLocation', tools.locationToJSON(location))
     }
 
-    loadSpawn() {
-        if (this.getSpawn()) user(this.player).teleport(this.getSpawn())
+    public loadSpawn() {
+        if (this.getSpawn()) {
+            this.teleport(this.getSpawn())
+        }
     }
 
-    getSpawn() {
+    public getSpawn() {
         return this.db.get('spawnLocation')
             ? tools.locationFromJSON(this.db.get('spawnLocation'))
             : undefined
     }
 
-    clearSpawn() {
+    public clearSpawn() {
         this.db.delete('spawnLocation')
     }
 
-    setRespawnAtSpawnLocation(bool: boolean, teleportBetweenWorlds?: boolean) {
+    public setRespawnAtSpawnLocation(
+        bool: boolean,
+        teleportBetweenWorlds?: boolean
+    ) {
         const key = 'setRespawnAtSpawn'
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent(
                     'playerRespawn',
                     event => {
-                        if (event.player.name !== this.player.name) return
+                        if (event.player.name !== this.player.name) {
+                            return
+                        }
                         const spawn = this.getSpawn()
                         if (!spawn) {
                             // return
@@ -134,15 +140,19 @@ export default class User {
         }
     }
 
-    setGodMode(bool: boolean) {
+    public setGodMode(bool: boolean) {
         const key = 'setGodMode'
         if (bool) {
             if (!this.events[key]) {
                 this.registerEvent(
                     'entityDamage',
                     event => {
-                        if (event.entity.type != 'PLAYER') return
-                        if (event.entity.name !== this.player.name) return
+                        if (
+                            event.entity.type != 'PLAYER' ||
+                            event.entity.name !== this.player.name
+                        ) {
+                            return
+                        }
                         event.setCancelled(true)
                     },
                     key
@@ -155,67 +165,73 @@ export default class User {
         }
     }
 
-    setReloadInventoryAtSpawn(bool: boolean) {
+    public setReloadInventoryAtSpawn(bool: boolean) {
         this.inventory.setReloadAtSpawn(bool)
     }
 
-    setTimeout(callback: any, interval: number, key?: string) {
+    public setTimeout(callback: any, interval: number, key?: string) {
         const k = key || tools.uuid()
         this.timers[k] = setTimeout(callback, interval)
     }
 
-    clearTimeout(key: string) {
+    public clearTimeout(key: string) {
         clearTimeout(this.timers[key])
     }
 
-    clearTimeoutsLike(wildcard: string) {
-        for (let key in this.timers) {
+    public clearTimeoutsLike(wildcard: string) {
+        for (const key in this.timers) {
             if (key.includes(wildcard)) {
                 this.clearTimeout(key)
             }
         }
     }
 
-    clearAllTimeouts() {
-        for (let key in this.timers) {
+    public clearAllTimeouts() {
+        for (const key in this.timers) {
             this.clearTimeout(key)
         }
     }
 
-    setInterval = function(callback: any, interval: number, key?: string) {
+    public setInterval = function(
+        callback: any,
+        interval: number,
+        key?: string
+    ) {
         const k = key || tools.uuid()
         this.intervals[k] = setInterval(callback, interval)
     }
 
-    clearInterval(key: string) {
+    public clearInterval(key: string) {
         clearInterval(this.intervals[key])
     }
 
-    clearIntervalsLike(wildcard: string) {
-        for (let key in this.timers) {
+    public clearIntervalsLike(wildcard: string) {
+        for (const key in this.timers) {
             if (key.includes(wildcard)) {
                 this.clearInterval(key)
             }
         }
     }
 
-    clearAllIntervals() {
-        for (let key in this.intervals) {
+    public clearAllIntervals() {
+        for (const key in this.intervals) {
             this.clearInterval(key)
         }
     }
 
-    registerEvent(type: string, callback: any, key?: string) {
+    public registerEvent(type: string, callback: any, key?: string) {
         const k = key || type
         this.unregisterEvent(k)
         this.events[k] = events[type](callback)
     }
 
-    unregisterEvent(key: string) {
-        if (this.events[key]) this.events[key].unregister()
+    public unregisterEvent(key: string) {
+        if (this.events[key]) {
+            this.events[key].unregister()
+        }
     }
 
-    unregisterEventsLike(wildcard: string) {
+    public unregisterEventsLike(wildcard: string) {
         for (const key in this.events) {
             if (key.includes(wildcard)) {
                 this.unregisterEvent(key)
@@ -229,15 +245,15 @@ export default class User {
         }
     }
 
-    follow(whoToFollow) {
+    public follow(whoToFollow) {
         this.follower.startFollowing(whoToFollow)
     }
 
-    stopFollowing() {
+    public stopFollowing() {
         this.follower.stopFollowing()
     }
 
-    tell(msg) {
+    public tell(msg) {
         echo(this.player, msg)
     }
 }

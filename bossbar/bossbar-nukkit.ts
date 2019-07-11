@@ -1,9 +1,8 @@
-import * as environment from '@magikcraft/mct1/utils/environment'
-import { Logger } from '@magikcraft/mct1/log'
-
+import { Logger } from '../log'
+import * as environment from '../utils/environment'
 import { IBossBar } from './bossbar'
 
-const log = Logger('NukkitBossBar')
+const log = Logger(__filename)
 
 type NukkitPlayer = any
 

@@ -1,14 +1,14 @@
-import * as fs from '@magikcraft/mct1/utils/fs'
+import { Logger } from '../log'
+import * as fs from '../utils/fs'
 
-import { Logger } from '@magikcraft/mct1/log'
 const log = Logger(__filename)
 
 export default class DB {
-    player
-    isLoading: boolean
-    private database
+    public player: { name: any }
+    public isLoading: boolean
 
-    filename: string
+    public filename: string
+    private database
 
     constructor(player) {
         this.player = player
@@ -18,25 +18,25 @@ export default class DB {
         this.init()
     }
 
-    get(key: string) {
+    public get(key: string) {
         return this.database[key] ? this.database[key] : undefined
     }
 
-    getAll() {
+    public getAll() {
         return this.database
     }
 
-    set(key: string, data: any) {
+    public set(key: string, data: any) {
         this.database[key] = data
         this._save()
     }
 
-    delete(key) {
+    public delete(key) {
         delete this.database[key]
         this._save()
     }
 
-    dump() {
+    public dump() {
         log(
             `DB Data for ${this.player.name}:`,
             JSON.stringify(this.database, null, 2)

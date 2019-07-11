@@ -1,9 +1,9 @@
-console.log('MCT1 is loaded!')
+import { Logger } from '../log'
+import * as environment from '../utils/environment'
 
-import * as environment from '@magikcraft/mct1/utils/environment'
-import { Logger } from '@magikcraft/mct1/log'
+const log = Logger(__filename)
 
-const log = Logger('bootstrap')
+log('MCT1 is loaded!')
 
 const WATCH_RELOAD_STATE = environment.DISABLE_WATCH_RELOAD
     ? 'disabled'
