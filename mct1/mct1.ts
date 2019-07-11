@@ -17,6 +17,20 @@ foods.forEach(item => (Food[item.type] = item))
 
 const _bar: IBossBar = (undefined as unknown) as IBossBar
 
+interface MatchItem<T> {
+    lower: number
+    upper: number
+    value: T
+}
+
+const check = (measure: number) => (lower: number, upper: number) =>
+    measure >= lower && measure <= upper
+function match(measure: number) {
+    return function matched<T>(matches: Array<MatchItem<T>>): T {
+        return matches.filter(m => check(measure)(m.lower, m.upper))[0].value
+    }
+}
+
 export class MCT1 {
     public player: BukkitPlayer
 
@@ -210,22 +224,17 @@ export class MCT1 {
 
     public renderBars() {
         // bars.bgl color
-        let color = 'GREEN'
-        if (this.bgl >= 4 && this.bgl <= 8) {
-            color = 'GREEN'
-        } else if (
-            (this.bgl < 4 && this.bgl > 2) ||
-            (this.bgl > 8 && this.bgl <= 12)
-        ) {
-            color = 'YELLOW'
-        } else {
-            color = 'RED'
-        }
+        const color = match(this.bgl)([
+            { lower: 4, upper: 8, value: 'GREEN' },
+            { lower: 2, upper: 4, value: 'YELLOW' },
+            { lower: 8, upper: 12, value: 'YELLOW' },
+            { lower: 0, upper: 100, value: 'RED' },
+        ])
+
         // bars.bgl
-        let bgl = Math.round(this.bgl * 10) / 10
-        if (this.isUSA) {
-            bgl = Math.round(bgl * 18)
-        }
+        const bgl = this.isUSA
+            ? Math.round(this.bgl * 18) / 10
+            : Math.round(this.bgl * 10) / 10
 
         if (!this.bars.bgl) {
             this.bars.bgl = BossBar.bar('', this.player)
@@ -300,21 +309,17 @@ export class MCT1 {
     }
 
     public removeBars() {
-        if (this.bars.bgl) {
-            this.bars.bgl.remove()
-            this.bars.bgl = undefined as any
-        }
-        if (this.bars.insulin) {
-            this.bars.insulin.remove()
-            this.bars.insulin = undefined as any
-        }
-        if (this.bars.digestion1) {
-            this.bars.digestion1.remove()
-            this.bars.digestion1 = undefined as any
-        }
-        if (this.bars.digestion2) {
-            this.bars.digestion2.remove()
-            this.bars.digestion2 = undefined as any
+        const remove = bar => (bar ? bar.remove() : undefined)
+
+        remove(this.bars.bgl)
+        remove(this.bars.insulin)
+        remove(this.bars.digestion1)
+        remove(this.bars.digestion2)
+        this.bars = {
+            bgl: _bar,
+            digestion1: _bar,
+            digestion2: _bar,
+            insulin: _bar,
         }
     }
 
@@ -424,15 +429,21 @@ export class MCT1 {
     }
 
     public doEffects() {
-        if (this.bgl >= 4 && this.bgl <= 8) {
-            // Healthy Range
-            this.cancelNegativeEffects()
-            this.giveSuperPowers()
-        } else {
-            // Out of range...
-            this.cancelSuperPowers()
-            this.giveNegativeEffects()
-        }
+        const fns = match(this.bgl)([
+            {
+                // healthy range
+                lower: 4,
+                upper: 8,
+                value: [this.cancelNegativeEffects, this.giveSuperPowers],
+            },
+            {
+                // default case
+                lower: 1,
+                upper: 100,
+                value: [this.cancelSuperPowers, this.giveNegativeEffects],
+            },
+        ])
+        fns.forEach(fn => fn.bind(this)())
     }
 
     public cancelEffects() {
@@ -441,28 +452,28 @@ export class MCT1 {
     }
 
     public giveNegativeEffects() {
-        // Confusion!
-        if (
-            (this.bgl < 4 && this.bgl >= 3) ||
-            (this.bgl > 8 && this.bgl <= 12)
-        ) {
-            this._makeEffect('CONFUSION', 3500)
-        }
-        // More Confusion!
-        else if (this.bgl < 3 || this.bgl > 16) {
-            this._makeEffect('CONFUSION', 6000)
-        }
-        // Layer additional effects.
-        if (this.bgl <= 2 || this.bgl >= 16) {
-            this._makeEffect('BLINDNESS', 5000)
-            this._makeEffect('POISON', 5000)
-        }
+        const CONFUSION_MILD = { effect: 'CONFUSION', strength: 3500 }
+        const CONFUSION_HEAVY = { effect: 'CONFUSION', strength: 6000 }
+        const BLINDNESS = { effect: 'BLINDNESS', strength: 5000 }
+        const POISON = { effect: 'POISON', strength: 5000 }
+
+        const effects = match(this.bgl)([
+            { lower: 1, upper: 2.1, value: [BLINDNESS, POISON] },
+            { lower: 2.11, upper: 2.99, value: [CONFUSION_HEAVY] },
+            { lower: 3, upper: 3.99, value: [CONFUSION_MILD] },
+            { lower: 4, upper: 8, value: [] },
+            { lower: 8.01, upper: 12, value: [CONFUSION_MILD] },
+            { lower: 12.1, upper: 15.99, value: [CONFUSION_HEAVY] },
+            { lower: 16, upper: 100, value: [BLINDNESS, POISON] },
+        ])
+
+        effects.forEach(e => this._makeEffect(e.effect, e.strength))
     }
 
     public cancelNegativeEffects() {
-        this._cancelEffect('CONFUSION')
-        this._cancelEffect('BLINDNESS')
-        this._cancelEffect('POISON')
+        ;['CONFUSION', 'BLINDNESS', 'POISON'].forEach(e =>
+            this._cancelEffect(e)
+        )
     }
 
     public giveSuperPowers() {
@@ -483,11 +494,9 @@ export class MCT1 {
     }
 
     public cancelSuperPowers() {
-        this._cancelEffect('SPEED')
-        this._cancelEffect('JUMP')
-        this._cancelEffect('GLOWING')
-        this._cancelEffect('NIGHT_VISION')
-        this._cancelEffect('REGENERATION')
+        ;['SPEED', 'JUMP', 'GLOWING', 'NIGHT_VISION', 'REGENERATION'].forEach(
+            e => this._cancelEffect(e)
+        )
     }
 
     public _makeEffect(type, milliseconds, color = 'GREEN', amplifier = 1) {
@@ -550,15 +559,12 @@ export class MCT1 {
     }
 
     public setInsulinSensitivity(totalActivityCost) {
-        if (totalActivityCost >= 0 && totalActivityCost <= 0.075) {
-            this.insulinSensitivityMultiplier = 1
-        } else if (totalActivityCost > 0.075 && totalActivityCost <= 0.5) {
-            this.insulinSensitivityMultiplier = 1.2
-        } else if (totalActivityCost > 0.5 && totalActivityCost <= 1.25) {
-            this.insulinSensitivityMultiplier = 1.5
-        } else if (totalActivityCost > 1.25) {
-            this.insulinSensitivityMultiplier = 1.8
-        }
+        this.insulinSensitivityMultiplier = match(totalActivityCost)([
+            { lower: 0, upper: 0.075, value: 1 },
+            { lower: 0.075, upper: 0.5, value: 1.2 },
+            { lower: 0.5, upper: 1.25, value: 1.5 },
+            { lower: 1.25, upper: 100, value: 1.8 },
+        ])
     }
 
     public extractActivitiesFromMoveLog() {

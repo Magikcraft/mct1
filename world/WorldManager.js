@@ -91,21 +91,16 @@ var WorldManagerClass = /** @class */ (function () {
                         managedWorldName = playername
                             ? managedPrefix + "-" + templateWorldname + playerPrefix + playername
                             : managedPrefix + "-" + templateWorldname + "-multi";
-                        log('managedWorldName', managedWorldName); // @DEBUG
                         managedWorld = this.getWorldByWorldName(managedWorldName);
                         worldAlreadyUnderManagement = !!managedWorld;
                         if (worldAlreadyUnderManagement) {
-                            log('Case 0'); // @DEBUG
                             return [2 /*return*/, managedWorld];
                         }
                         unmanagedWorld = utils.world(managedWorldName);
                         unmanagedWorldAlreadyExists = !!unmanagedWorld;
                         if (unmanagedWorldAlreadyExists) {
-                            log('Case 1'); // @DEBUG
                             return [2 /*return*/, this.manageExistingWorld(unmanagedWorld)];
                         }
-                        // Case 2: World does not exist yet.
-                        log('Case 2'); // @DEBUG
                         return [4 /*yield*/, multiverse_1.Multiverse.cloneWorld({
                                 targetWorldname: managedWorldName,
                                 templateWorldname: templateWorldname,
@@ -119,7 +114,6 @@ var WorldManagerClass = /** @class */ (function () {
                         log("Quest world " + managedWorldName + " intialized.");
                         this.manageExistingWorld(newWorld);
                         world = this.getWorldByWorldName(managedWorldName);
-                        log(world.getBukkitWorld());
                         return [2 /*return*/, world];
                 }
             });

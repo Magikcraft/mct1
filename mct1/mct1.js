@@ -12,6 +12,14 @@ var Color = Java.type('org.bukkit.Color');
 var Food = {};
 foods_1.default.forEach(function (item) { return (Food[item.type] = item); });
 var _bar = undefined;
+var check = function (measure) { return function (lower, upper) {
+    return measure >= lower && measure <= upper;
+}; };
+function match(measure) {
+    return function matched(matches) {
+        return matches.filter(function (m) { return check(measure)(m.lower, m.upper); })[0].value;
+    };
+}
 var MCT1 = /** @class */ (function () {
     function MCT1(mct1Player) {
         var _this = this;
@@ -472,22 +480,16 @@ var MCT1 = /** @class */ (function () {
     MCT1.prototype.renderBars = function () {
         var _this = this;
         // bars.bgl color
-        var color = 'GREEN';
-        if (this.bgl >= 4 && this.bgl <= 8) {
-            color = 'GREEN';
-        }
-        else if ((this.bgl < 4 && this.bgl > 2) ||
-            (this.bgl > 8 && this.bgl <= 12)) {
-            color = 'YELLOW';
-        }
-        else {
-            color = 'RED';
-        }
+        var color = match(this.bgl)([
+            { lower: 4, upper: 8, value: 'GREEN' },
+            { lower: 2, upper: 4, value: 'YELLOW' },
+            { lower: 8, upper: 12, value: 'YELLOW' },
+            { lower: 0, upper: 100, value: 'RED' },
+        ]);
         // bars.bgl
-        var bgl = Math.round(this.bgl * 10) / 10;
-        if (this.isUSA) {
-            bgl = Math.round(bgl * 18);
-        }
+        var bgl = this.isUSA
+            ? Math.round(this.bgl * 18) / 10
+            : Math.round(this.bgl * 10) / 10;
         if (!this.bars.bgl) {
             this.bars.bgl = bossbar_1.BossBar.bar('', this.player);
             this.bars.bgl.style(bossbar_1.BossBar.style.NOTCHED_20).render();
@@ -542,22 +544,17 @@ var MCT1 = /** @class */ (function () {
         });
     };
     MCT1.prototype.removeBars = function () {
-        if (this.bars.bgl) {
-            this.bars.bgl.remove();
-            this.bars.bgl = undefined;
-        }
-        if (this.bars.insulin) {
-            this.bars.insulin.remove();
-            this.bars.insulin = undefined;
-        }
-        if (this.bars.digestion1) {
-            this.bars.digestion1.remove();
-            this.bars.digestion1 = undefined;
-        }
-        if (this.bars.digestion2) {
-            this.bars.digestion2.remove();
-            this.bars.digestion2 = undefined;
-        }
+        var remove = function (bar) { return bar ? bar.remove() : undefined; };
+        remove(this.bars.bgl);
+        remove(this.bars.insulin);
+        remove(this.bars.digestion1);
+        remove(this.bars.digestion2);
+        this.bars = {
+            bgl: _bar,
+            digestion1: _bar,
+            digestion2: _bar,
+            insulin: _bar,
+        };
     };
     MCT1.prototype.startDigestion = function (tickCount) {
         var _this = this;
@@ -649,41 +646,50 @@ var MCT1 = /** @class */ (function () {
         }
     };
     MCT1.prototype.doEffects = function () {
-        if (this.bgl >= 4 && this.bgl <= 8) {
-            // Healthy Range
-            this.cancelNegativeEffects();
-            this.giveSuperPowers();
-        }
-        else {
-            // Out of range...
-            this.cancelSuperPowers();
-            this.giveNegativeEffects();
-        }
+        var _this = this;
+        var fns = match(this.bgl)([
+            {
+                // healthy range
+                lower: 4,
+                upper: 8,
+                value: [this.cancelNegativeEffects, this.giveSuperPowers],
+            },
+            {
+                // default case
+                lower: 1,
+                upper: 100,
+                value: [this.cancelSuperPowers, this.giveNegativeEffects],
+            },
+        ]);
+        fns.forEach(function (fn) { return fn.bind(_this)(); });
     };
     MCT1.prototype.cancelEffects = function () {
         this.cancelNegativeEffects();
         this.cancelSuperPowers();
     };
     MCT1.prototype.giveNegativeEffects = function () {
-        // Confusion!
-        if ((this.bgl < 4 && this.bgl >= 3) ||
-            (this.bgl > 8 && this.bgl <= 12)) {
-            this._makeEffect('CONFUSION', 3500);
-        }
-        // More Confusion!
-        else if (this.bgl < 3 || this.bgl > 16) {
-            this._makeEffect('CONFUSION', 6000);
-        }
-        // Layer additional effects.
-        if (this.bgl <= 2 || this.bgl >= 16) {
-            this._makeEffect('BLINDNESS', 5000);
-            this._makeEffect('POISON', 5000);
-        }
+        var _this = this;
+        var CONFUSION_MILD = { effect: 'CONFUSION', strength: 3500 };
+        var CONFUSION_HEAVY = { effect: 'CONFUSION', strength: 6000 };
+        var BLINDNESS = { effect: 'BLINDNESS', strength: 5000 };
+        var POISON = { effect: 'POISON', strength: 5000 };
+        var effects = match(this.bgl)([
+            { lower: 1, upper: 2.1, value: [BLINDNESS, POISON] },
+            { lower: 2.11, upper: 2.99, value: [CONFUSION_HEAVY] },
+            { lower: 3, upper: 3.99, value: [CONFUSION_MILD] },
+            { lower: 4, upper: 8, value: [] },
+            { lower: 8.01, upper: 12, value: [CONFUSION_MILD] },
+            { lower: 12.1, upper: 15.99, value: [CONFUSION_HEAVY] },
+            { lower: 16, upper: 100, value: [BLINDNESS, POISON] },
+        ]);
+        effects.forEach(function (e) { return _this._makeEffect(e.effect, e.strength); });
     };
     MCT1.prototype.cancelNegativeEffects = function () {
-        this._cancelEffect('CONFUSION');
-        this._cancelEffect('BLINDNESS');
-        this._cancelEffect('POISON');
+        var _this = this;
+        ;
+        ['CONFUSION', 'BLINDNESS', 'POISON'].forEach(function (e) {
+            return _this._cancelEffect(e);
+        });
     };
     MCT1.prototype.giveSuperPowers = function () {
         if (this.hasSuperSpeed) {
@@ -701,11 +707,9 @@ var MCT1 = /** @class */ (function () {
         }
     };
     MCT1.prototype.cancelSuperPowers = function () {
-        this._cancelEffect('SPEED');
-        this._cancelEffect('JUMP');
-        this._cancelEffect('GLOWING');
-        this._cancelEffect('NIGHT_VISION');
-        this._cancelEffect('REGENERATION');
+        var _this = this;
+        ;
+        ['SPEED', 'JUMP', 'GLOWING', 'NIGHT_VISION', 'REGENERATION'].forEach(function (e) { return _this._cancelEffect(e); });
     };
     MCT1.prototype._makeEffect = function (type, milliseconds, color, amplifier) {
         if (color === void 0) { color = 'GREEN'; }
@@ -757,18 +761,12 @@ var MCT1 = /** @class */ (function () {
         return totalActivityCost;
     };
     MCT1.prototype.setInsulinSensitivity = function (totalActivityCost) {
-        if (totalActivityCost >= 0 && totalActivityCost <= 0.075) {
-            this.insulinSensitivityMultiplier = 1;
-        }
-        else if (totalActivityCost > 0.075 && totalActivityCost <= 0.5) {
-            this.insulinSensitivityMultiplier = 1.2;
-        }
-        else if (totalActivityCost > 0.5 && totalActivityCost <= 1.25) {
-            this.insulinSensitivityMultiplier = 1.5;
-        }
-        else if (totalActivityCost > 1.25) {
-            this.insulinSensitivityMultiplier = 1.8;
-        }
+        this.insulinSensitivityMultiplier = match(totalActivityCost)([
+            { lower: 0, upper: 0.075, value: 1 },
+            { lower: 0.075, upper: 0.5, value: 1.2 },
+            { lower: 0.5, upper: 1.25, value: 1.5 },
+            { lower: 1.25, upper: 100, value: 1.8 },
+        ]);
     };
     MCT1.prototype.extractActivitiesFromMoveLog = function () {
         var activities = [];
