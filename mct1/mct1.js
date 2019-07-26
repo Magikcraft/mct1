@@ -598,7 +598,7 @@ var MCT1 = /** @class */ (function () {
             this.digestionTimer = undefined;
         }
     };
-    MCT1.prototype.calculateRange = function () {
+    MCT1.prototype.calculateBglRange = function () {
         return match(this.bgl)([
             { lower: 4, upper: 8, value: Range.InRange },
             { lower: 2, upper: 4, value: Range.Low },
@@ -672,20 +672,16 @@ var MCT1 = /** @class */ (function () {
         if (this.foodLevel >= 20) {
             this.setFoodLevel(19.5);
         }
-        this.setLastRange();
+        var currentBglRange = this.calculateBglRange();
+        this.doActionHint(currentBglRange);
+        this.setLastRange(currentBglRange);
     };
-    MCT1.prototype.setLastRange = function () {
-        var currentRange = this.calculateRange();
-        if (currentRange != this.lastRange) {
-            this.doRangeChangeMessage(currentRange);
-        }
-        this.lastRange = currentRange;
-        this.doActionHint(currentRange);
-    };
-    MCT1.prototype.doRangeChangeMessage = function (currentRange) {
-        if (currentRange == Range.InRange) {
+    MCT1.prototype.setLastRange = function (currentRange) {
+        var userJustWentIntoHealthyRange = currentRange != this.lastRange && currentRange == Range.InRange;
+        if (userJustWentIntoHealthyRange) {
             core_1.actionbar(this.player.name, 'Good - you are back in range', core_1.TextColor.GREEN);
         }
+        this.lastRange = currentRange;
     };
     MCT1.prototype.doActionHint = function (currentRange) {
         var noFood = !this.digestionQueue || this.digestionQueue.length == 0;

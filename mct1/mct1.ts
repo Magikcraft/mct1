@@ -368,7 +368,7 @@ export class MCT1 {
         }
     }
 
-    private calculateRange(): Range {
+    private calculateBglRange(): Range {
         return match(this.bgl)([
             { lower: 4, upper: 8, value: Range.InRange },
             { lower: 2, upper: 4, value: Range.Low },
@@ -459,26 +459,22 @@ export class MCT1 {
             this.setFoodLevel(19.5)
         }
 
-        this.setLastRange()
+        const currentBglRange = this.calculateBglRange()
+        this.doActionHint(currentBglRange)
+        this.setLastRange(currentBglRange)
     }
 
-    private setLastRange() {
-        const currentRange = this.calculateRange()
-        if (currentRange != this.lastRange) {
-            this.doRangeChangeMessage(currentRange)
-        }
-        this.lastRange = currentRange
-        this.doActionHint(currentRange)
-    }
-
-    private doRangeChangeMessage(currentRange: Range) {
-        if (currentRange == Range.InRange) {
+    private setLastRange(currentRange: Range) {
+        const userJustWentIntoHealthyRange =
+            currentRange != this.lastRange && currentRange == Range.InRange
+        if (userJustWentIntoHealthyRange) {
             actionbar(
                 this.player.name,
                 'Good - you are back in range',
                 TextColor.GREEN
             )
         }
+        this.lastRange = currentRange
     }
 
     private doActionHint(currentRange: Range) {
