@@ -1,3 +1,4 @@
+import { actionbar, TextColor } from '@magikcraft/core'
 import * as events from 'events'
 import * as inventory from 'inventory'
 import * as items from 'items'
@@ -29,6 +30,13 @@ function match(measure: number) {
     return function matched<T>(matches: Array<MatchItem<T>>): T {
         return matches.filter(m => check(measure)(m.lower, m.upper))[0].value
     }
+}
+
+enum Range {
+    Low = 'LOW',
+    InRange = 'IN_RANGE',
+    High = 'HIGH',
+    VeryHigh = 'VERY_HIGH',
 }
 
 export class MCT1 {
@@ -76,6 +84,8 @@ export class MCT1 {
     public isStarted: boolean = false
     public mct1Player: MCT1Player
 
+    private lastRange: Range = Range.InRange
+
     constructor(mct1Player: MCT1Player) {
         this.player = mct1Player.player
         this.mct1Player = mct1Player
@@ -88,6 +98,7 @@ export class MCT1 {
 
         this.bgl = 5
         this.insulin = 0
+        this.lastRange = Range.InRange
         this.setFoodLevel(this.player.foodLevel)
         this.digestionQueue = []
 
@@ -222,31 +233,20 @@ export class MCT1 {
         })
     }
 
-    public renderBars() {
-        // bars.bgl color
-        const color = match(this.bgl)([
-            { lower: 4, upper: 8, value: 'GREEN' },
-            { lower: 2, upper: 4, value: 'YELLOW' },
-            { lower: 8, upper: 12, value: 'YELLOW' },
-            { lower: 0, upper: 100, value: 'RED' },
-        ])
-
-        // bars.bgl
-        const bgl = this.isUSA
+    private getBglDisplayValue() {
+        return this.isUSA
             ? Math.round(this.bgl * 18) / 10
             : Math.round(this.bgl * 10) / 10
+    }
 
+    private ensureBglBar() {
         if (!this.bars.bgl) {
             this.bars.bgl = BossBar.bar('', this.player)
             this.bars.bgl.style(BossBar.style.NOTCHED_20).render()
         }
+    }
 
-        this.bars.bgl
-            .text(`BGL: ${bgl}`) // round to 1 decimal
-            .color(BossBar.color[color])
-            .progress((this.bgl / 20) * 100)
-
-        // bars.insulin
+    private ensureInsulinBar() {
         if (!this.bars.insulin) {
             this.bars.insulin = BossBar.bar('', this.player)
             this.bars.insulin
@@ -254,22 +254,50 @@ export class MCT1 {
                 .style(BossBar.style.NOTCHED_20)
                 .render()
         }
+    }
+
+    private roundToOneDecimalPlace(value: number) {
+        return (value / 20) * 100
+    }
+
+    private getBglBarColor() {
+        return BossBar.color[
+            match(this.bgl)([
+                { lower: 4, upper: 8, value: 'GREEN' },
+                { lower: 2, upper: 4, value: 'YELLOW' },
+                { lower: 8, upper: 12, value: 'YELLOW' },
+                { lower: 0, upper: 100, value: 'RED' },
+            ])
+        ]
+    }
+
+    private sortDigestionQueue(queue) {
+        // Bring high GI items to top of digestionQueue
+        return queue
+            .filter(item => item.food.GI === 'high')
+            .concat(queue.filter(item => item.food.GI === 'low'))
+    }
+
+    public renderBars() {
+        this.ensureBglBar()
+        this.ensureInsulinBar()
+
+        const bglBarColor = this.getBglBarColor()
+        const bglDisplayValue = this.getBglDisplayValue()
+
+        this.bars.bgl
+            .text(`BGL: ${bglDisplayValue}`)
+            .color(bglBarColor)
+            .progress(this.roundToOneDecimalPlace(this.bgl))
 
         const insulinLabel = Math.round(this.insulin * 10) / 10
-        const insulinPercent = (this.insulin / 20) * 100
+        const insulinPercent = this.roundToOneDecimalPlace(this.insulin)
 
         this.bars.insulin
             .text(`Insulin: ${insulinLabel}`) // round to 1 decimal
             .progress(insulinPercent) // insulin as percentage, rounded to 1 decimal
 
-        // Bring high GI items to top of digestionQueue
-        const highGIItems = this.digestionQueue.filter(
-            item => item.food.GI === 'high'
-        )
-        const lowGIItems = this.digestionQueue.filter(
-            item => item.food.GI === 'low'
-        )
-        this.digestionQueue = highGIItems.concat(lowGIItems)
+        this.digestionQueue = this.sortDigestionQueue(this.digestionQueue)
 
         // digestion Bar(s)
         const digestionItems = this.digestionQueue.slice(0, 2)
@@ -327,7 +355,7 @@ export class MCT1 {
         this.digestionTimer = setInterval(() => {
             // Do digestion if not dead!
             if (!this.player.isDead()) {
-                this.digestion(tickCount)
+                this.metabolism(tickCount)
                 tickCount++
             }
         }, 1000)
@@ -340,7 +368,16 @@ export class MCT1 {
         }
     }
 
-    public digestion(tickCount) {
+    private calculateRange(): Range {
+        return match(this.bgl)([
+            { lower: 4, upper: 8, value: Range.InRange },
+            { lower: 2, upper: 4, value: Range.Low },
+            { lower: 8, upper: 12, value: Range.High },
+            { lower: 0, upper: 100, value: Range.VeryHigh },
+        ])
+    }
+
+    public metabolism(tickCount) {
         if (tickCount % 5 === 0) {
             const totalActivityCost = this.calculateTotalActivityCost()
             this.resetActivityLogs()
@@ -410,14 +447,9 @@ export class MCT1 {
             }
         }
 
-        // bgl should never go below 2!
-        if (this.bgl < 2) {
-            this.bgl = 2
-        }
-        // bgl should never go above 20!
-        if (this.bgl > 20) {
-            this.bgl = 20
-        }
+        const BGL_MIN = 2
+        const BGL_MAX = 20
+        this.bgl = Math.max(BGL_MIN, Math.min(this.bgl, BGL_MAX))
 
         this.renderBars()
         this.doEffects()
@@ -425,6 +457,55 @@ export class MCT1 {
         // Never allow this.player to be full!
         if (this.foodLevel >= 20) {
             this.setFoodLevel(19.5)
+        }
+
+        this.setLastRange()
+    }
+
+    private setLastRange() {
+        const currentRange = this.calculateRange()
+        if (currentRange != this.lastRange) {
+            this.doRangeChangeMessage(currentRange)
+        }
+        this.lastRange = currentRange
+        this.doActionHint(currentRange)
+    }
+
+    private doRangeChangeMessage(currentRange: Range) {
+        if (currentRange == Range.InRange) {
+            actionbar(
+                this.player.name,
+                'Good - you are back in range',
+                TextColor.GREEN
+            )
+        }
+    }
+
+    private doActionHint(currentRange: Range) {
+        const noFood = !this.digestionQueue || this.digestionQueue.length == 0
+        const noInsulin = this.insulin == 0
+        if (currentRange == Range.Low && noFood) {
+            actionbar(
+                this.player.name,
+                'You are low and need carbs - eat food',
+                TextColor.RED
+            )
+        }
+
+        if (currentRange == Range.High && noInsulin) {
+            actionbar(
+                this.player.name,
+                'You are going high - take insulin',
+                TextColor.YELLOW
+            )
+        }
+
+        if (currentRange == Range.VeryHigh && noInsulin) {
+            actionbar(
+                this.player.name,
+                'You are going very high - take insulin!',
+                TextColor.RED
+            )
         }
     }
 
@@ -459,11 +540,11 @@ export class MCT1 {
 
         const effects = match(this.bgl)([
             { lower: 1, upper: 2.1, value: [BLINDNESS, POISON] },
-            { lower: 2.11, upper: 2.99, value: [CONFUSION_HEAVY] },
-            { lower: 3, upper: 3.99, value: [CONFUSION_MILD] },
+            { lower: 2.1, upper: 3, value: [CONFUSION_HEAVY] },
+            { lower: 3, upper: 4, value: [CONFUSION_MILD] },
             { lower: 4, upper: 8, value: [] },
-            { lower: 8.01, upper: 12, value: [CONFUSION_MILD] },
-            { lower: 12.1, upper: 15.99, value: [CONFUSION_HEAVY] },
+            { lower: 8, upper: 12, value: [CONFUSION_MILD] },
+            { lower: 12, upper: 16, value: [CONFUSION_HEAVY] },
             { lower: 16, upper: 100, value: [BLINDNESS, POISON] },
         ])
 
