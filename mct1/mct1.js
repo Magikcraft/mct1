@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@magikcraft/core");
 var events = require("events");
 var inventory = require("inventory");
 var items = require("items");
@@ -20,6 +21,13 @@ function match(measure) {
         return matches.filter(function (m) { return check(measure)(m.lower, m.upper); })[0].value;
     };
 }
+var Range;
+(function (Range) {
+    Range["Low"] = "LOW";
+    Range["InRange"] = "IN_RANGE";
+    Range["High"] = "HIGH";
+    Range["VeryHigh"] = "VERY_HIGH";
+})(Range || (Range = {}));
 var MCT1 = /** @class */ (function () {
     function MCT1(mct1Player) {
         var _this = this;
@@ -49,6 +57,7 @@ var MCT1 = /** @class */ (function () {
         this.snowballSlot = 0;
         this.insulinSlot = 1;
         this.isStarted = false;
+        this.lastRange = Range.InRange;
         this.setSuperSpeed = function (bool) { return (_this.hasSuperSpeed = bool); };
         this.setSuperJump = function (bool) { return (_this.hasSuperJump = bool); };
         this.setNightVision = function (bool) { return (_this.hasNightVision = bool); };
@@ -380,6 +389,7 @@ var MCT1 = /** @class */ (function () {
         this.stop(); // first stop, in case already running
         this.bgl = 5;
         this.insulin = 0;
+        this.lastRange = Range.InRange;
         this.setFoodLevel(this.player.foodLevel);
         this.digestionQueue = [];
         this.registerEvents();
@@ -477,28 +487,18 @@ var MCT1 = /** @class */ (function () {
         log('registerEvents');
         this.eventListeners.push(events.playerItemConsume(this._playerItemConsume), events.playerToggleSprint(this._playerToggleSprint), events.playerMove(this._playerMove), events.blockBreak(this._blockBreak), events.entityShootBow(this._entityShootBow), events.playerInteract(this._playerInteract), events.entityDamage(this._entityDamage), events.projectileLaunch(this._projectileLaunch), events.projectileHit(this._projectileHit), events.inventoryClick(this._inventoryClick), events.playerDeath(this._playerDeath), events.playerRespawn(this._playerRespawn), events.entityRegainHealth(this._entityRegainHealth), events.foodLevelChange(this._foodLevelChange), events.playerDropItem(this._playerDropItem));
     };
-    MCT1.prototype.renderBars = function () {
-        var _this = this;
-        // bars.bgl color
-        var color = match(this.bgl)([
-            { lower: 4, upper: 8, value: 'GREEN' },
-            { lower: 2, upper: 4, value: 'YELLOW' },
-            { lower: 8, upper: 12, value: 'YELLOW' },
-            { lower: 0, upper: 100, value: 'RED' },
-        ]);
-        // bars.bgl
-        var bgl = this.isUSA
+    MCT1.prototype.getBglDisplayValue = function () {
+        return this.isUSA
             ? Math.round(this.bgl * 18) / 10
             : Math.round(this.bgl * 10) / 10;
+    };
+    MCT1.prototype.ensureBglBar = function () {
         if (!this.bars.bgl) {
             this.bars.bgl = bossbar_1.BossBar.bar('', this.player);
             this.bars.bgl.style(bossbar_1.BossBar.style.NOTCHED_20).render();
         }
-        this.bars.bgl
-            .text("BGL: " + bgl) // round to 1 decimal
-            .color(bossbar_1.BossBar.color[color])
-            .progress((this.bgl / 20) * 100);
-        // bars.insulin
+    };
+    MCT1.prototype.ensureInsulinBar = function () {
         if (!this.bars.insulin) {
             this.bars.insulin = bossbar_1.BossBar.bar('', this.player);
             this.bars.insulin
@@ -506,15 +506,40 @@ var MCT1 = /** @class */ (function () {
                 .style(bossbar_1.BossBar.style.NOTCHED_20)
                 .render();
         }
+    };
+    MCT1.prototype.roundToOneDecimalPlace = function (value) {
+        return (value / 20) * 100;
+    };
+    MCT1.prototype.getBglBarColor = function () {
+        return bossbar_1.BossBar.color[match(this.bgl)([
+            { lower: 4, upper: 8, value: 'GREEN' },
+            { lower: 2, upper: 4, value: 'YELLOW' },
+            { lower: 8, upper: 12, value: 'YELLOW' },
+            { lower: 0, upper: 100, value: 'RED' },
+        ])];
+    };
+    MCT1.prototype.sortDigestionQueue = function (queue) {
+        // Bring high GI items to top of digestionQueue
+        return queue
+            .filter(function (item) { return item.food.GI === 'high'; })
+            .concat(queue.filter(function (item) { return item.food.GI === 'low'; }));
+    };
+    MCT1.prototype.renderBars = function () {
+        var _this = this;
+        this.ensureBglBar();
+        this.ensureInsulinBar();
+        var bglBarColor = this.getBglBarColor();
+        var bglDisplayValue = this.getBglDisplayValue();
+        this.bars.bgl
+            .text("BGL: " + bglDisplayValue)
+            .color(bglBarColor)
+            .progress(this.roundToOneDecimalPlace(this.bgl));
         var insulinLabel = Math.round(this.insulin * 10) / 10;
-        var insulinPercent = (this.insulin / 20) * 100;
+        var insulinPercent = this.roundToOneDecimalPlace(this.insulin);
         this.bars.insulin
             .text("Insulin: " + insulinLabel) // round to 1 decimal
             .progress(insulinPercent); // insulin as percentage, rounded to 1 decimal
-        // Bring high GI items to top of digestionQueue
-        var highGIItems = this.digestionQueue.filter(function (item) { return item.food.GI === 'high'; });
-        var lowGIItems = this.digestionQueue.filter(function (item) { return item.food.GI === 'low'; });
-        this.digestionQueue = highGIItems.concat(lowGIItems);
+        this.digestionQueue = this.sortDigestionQueue(this.digestionQueue);
         // digestion Bar(s)
         var digestionItems = this.digestionQueue.slice(0, 2);
         if (!digestionItems[0] && this.bars.digestion1) {
@@ -544,7 +569,7 @@ var MCT1 = /** @class */ (function () {
         });
     };
     MCT1.prototype.removeBars = function () {
-        var remove = function (bar) { return bar ? bar.remove() : undefined; };
+        var remove = function (bar) { return (bar ? bar.remove() : undefined); };
         remove(this.bars.bgl);
         remove(this.bars.insulin);
         remove(this.bars.digestion1);
@@ -562,7 +587,7 @@ var MCT1 = /** @class */ (function () {
         this.digestionTimer = setInterval(function () {
             // Do digestion if not dead!
             if (!_this.player.isDead()) {
-                _this.digestion(tickCount);
+                _this.metabolism(tickCount);
                 tickCount++;
             }
         }, 1000);
@@ -573,7 +598,15 @@ var MCT1 = /** @class */ (function () {
             this.digestionTimer = undefined;
         }
     };
-    MCT1.prototype.digestion = function (tickCount) {
+    MCT1.prototype.calculateRange = function () {
+        return match(this.bgl)([
+            { lower: 4, upper: 8, value: Range.InRange },
+            { lower: 2, upper: 4, value: Range.Low },
+            { lower: 8, upper: 12, value: Range.High },
+            { lower: 0, upper: 100, value: Range.VeryHigh },
+        ]);
+    };
+    MCT1.prototype.metabolism = function (tickCount) {
         if (tickCount % 5 === 0) {
             var totalActivityCost = this.calculateTotalActivityCost();
             this.resetActivityLogs();
@@ -630,19 +663,41 @@ var MCT1 = /** @class */ (function () {
                 this.digestionQueue.splice(0, 1);
             }
         }
-        // bgl should never go below 2!
-        if (this.bgl < 2) {
-            this.bgl = 2;
-        }
-        // bgl should never go above 20!
-        if (this.bgl > 20) {
-            this.bgl = 20;
-        }
+        var BGL_MIN = 2;
+        var BGL_MAX = 20;
+        this.bgl = Math.max(BGL_MIN, Math.min(this.bgl, BGL_MAX));
         this.renderBars();
         this.doEffects();
         // Never allow this.player to be full!
         if (this.foodLevel >= 20) {
             this.setFoodLevel(19.5);
+        }
+        this.setLastRange();
+    };
+    MCT1.prototype.setLastRange = function () {
+        var currentRange = this.calculateRange();
+        if (currentRange != this.lastRange) {
+            this.doRangeChangeMessage(currentRange);
+        }
+        this.lastRange = currentRange;
+        this.doActionHint(currentRange);
+    };
+    MCT1.prototype.doRangeChangeMessage = function (currentRange) {
+        if (currentRange == Range.InRange) {
+            core_1.actionbar(this.player.name, 'Good - you are back in range', core_1.TextColor.GREEN);
+        }
+    };
+    MCT1.prototype.doActionHint = function (currentRange) {
+        var noFood = !this.digestionQueue || this.digestionQueue.length == 0;
+        var noInsulin = this.insulin == 0;
+        if (currentRange == Range.Low && noFood) {
+            core_1.actionbar(this.player.name, 'You are low and need carbs - eat food', core_1.TextColor.RED);
+        }
+        if (currentRange == Range.High && noInsulin) {
+            core_1.actionbar(this.player.name, 'You are going high - take insulin', core_1.TextColor.YELLOW);
+        }
+        if (currentRange == Range.VeryHigh && noInsulin) {
+            core_1.actionbar(this.player.name, 'You are going very high - take insulin!', core_1.TextColor.RED);
         }
     };
     MCT1.prototype.doEffects = function () {
@@ -675,11 +730,11 @@ var MCT1 = /** @class */ (function () {
         var POISON = { effect: 'POISON', strength: 5000 };
         var effects = match(this.bgl)([
             { lower: 1, upper: 2.1, value: [BLINDNESS, POISON] },
-            { lower: 2.11, upper: 2.99, value: [CONFUSION_HEAVY] },
-            { lower: 3, upper: 3.99, value: [CONFUSION_MILD] },
+            { lower: 2.1, upper: 3, value: [CONFUSION_HEAVY] },
+            { lower: 3, upper: 4, value: [CONFUSION_MILD] },
             { lower: 4, upper: 8, value: [] },
-            { lower: 8.01, upper: 12, value: [CONFUSION_MILD] },
-            { lower: 12.1, upper: 15.99, value: [CONFUSION_HEAVY] },
+            { lower: 8, upper: 12, value: [CONFUSION_MILD] },
+            { lower: 12, upper: 16, value: [CONFUSION_HEAVY] },
             { lower: 16, upper: 100, value: [BLINDNESS, POISON] },
         ]);
         effects.forEach(function (e) { return _this._makeEffect(e.effect, e.strength); });
