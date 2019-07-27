@@ -49,8 +49,8 @@
     },
     "dependencies": {
         "@magikcraft/commando": "0.0.4",
-        "@magikcraft/core": "^0.1.6",
-        "@scriptcraft/types": "^1.1.3"
+        "@magikcraft/core": "^0.1.7",
+        "@scriptcraft/types": "^1.1.4"
     },
     "config": {
         "access": "public"
