@@ -4,7 +4,7 @@ import * as Locations from './locs'
 export default class QuestMCT1Village extends QuestMCT1 {
     constructor(conf: QuestConfig) {
         super(conf)
-        this.Locs = Locations.getLocations(this.world.getBukkitWorld())
+        this.Locs = Locations.getLocations(this.world.getWorld())
         super.registerEvents()
     }
 

@@ -4,14 +4,14 @@ import MCT1Player from './MCT1Player'
 
 export default class Follower {
     private eventHandlers: any[] = []
-    private following: BukkitPlayer
+    private following?: Player
     private mct1Player: MCT1Player
 
     constructor(mct1Player: MCT1Player) {
         this.mct1Player = mct1Player
     }
 
-    public startFollowing(whoToFollow: BukkitPlayer) {
+    public startFollowing(whoToFollow: Player) {
         const nooneToFollow = !!whoToFollow || !utils.player(whoToFollow)
         if (nooneToFollow) {
             return
@@ -33,7 +33,7 @@ export default class Follower {
     }
 
     private listener = event => {
-        const isTarget = t => t.name == this.following.name
+        const isTarget = t => this.following && t.name == this.following.name
 
         const playerChangedWorld = !!event.player // playerChangedWorld has a player field
         if (playerChangedWorld && isTarget(event.player)) {
@@ -71,7 +71,9 @@ export default class Follower {
         this.mct1Player.teleport(this.following)
         const TELEPORT_RESETTLE_DELAY = 750
         setTimeout(
-            () => this.mct1Player.player.setSpectatorTarget(this.following),
+            () =>
+                this.mct1Player.player.setSpectatorTarget((this
+                    .following! as unknown) as Entity),
             TELEPORT_RESETTLE_DELAY
         )
     }

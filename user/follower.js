@@ -7,7 +7,7 @@ var Follower = /** @class */ (function () {
         var _this = this;
         this.eventHandlers = [];
         this.listener = function (event) {
-            var isTarget = function (t) { return t.name == _this.following.name; };
+            var isTarget = function (t) { return _this.following && t.name == _this.following.name; };
             var playerChangedWorld = !!event.player; // playerChangedWorld has a player field
             if (playerChangedWorld && isTarget(event.player)) {
                 return _this._follow();
@@ -62,7 +62,10 @@ var Follower = /** @class */ (function () {
         this.mct1Player.gmsp();
         this.mct1Player.teleport(this.following);
         var TELEPORT_RESETTLE_DELAY = 750;
-        setTimeout(function () { return _this.mct1Player.player.setSpectatorTarget(_this.following); }, TELEPORT_RESETTLE_DELAY);
+        setTimeout(function () {
+            return _this.mct1Player.player.setSpectatorTarget(_this
+                .following);
+        }, TELEPORT_RESETTLE_DELAY);
     };
     return Follower;
 }());

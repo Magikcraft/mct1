@@ -14,7 +14,7 @@ const GameMode = Java.type('org.bukkit.GameMode')
 
 // User class
 export default class MCT1Player {
-    public player: BukkitPlayer
+    public player: Player
     public sessionId
     public world // the world player is currently in
     public mct1: MCT1

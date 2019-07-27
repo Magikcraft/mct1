@@ -21,7 +21,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         super(conf)
         log('Creating MCT1 Prologue quest')
         this.isUSA = (conf.options.units || 'mmolL').toLowerCase() === 'mgdl'
-        this.Locs = Locations.getLocations(this.world.getBukkitWorld())
+        this.Locs = Locations.getLocations(this.world.getWorld())
         this.state = {
             completed: false,
             hasMCT1: false,

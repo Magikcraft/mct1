@@ -167,7 +167,9 @@ var WorldManagerClass = /** @class */ (function () {
             ? worldname.split(playerPrefix)[1]
             : undefined;
         var newlyManagedWorld = new ManagedWorld_1.default(world, playername);
-        this.registerPlayerLeftWorldListener(worldname, playername);
+        if (playername) {
+            this.registerPlayerLeftWorldListener(worldname, playername);
+        }
         this.managedWorlds[worldname] = newlyManagedWorld;
         log("Managed Worlds: " + Object.keys(this.managedWorlds));
         return newlyManagedWorld;

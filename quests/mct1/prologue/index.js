@@ -31,7 +31,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         _this.isUSA = false;
         log('Creating MCT1 Prologue quest');
         _this.isUSA = (conf.options.units || 'mmolL').toLowerCase() === 'mgdl';
-        _this.Locs = Locations.getLocations(_this.world.getBukkitWorld());
+        _this.Locs = Locations.getLocations(_this.world.getWorld());
         _this.state = {
             completed: false,
             hasMCT1: false,

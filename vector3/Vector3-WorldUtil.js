@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Vector3_1 = require("./Vector3");
 var blocks = require("blocks");
+var Vector3_1 = require("./Vector3");
+var Material = Java.type('org.bukkit.Material');
 var Vector3World = /** @class */ (function () {
     function Vector3World() {
     }
@@ -47,7 +48,7 @@ var Vector3World = /** @class */ (function () {
         while (!hasFoundBlock) {
             var block = world.getBlockAt(currentPos.x, currentPos.y, currentPos.z);
             // log("Checking for block, at: " + new Vector3(currentPos.x,currentPos.y,currentPos.z).toString() + ", block is: " + block.getType​());
-            if (block.getType() != 'AIR') {
+            if (block.getType() != Material.AIR) {
                 // log("Block has been found: " + block.getType​());
                 hasFoundBlock = true;
                 finalPos = new Vector3_1.Vector3(priorPos.x, priorPos.y + 1, priorPos.z, vector.world);

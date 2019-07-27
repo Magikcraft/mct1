@@ -39,7 +39,7 @@ class MultiverseClass {
 
     public async importWorld(worldName: string) {
         log(`Importing world ${worldName}...`)
-        let world: BukkitWorld
+        let world: World
         let err: string | undefined
         world = utils.world(worldName)
         if (world) {
@@ -69,7 +69,7 @@ class MultiverseClass {
     }: {
         targetWorldname: string
         templateWorldname: string
-    }): Promise<BukkitWorld | undefined> {
+    }): Promise<World | undefined> {
         await this.destroyWorld(targetWorldname)
         log(`Cloning world ${targetWorldname}`)
         const templateWorld = await this.importWorld(templateWorldname)
@@ -115,7 +115,7 @@ interface MultiverseCorePlugin {
         templateWorldName: string,
         worldName: string,
         mode: 'normal'
-    ): BukkitWorld
+    ): World
     getMVWorldManager(): WorldManager
 }
 
@@ -125,5 +125,5 @@ interface WorldManager {
         removeFromConfig: boolean,
         deleteWorldFolder: boolean
     )
-    getMVWorld(name: string): BukkitWorld | null
+    getMVWorld(name: string): World | null
 }

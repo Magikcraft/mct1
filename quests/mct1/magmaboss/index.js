@@ -24,7 +24,7 @@ var QuestMCT1Magmaboss = /** @class */ (function (_super) {
     __extends(QuestMCT1Magmaboss, _super);
     function QuestMCT1Magmaboss(conf) {
         var _this = _super.call(this, conf) || this;
-        _this.Locs = Locations.getLocations(_this.world.getBukkitWorld());
+        _this.Locs = Locations.getLocations(_this.world.getWorld());
         _this.state = {
             bossSceneStarted: false,
             magmaboss: undefined,

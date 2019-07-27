@@ -7,6 +7,7 @@ var log = log_1.Logger(__filename);
 var Material = Java.type('org.bukkit.Material');
 var Effect = Java.type('org.bukkit.Effect');
 var Sound = Java.type('org.bukkit.Sound');
+var EntityType = Java.type('org.bukkit.entity.EntityType');
 var Rockfall = /** @class */ (function () {
     function Rockfall(region) {
         this.blocks = [];
@@ -89,7 +90,7 @@ var Rockfall = /** @class */ (function () {
         // After rockfall is complete...
         setTimeout(function () {
             world.entities.forEach(function (entity) {
-                if (entity.type == 'DROPPED_ITEM') {
+                if (entity.type == EntityType.DROPPED_ITEM) {
                     entity.remove();
                 }
             });

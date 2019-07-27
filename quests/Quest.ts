@@ -18,7 +18,7 @@ export interface QuestOptions {
 export interface QuestConfig {
     name: string
     nextQuestName: string | undefined
-    player: BukkitPlayer
+    player: Player
     world: ManagedWorld
     options: QuestOptions
 }

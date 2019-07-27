@@ -3,7 +3,7 @@ import { Logger } from '../../../log'
 const log = Logger(__filename)
 
 export const getLocations = managedWorld => {
-    const world = managedWorld.getBukkitWorld()
+    const world = managedWorld.getWorld()
     return {
         world,
         locations: {

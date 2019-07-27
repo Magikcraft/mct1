@@ -1,9 +1,8 @@
-import { actionbar, TextColor } from '@magikcraft/core'
+import { actionbar, BossBar, TextColor } from '@magikcraft/core'
+import { IBossBar } from '@magikcraft/core/bossbar/bossbar'
 import * as events from 'events'
 import * as inventory from 'inventory'
 import * as items from 'items'
-import { BossBar } from '../bossbar'
-import { IBossBar } from '../bossbar/bossbar'
 import { Logger } from '../log'
 import MCT1Player from '../user/MCT1Player'
 import { activityCosts, activityTypes } from './activities'
@@ -40,7 +39,7 @@ enum Range {
 }
 
 export class MCT1 {
-    public player: BukkitPlayer
+    public player: Player
 
     public isSprinting: boolean = false
 

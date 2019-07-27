@@ -4,7 +4,6 @@ var core_1 = require("@magikcraft/core");
 var events = require("events");
 var inventory = require("inventory");
 var items = require("items");
-var bossbar_1 = require("../bossbar");
 var log_1 = require("../log");
 var activities_1 = require("./activities");
 var foods_1 = require("./foods");
@@ -494,16 +493,16 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.ensureBglBar = function () {
         if (!this.bars.bgl) {
-            this.bars.bgl = bossbar_1.BossBar.bar('', this.player);
-            this.bars.bgl.style(bossbar_1.BossBar.style.NOTCHED_20).render();
+            this.bars.bgl = core_1.BossBar.bar('', this.player);
+            this.bars.bgl.style(core_1.BossBar.style.NOTCHED_20).render();
         }
     };
     MCT1.prototype.ensureInsulinBar = function () {
         if (!this.bars.insulin) {
-            this.bars.insulin = bossbar_1.BossBar.bar('', this.player);
+            this.bars.insulin = core_1.BossBar.bar('', this.player);
             this.bars.insulin
-                .color(bossbar_1.BossBar.color.BLUE)
-                .style(bossbar_1.BossBar.style.NOTCHED_20)
+                .color(core_1.BossBar.color.BLUE)
+                .style(core_1.BossBar.style.NOTCHED_20)
                 .render();
         }
     };
@@ -511,7 +510,7 @@ var MCT1 = /** @class */ (function () {
         return (value / 20) * 100;
     };
     MCT1.prototype.getBglBarColor = function () {
-        return bossbar_1.BossBar.color[match(this.bgl)([
+        return core_1.BossBar.color[match(this.bgl)([
             { lower: 4, upper: 8, value: 'GREEN' },
             { lower: 2, upper: 4, value: 'YELLOW' },
             { lower: 8, upper: 12, value: 'YELLOW' },
@@ -552,8 +551,8 @@ var MCT1 = /** @class */ (function () {
             var index = "digestion" + (i + 1);
             var percentDigested = (item.carbsDigested / item.food.carbs) * 100;
             if (!_this.bars[index]) {
-                _this.bars[index] = bossbar_1.BossBar.bar('', _this.player)
-                    .style(bossbar_1.BossBar.style.NOTCHED_20)
+                _this.bars[index] = core_1.BossBar.bar('', _this.player)
+                    .style(core_1.BossBar.style.NOTCHED_20)
                     .render();
             }
             var label = _this.debugMode
@@ -562,8 +561,8 @@ var MCT1 = /** @class */ (function () {
             _this.bars[index]
                 .text(label)
                 .color(item.food.GI === 'high'
-                ? bossbar_1.BossBar.color.PINK
-                : bossbar_1.BossBar.color.PURPLE)
+                ? core_1.BossBar.color.PINK
+                : core_1.BossBar.color.PURPLE)
                 .progress(100 - percentDigested)
                 .render();
         });
