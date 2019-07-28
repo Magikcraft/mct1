@@ -526,7 +526,6 @@ var MCT1 = /** @class */ (function () {
             BarManager_1.default.removeDigestionBar2(this.player);
         }
         digestionItems.forEach(function (item, i) {
-            var index = "digestion" + (i + 1);
             var percentDigested = (item.carbsDigested / item.food.carbs) * 100;
             var label = _this.debugMode
                 ? "Digesting: " + item.food.label + ", " + item.food.carbs + " carbs, " + item.food.GI + " GI"
