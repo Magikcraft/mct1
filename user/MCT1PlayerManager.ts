@@ -1,5 +1,6 @@
 import * as events from 'events'
 import { Logger } from '../log'
+import BarManager from '../mct1/BarManager'
 import MCT1Player from './MCT1Player'
 
 const log = Logger(__filename)
@@ -48,6 +49,7 @@ class MCT1PlayerManagerClass {
             log(`MCT1PlayerManager player quit handler`)
             this.deleteMct1Player(player)
             log(`Deleted MCT1 Player for ${player.name}`)
+            BarManager.removeBars(player)
         }, 100)
 }
 

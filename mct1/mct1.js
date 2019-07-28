@@ -6,6 +6,7 @@ var inventory = require("inventory");
 var items = require("items");
 var log_1 = require("../log");
 var activities_1 = require("./activities");
+var BarManager_1 = require("./BarManager");
 var foods_1 = require("./foods");
 var log = log_1.Logger(__filename);
 var Color = Java.type('org.bukkit.Color');
@@ -37,12 +38,6 @@ var MCT1 = /** @class */ (function () {
         this.insulinSensitivityMultiplier = 1;
         this.eventListeners = [];
         this.isUSA = false;
-        this.bars = {
-            bgl: _bar,
-            digestion1: _bar,
-            digestion2: _bar,
-            insulin: _bar,
-        };
         this.moveActivityLog = [];
         this.nonMoveActivityLog = [];
         this.superActivityMultiplier = 1.1;
@@ -412,7 +407,7 @@ var MCT1 = /** @class */ (function () {
     MCT1.prototype.stop = function () {
         this.unregisterEvents();
         this.stopDigestion();
-        this.removeBars();
+        BarManager_1.default.removeBars(this.player);
         this.cancelEffects();
         this.isStarted = false;
     };
@@ -491,31 +486,16 @@ var MCT1 = /** @class */ (function () {
             ? Math.round(this.bgl * 18) / 10
             : Math.round(this.bgl * 10) / 10;
     };
-    MCT1.prototype.ensureBglBar = function () {
-        if (!this.bars.bgl) {
-            this.bars.bgl = core_1.BossBar.bar('', this.player);
-            this.bars.bgl.style(core_1.BossBar.style.NOTCHED_20).render();
-        }
-    };
-    MCT1.prototype.ensureInsulinBar = function () {
-        if (!this.bars.insulin) {
-            this.bars.insulin = core_1.BossBar.bar('', this.player);
-            this.bars.insulin
-                .color(core_1.BossBar.color.BLUE)
-                .style(core_1.BossBar.style.NOTCHED_20)
-                .render();
-        }
-    };
     MCT1.prototype.roundToOneDecimalPlace = function (value) {
         return (value / 20) * 100;
     };
     MCT1.prototype.getBglBarColor = function () {
-        return core_1.BossBar.color[match(this.bgl)([
-            { lower: 4, upper: 8, value: 'GREEN' },
-            { lower: 2, upper: 4, value: 'YELLOW' },
-            { lower: 8, upper: 12, value: 'YELLOW' },
-            { lower: 0, upper: 100, value: 'RED' },
-        ])];
+        return match(this.bgl)([
+            { lower: 4, upper: 8, value: core_1.BossBar.Color.GREEN },
+            { lower: 2, upper: 4, value: core_1.BossBar.Color.YELLOW },
+            { lower: 8, upper: 12, value: core_1.BossBar.Color.YELLOW },
+            { lower: 0, upper: 100, value: core_1.BossBar.Color.RED },
+        ]);
     };
     MCT1.prototype.sortDigestionQueue = function (queue) {
         // Bring high GI items to top of digestionQueue
@@ -525,60 +505,39 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.renderBars = function () {
         var _this = this;
-        this.ensureBglBar();
-        this.ensureInsulinBar();
         var bglBarColor = this.getBglBarColor();
         var bglDisplayValue = this.getBglDisplayValue();
-        this.bars.bgl
+        BarManager_1.default.getBglBar(this.player)
             .text("BGL: " + bglDisplayValue)
             .color(bglBarColor)
             .progress(this.roundToOneDecimalPlace(this.bgl));
         var insulinLabel = Math.round(this.insulin * 10) / 10;
         var insulinPercent = this.roundToOneDecimalPlace(this.insulin);
-        this.bars.insulin
+        BarManager_1.default.getInsulinBar(this.player)
             .text("Insulin: " + insulinLabel) // round to 1 decimal
             .progress(insulinPercent); // insulin as percentage, rounded to 1 decimal
         this.digestionQueue = this.sortDigestionQueue(this.digestionQueue);
         // digestion Bar(s)
         var digestionItems = this.digestionQueue.slice(0, 2);
-        if (!digestionItems[0] && this.bars.digestion1) {
-            this.bars.digestion1.remove();
+        if (!digestionItems[0]) {
+            BarManager_1.default.removeDigestionBar1(this.player);
         }
-        if (!digestionItems[1] && this.bars.digestion2) {
-            this.bars.digestion2.remove();
+        if (!digestionItems[1]) {
+            BarManager_1.default.removeDigestionBar2(this.player);
         }
         digestionItems.forEach(function (item, i) {
             var index = "digestion" + (i + 1);
             var percentDigested = (item.carbsDigested / item.food.carbs) * 100;
-            if (!_this.bars[index]) {
-                _this.bars[index] = core_1.BossBar.bar('', _this.player)
-                    .style(core_1.BossBar.style.NOTCHED_20)
-                    .render();
-            }
             var label = _this.debugMode
                 ? "Digesting: " + item.food.label + ", " + item.food.carbs + " carbs, " + item.food.GI + " GI"
                 : "Digesting: " + item.food.label;
-            _this.bars[index]
+            BarManager_1.default["getDigestionBar" + (i + 1)](_this.player)
                 .text(label)
                 .color(item.food.GI === 'high'
-                ? core_1.BossBar.color.PINK
-                : core_1.BossBar.color.PURPLE)
-                .progress(100 - percentDigested)
-                .render();
+                ? core_1.BossBar.Color.PINK
+                : core_1.BossBar.Color.PURPLE)
+                .progress(100 - percentDigested);
         });
-    };
-    MCT1.prototype.removeBars = function () {
-        var remove = function (bar) { return (bar ? bar.remove() : undefined); };
-        remove(this.bars.bgl);
-        remove(this.bars.insulin);
-        remove(this.bars.digestion1);
-        remove(this.bars.digestion2);
-        this.bars = {
-            bgl: _bar,
-            digestion1: _bar,
-            digestion2: _bar,
-            insulin: _bar,
-        };
     };
     MCT1.prototype.startDigestion = function (tickCount) {
         var _this = this;

@@ -87,10 +87,15 @@ export function itemStackFromJSON(itemStackJSON) {
     if (itemStackJSON.meta.displayName)
         itemMeta.setDisplayName(itemStackJSON.meta.displayName)
     if (itemStackJSON.meta.colorRGB)
-        itemMeta.setColor(Color.fromRGB(itemStackJSON.meta.colorRGB))
-    if (itemStackJSON.meta.title) itemMeta.setTitle(itemStackJSON.meta.title)
-    if (itemStackJSON.meta.author) itemMeta.setAuthor(itemStackJSON.meta.author)
-    if (itemStackJSON.meta.pages) itemMeta.setPages(itemStackJSON.meta.pages)
+        (itemMeta as PotionMeta).setColor(
+            Color.fromRGB(itemStackJSON.meta.colorRGB)
+        )
+    if (itemStackJSON.meta.title)
+        (itemMeta as BookMeta).setTitle(itemStackJSON.meta.title)
+    if (itemStackJSON.meta.author)
+        (itemMeta as BookMeta).setAuthor(itemStackJSON.meta.author)
+    if (itemStackJSON.meta.pages)
+        (itemMeta as BookMeta).setPages(itemStackJSON.meta.pages)
 
     itemStack.setItemMeta(itemMeta)
     return itemStack

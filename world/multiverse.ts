@@ -11,7 +11,9 @@ class MultiverseClass {
     private multiversePlugin: MultiverseCorePlugin
     private worldmanager: WorldManager
     constructor() {
-        this.multiversePlugin = server.getPlugin('Multiverse-Core')
+        this.multiversePlugin = server.getPlugin(
+            'Multiverse-Core'
+        ) as MultiverseCorePlugin
         if (!this.multiversePlugin) {
             throw new Error(
                 'Multiverse-Core plugin not found! Is it installed on this server?'
@@ -110,7 +112,7 @@ class MultiverseClass {
 
 export const Multiverse = new MultiverseClass()
 
-interface MultiverseCorePlugin {
+interface MultiverseCorePlugin extends Plugin {
     cloneWorld(
         templateWorldName: string,
         worldName: string,

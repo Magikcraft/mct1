@@ -1,11 +1,11 @@
 import { actionbar, BossBar, TextColor } from '@magikcraft/core'
-import { IBossBar } from '@magikcraft/core/bossbar/bossbar'
 import * as events from 'events'
 import * as inventory from 'inventory'
 import * as items from 'items'
 import { Logger } from '../log'
 import MCT1Player from '../user/MCT1Player'
 import { activityCosts, activityTypes } from './activities'
+import BarManager from './BarManager'
 import foods from './foods'
 
 const log = Logger(__filename)
@@ -15,7 +15,7 @@ const Color = Java.type('org.bukkit.Color')
 const Food: any = {}
 foods.forEach(item => (Food[item.type] = item))
 
-const _bar: IBossBar = (undefined as unknown) as IBossBar
+const _bar: BossBar = (undefined as unknown) as BossBar
 
 interface MatchItem<T> {
     lower: number
@@ -55,12 +55,6 @@ export class MCT1 {
     public eventListeners: any = []
 
     public isUSA: boolean = false
-    public bars = {
-        bgl: _bar,
-        digestion1: _bar,
-        digestion2: _bar,
-        insulin: _bar,
-    }
 
     public moveActivityLog: any = []
     public nonMoveActivityLog: any = []
@@ -124,7 +118,7 @@ export class MCT1 {
     public stop() {
         this.unregisterEvents()
         this.stopDigestion()
-        this.removeBars()
+        BarManager.removeBars(this.player)
         this.cancelEffects()
         this.isStarted = false
     }
@@ -238,36 +232,17 @@ export class MCT1 {
             : Math.round(this.bgl * 10) / 10
     }
 
-    private ensureBglBar() {
-        if (!this.bars.bgl) {
-            this.bars.bgl = BossBar.bar('', this.player)
-            this.bars.bgl.style(BossBar.style.NOTCHED_20).render()
-        }
-    }
-
-    private ensureInsulinBar() {
-        if (!this.bars.insulin) {
-            this.bars.insulin = BossBar.bar('', this.player)
-            this.bars.insulin
-                .color(BossBar.color.BLUE)
-                .style(BossBar.style.NOTCHED_20)
-                .render()
-        }
-    }
-
     private roundToOneDecimalPlace(value: number) {
         return (value / 20) * 100
     }
 
     private getBglBarColor() {
-        return BossBar.color[
-            match(this.bgl)([
-                { lower: 4, upper: 8, value: 'GREEN' },
-                { lower: 2, upper: 4, value: 'YELLOW' },
-                { lower: 8, upper: 12, value: 'YELLOW' },
-                { lower: 0, upper: 100, value: 'RED' },
-            ])
-        ]
+        return match(this.bgl)([
+            { lower: 4, upper: 8, value: BossBar.Color.GREEN },
+            { lower: 2, upper: 4, value: BossBar.Color.YELLOW },
+            { lower: 8, upper: 12, value: BossBar.Color.YELLOW },
+            { lower: 0, upper: 100, value: BossBar.Color.RED },
+        ])
     }
 
     private sortDigestionQueue(queue) {
@@ -278,13 +253,10 @@ export class MCT1 {
     }
 
     public renderBars() {
-        this.ensureBglBar()
-        this.ensureInsulinBar()
-
         const bglBarColor = this.getBglBarColor()
         const bglDisplayValue = this.getBglDisplayValue()
 
-        this.bars.bgl
+        BarManager.getBglBar(this.player)
             .text(`BGL: ${bglDisplayValue}`)
             .color(bglBarColor)
             .progress(this.roundToOneDecimalPlace(this.bgl))
@@ -292,7 +264,7 @@ export class MCT1 {
         const insulinLabel = Math.round(this.insulin * 10) / 10
         const insulinPercent = this.roundToOneDecimalPlace(this.insulin)
 
-        this.bars.insulin
+        BarManager.getInsulinBar(this.player)
             .text(`Insulin: ${insulinLabel}`) // round to 1 decimal
             .progress(insulinPercent) // insulin as percentage, rounded to 1 decimal
 
@@ -300,22 +272,15 @@ export class MCT1 {
 
         // digestion Bar(s)
         const digestionItems = this.digestionQueue.slice(0, 2)
-        if (!digestionItems[0] && this.bars.digestion1) {
-            this.bars.digestion1.remove()
+        if (!digestionItems[0]) {
+            BarManager.removeDigestionBar1(this.player)
         }
-        if (!digestionItems[1] && this.bars.digestion2) {
-            this.bars.digestion2.remove()
+        if (!digestionItems[1]) {
+            BarManager.removeDigestionBar2(this.player)
         }
 
         digestionItems.forEach((item, i) => {
-            const index = `digestion${i + 1}`
             const percentDigested = (item.carbsDigested / item.food.carbs) * 100
-
-            if (!this.bars[index]) {
-                this.bars[index] = BossBar.bar('', this.player)
-                    .style(BossBar.style.NOTCHED_20)
-                    .render()
-            }
 
             const label = this.debugMode
                 ? `Digesting: ${item.food.label}, ${item.food.carbs} carbs, ${
@@ -323,31 +288,15 @@ export class MCT1 {
                   } GI`
                 : `Digesting: ${item.food.label}`
 
-            this.bars[index]
+            BarManager[`getDigestionBar${i + 1}`](this.player)
                 .text(label)
                 .color(
                     item.food.GI === 'high'
-                        ? BossBar.color.PINK
-                        : BossBar.color.PURPLE
+                        ? BossBar.Color.PINK
+                        : BossBar.Color.PURPLE
                 )
                 .progress(100 - percentDigested)
-                .render()
         })
-    }
-
-    public removeBars() {
-        const remove = bar => (bar ? bar.remove() : undefined)
-
-        remove(this.bars.bgl)
-        remove(this.bars.insulin)
-        remove(this.bars.digestion1)
-        remove(this.bars.digestion2)
-        this.bars = {
-            bgl: _bar,
-            digestion1: _bar,
-            digestion2: _bar,
-            insulin: _bar,
-        }
     }
 
     public startDigestion(tickCount = 1) {
