@@ -380,6 +380,7 @@ var MCT1 = /** @class */ (function () {
         this.foodLevel = this.player.foodLevel;
     }
     MCT1.prototype.start = function () {
+        log("Starting MCT1 for " + this.player.name);
         this.stop(); // first stop, in case already running
         this.bgl = 5;
         this.insulin = 0;
@@ -387,7 +388,7 @@ var MCT1 = /** @class */ (function () {
         this.setFoodLevel(this.player.foodLevel);
         this.digestionQueue = [];
         this.registerEvents();
-        this.startDigestion();
+        this.startMetabolism();
         this.renderBars();
         this.doEffects();
         if (this.hasLightningSnowballs) {
@@ -406,7 +407,7 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.stop = function () {
         this.unregisterEvents();
-        this.stopDigestion();
+        this.stopMetabolism();
         BarManager_1.default.removeBars(this.player);
         this.cancelEffects();
         this.isStarted = false;
@@ -538,10 +539,10 @@ var MCT1 = /** @class */ (function () {
                 .progress(100 - percentDigested);
         });
     };
-    MCT1.prototype.startDigestion = function (tickCount) {
+    MCT1.prototype.startMetabolism = function (tickCount) {
         var _this = this;
         if (tickCount === void 0) { tickCount = 1; }
-        this.digestionTimer = setInterval(function () {
+        this.metabolismTimer = setInterval(function () {
             // Do digestion if not dead!
             if (!_this.player.isDead()) {
                 _this.metabolism(tickCount);
@@ -549,10 +550,10 @@ var MCT1 = /** @class */ (function () {
             }
         }, 1000);
     };
-    MCT1.prototype.stopDigestion = function () {
-        if (this.digestionTimer) {
-            clearInterval(this.digestionTimer);
-            this.digestionTimer = undefined;
+    MCT1.prototype.stopMetabolism = function () {
+        if (this.metabolismTimer) {
+            clearInterval(this.metabolismTimer);
+            this.metabolismTimer = undefined;
         }
     };
     MCT1.prototype.calculateBglRange = function () {

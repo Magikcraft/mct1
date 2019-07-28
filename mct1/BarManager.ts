@@ -77,14 +77,20 @@ class BarManagerClass {
 
     removeDigestionBar1(player) {
         this.removeBarsImpl(`${Mct1BarNamespace}:${player.name}-digestion1`)
+        delete this.getPlayerCache(player).digestion1
     }
 
     removeDigestionBar2(player) {
         this.removeBarsImpl(`${Mct1BarNamespace}:${player.name}-digestion2`)
+        delete this.getPlayerCache(player).digestion2
     }
 
     removeBars(player) {
         this.removeBarsImpl(`${Mct1BarNamespace}:${player.name}-`)
+        delete this.getPlayerCache(player).bgl
+        delete this.getPlayerCache(player).insulin
+        delete this.getPlayerCache(player).digestion1
+        delete this.getPlayerCache(player).digestion2
     }
 
     removeAllBars() {

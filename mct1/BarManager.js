@@ -46,12 +46,18 @@ var BarManagerClass = /** @class */ (function () {
     };
     BarManagerClass.prototype.removeDigestionBar1 = function (player) {
         this.removeBarsImpl(Mct1BarNamespace + ":" + player.name + "-digestion1");
+        delete this.getPlayerCache(player).digestion1;
     };
     BarManagerClass.prototype.removeDigestionBar2 = function (player) {
         this.removeBarsImpl(Mct1BarNamespace + ":" + player.name + "-digestion2");
+        delete this.getPlayerCache(player).digestion2;
     };
     BarManagerClass.prototype.removeBars = function (player) {
         this.removeBarsImpl(Mct1BarNamespace + ":" + player.name + "-");
+        delete this.getPlayerCache(player).bgl;
+        delete this.getPlayerCache(player).insulin;
+        delete this.getPlayerCache(player).digestion1;
+        delete this.getPlayerCache(player).digestion2;
     };
     BarManagerClass.prototype.removeAllBars = function () {
         this.removeBarsImpl(Mct1BarNamespace + ":");

@@ -1,4 +1,5 @@
 // const intervalModifier = -90000 // Useful for testing!
+import { actionbar, TextColor } from '@magikcraft/core'
 import * as LightingStorm from '../../../fx/lighting-storm'
 import * as LightningSuperStrike from '../../../fx/lightning-super-strike'
 import { Logger } from '../../../log'
@@ -9,7 +10,7 @@ import { QuestMCT1 } from '../../QuestMCT1'
 import * as Locations from './locs'
 import Wither from './wither'
 
-const intervalModifier = 60000 // Useful for testing!
+const intervalModifier = 0 // 60000 // Useful for testing!
 
 const log = Logger(__filename)
 
@@ -49,6 +50,11 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR')
         questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS')
 
+        actionbar(
+            this.player.name,
+            'Welcome to the village. What happened to everyone??',
+            TextColor.GOLD
+        )
         this.log(
             `Started quest mct1-prologue for ${
                 this.player.name
@@ -99,8 +105,19 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
 
         this.setTimeout(() => {
             this.log(`Turn off God mode`)
-            this.mct1Player.mct1.setSuperCharged(false)
-            this.mct1Player.mct1.setNightVision(false)
+            actionbar(this.player.name, "I don't feel well!", TextColor.RED)
+            this.mct1Player.startDKA(30).then(() => {
+                this.log('canceled deadly damage!')
+                this.state.completed = true
+                this.mct1Player.effects.add('LEVITATION')
+                this.mct1Player.mct1.bgl = 20 // Make player go blind.
+
+                setTimeout(() => {
+                    this.complete()
+                }, 5000)
+            })
+            // this.mct1Player.mct1.setSuperCharged(false)
+            // this.mct1Player.mct1.setNightVision(false)
         }, Math.max(135000 + intervalModifier, 0))
 
         this.setTimeout(() => {
@@ -143,6 +160,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
             }
         })
 
+        const snowball = Java.type('org.bukkit.entity.Snowball').class
         // Launch lightning snowballs on all clicks.
         this.registerEvent('playerInteract', event => {
             if (event.player.name != this.player.name) {
@@ -158,9 +176,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
                 return
             }
             if (actions.includes(event.action.toString())) {
-                event.player.launchProjectile(
-                    Java.type('org.bukkit.entity.Snowball').class
-                )
+                event.player.launchProjectile(snowball)
             }
         })
 
@@ -170,9 +186,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
                 if (event.damager.name != this.player.name) {
                     return
                 }
-                event.damager.launchProjectile(
-                    Java.type('org.bukkit.entity.Snowball').class
-                )
+                event.damager.launchProjectile(snowball)
             }
         })
     }

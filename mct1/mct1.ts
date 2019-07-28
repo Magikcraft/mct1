@@ -51,7 +51,7 @@ export class MCT1 {
     public digestionQueue: any = []
     public insulinSensitivityMultiplier: number = 1
 
-    public digestionTimer: any
+    public metabolismTimer: any
     public eventListeners: any = []
 
     public isUSA: boolean = false
@@ -87,6 +87,7 @@ export class MCT1 {
     }
 
     public start() {
+        log(`Starting MCT1 for ${this.player.name}`)
         this.stop() // first stop, in case already running
 
         this.bgl = 5
@@ -96,7 +97,7 @@ export class MCT1 {
         this.digestionQueue = []
 
         this.registerEvents()
-        this.startDigestion()
+        this.startMetabolism()
         this.renderBars()
         this.doEffects()
 
@@ -117,7 +118,7 @@ export class MCT1 {
 
     public stop() {
         this.unregisterEvents()
-        this.stopDigestion()
+        this.stopMetabolism()
         BarManager.removeBars(this.player)
         this.cancelEffects()
         this.isStarted = false
@@ -299,8 +300,8 @@ export class MCT1 {
         })
     }
 
-    public startDigestion(tickCount = 1) {
-        this.digestionTimer = setInterval(() => {
+    public startMetabolism(tickCount = 1) {
+        this.metabolismTimer = setInterval(() => {
             // Do digestion if not dead!
             if (!this.player.isDead()) {
                 this.metabolism(tickCount)
@@ -309,10 +310,10 @@ export class MCT1 {
         }, 1000)
     }
 
-    public stopDigestion() {
-        if (this.digestionTimer) {
-            clearInterval(this.digestionTimer)
-            this.digestionTimer = undefined
+    public stopMetabolism() {
+        if (this.metabolismTimer) {
+            clearInterval(this.metabolismTimer)
+            this.metabolismTimer = undefined
         }
     }
 

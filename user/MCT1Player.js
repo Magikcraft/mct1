@@ -127,6 +127,26 @@ var MCT1Player = /** @class */ (function () {
             }
         }
     };
+    MCT1Player.prototype.startDKA = function (durationSeconds) {
+        var _this = this;
+        log("Start DKA for " + this.player.name);
+        // we will go up to 20 BGL in durationSeconds
+        var modifier = 15 / durationSeconds;
+        var iterations = 0;
+        return new Promise(function (resolve) {
+            var doLoop = function () {
+                if (iterations < durationSeconds) {
+                    _this.mct1.bgl = _this.mct1.bgl + modifier;
+                    iterations++;
+                    setTimeout(function () { return doLoop(); }, 1000);
+                }
+                else {
+                    resolve();
+                }
+            };
+            doLoop();
+        });
+    };
     MCT1Player.prototype.setReloadInventoryAtSpawn = function (bool) {
         this.inventory.setReloadAtSpawn(bool);
     };

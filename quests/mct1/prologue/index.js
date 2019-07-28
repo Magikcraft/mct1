@@ -14,6 +14,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 // const intervalModifier = -90000 // Useful for testing!
+var core_1 = require("@magikcraft/core");
 var LightingStorm = require("../../../fx/lighting-storm");
 var LightningSuperStrike = require("../../../fx/lightning-super-strike");
 var log_1 = require("../../../log");
@@ -22,7 +23,7 @@ var questTools = require("../../quest-tools");
 var QuestMCT1_1 = require("../../QuestMCT1");
 var Locations = require("./locs");
 var wither_1 = require("./wither");
-var intervalModifier = 60000; // Useful for testing!
+var intervalModifier = 0; // 60000 // Useful for testing!
 var log = log_1.Logger(__filename);
 var QuestMCT1Prologue = /** @class */ (function (_super) {
     __extends(QuestMCT1Prologue, _super);
@@ -55,6 +56,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         // Hide portal.
         questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR');
         questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS');
+        core_1.actionbar(this.player.name, 'Welcome to the village. What happened to everyone??', core_1.TextColor.GOLD);
         this.log("Started quest mct1-prologue for " + this.player.name + ", with intervalModifier: " + intervalModifier);
         this.setTimeout(function () {
             _this.log("Start Storm!");
@@ -93,8 +95,18 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         }, Math.max(65000 + intervalModifier, 0));
         this.setTimeout(function () {
             _this.log("Turn off God mode");
-            _this.mct1Player.mct1.setSuperCharged(false);
-            _this.mct1Player.mct1.setNightVision(false);
+            core_1.actionbar(_this.player.name, "I don't feel well!", core_1.TextColor.RED);
+            _this.mct1Player.startDKA(30).then(function () {
+                _this.log('canceled deadly damage!');
+                _this.state.completed = true;
+                _this.mct1Player.effects.add('LEVITATION');
+                _this.mct1Player.mct1.bgl = 20; // Make player go blind.
+                setTimeout(function () {
+                    _this.complete();
+                }, 5000);
+            });
+            // this.mct1Player.mct1.setSuperCharged(false)
+            // this.mct1Player.mct1.setNightVision(false)
         }, Math.max(135000 + intervalModifier, 0));
         this.setTimeout(function () {
             _this.log("Make Wither hunt Player!");
@@ -131,6 +143,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
                 }
             }
         });
+        var snowball = Java.type('org.bukkit.entity.Snowball').class;
         // Launch lightning snowballs on all clicks.
         this.registerEvent('playerInteract', function (event) {
             if (event.player.name != _this.player.name) {
@@ -146,7 +159,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
                 return;
             }
             if (actions.includes(event.action.toString())) {
-                event.player.launchProjectile(Java.type('org.bukkit.entity.Snowball').class);
+                event.player.launchProjectile(snowball);
             }
         });
         this.registerEvent('entityDamageByEntity', function (event) {
@@ -155,7 +168,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
                 if (event.damager.name != _this.player.name) {
                     return;
                 }
-                event.damager.launchProjectile(Java.type('org.bukkit.entity.Snowball').class);
+                event.damager.launchProjectile(snowball);
             }
         });
     };
