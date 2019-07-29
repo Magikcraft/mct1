@@ -212,7 +212,7 @@ var MCT1 = /** @class */ (function () {
             if (eloc.x === ploc.x && eloc.x === ploc.x && eloc.z === ploc.z) {
                 if (!_this.inHealthyRange()) {
                     event.setCancelled(true);
-                    echo(_this.player, "can't use lightning while sick!");
+                    // echo(this.player, `can't use lightning while sick!`)
                     return; // Abort
                 }
                 if (!_this.isSuperCharged) {
