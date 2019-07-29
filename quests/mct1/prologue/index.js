@@ -96,7 +96,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         this.setTimeout(function () {
             _this.log("Turn off God mode");
             core_1.actionbar(_this.player.name, "I don't feel well!", core_1.TextColor.RED);
-            _this.mct1Player.startDKA(30).then(function () {
+            _this.mct1Player.startDKA(45).then(function () {
                 _this.log('canceled deadly damage!');
                 _this.state.completed = true;
                 _this.mct1Player.effects.add('LEVITATION');

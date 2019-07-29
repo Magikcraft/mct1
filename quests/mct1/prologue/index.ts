@@ -106,7 +106,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         this.setTimeout(() => {
             this.log(`Turn off God mode`)
             actionbar(this.player.name, "I don't feel well!", TextColor.RED)
-            this.mct1Player.startDKA(30).then(() => {
+            this.mct1Player.startDKA(45).then(() => {
                 this.log('canceled deadly damage!')
                 this.state.completed = true
                 this.mct1Player.effects.add('LEVITATION')

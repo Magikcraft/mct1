@@ -943,7 +943,7 @@ export class MCT1 {
         if (eloc.x === ploc.x && eloc.x === ploc.x && eloc.z === ploc.z) {
             if (!this.inHealthyRange()) {
                 event.setCancelled(true)
-                echo(this.player, `can't use lightning while sick!`)
+                // echo(this.player, `can't use lightning while sick!`)
                 return // Abort
             }
 
