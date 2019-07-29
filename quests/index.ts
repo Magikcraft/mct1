@@ -81,7 +81,7 @@ export async function questCommand({ questName, method, player, opts }) {
 
     switch (method) {
         case 'start':
-            echo(player, `Starting quest ${questName}...`)
+            // echo(player, `Starting quest ${questName}...`)
             log(`Starting quest ${questName} for ${player}`)
             const managedWorld = await WorldManager.createManagedWorld(
                 templateWorldName,

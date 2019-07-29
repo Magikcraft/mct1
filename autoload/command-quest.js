@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@magikcraft/core");
 var utils = require("utils");
 var log_1 = require("../log");
 var quests_1 = require("../quests");
@@ -35,7 +36,7 @@ commando_1.default('quest', function (args, player) {
     log('/quest - args: ' + args);
     var parsed = parseOptions(args, player.name);
     if (parsed.questName == 'mct1') {
-        echo(player, 'You are about to start the MCT1 quest!');
+        core_1.actionbar(player, 'You are about to start the MCT1 quest!', core_1.TextColor.MAGIC);
     }
     // allow admins to run the quest command for other users like /quest mct1 start <player>
     // let playername = player.name
