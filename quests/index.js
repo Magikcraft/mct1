@@ -122,7 +122,7 @@ function questCommand(_a) {
                     }
                     return [3 /*break*/, 5];
                 case 1:
-                    echo(player, "Starting quest " + questName + "...");
+                    // echo(player, `Starting quest ${questName}...`)
                     log("Starting quest " + questName + " for " + player);
                     return [4 /*yield*/, world_1.WorldManager.createManagedWorld(templateWorldName, player.name)];
                 case 2:

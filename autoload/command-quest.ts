@@ -1,3 +1,4 @@
+import { actionbar, TextColor } from '@magikcraft/core'
 import * as utils from 'utils'
 import { Logger } from '../log'
 import { questCommand } from '../quests'
@@ -42,7 +43,11 @@ commando('quest', (args, player) => {
     const parsed = parseOptions(args, player.name)
 
     if (parsed.questName == 'mct1') {
-        echo(player, 'You are about to start the MCT1 quest!')
+        actionbar(
+            player,
+            'You are about to start the MCT1 quest!',
+            TextColor.MAGIC
+        )
     }
 
     // allow admins to run the quest command for other users like /quest mct1 start <player>
