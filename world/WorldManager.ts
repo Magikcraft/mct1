@@ -26,9 +26,9 @@ const managedPrefix = '_m_'
 // We use this to know which player a world is for
 const playerPrefix = '--player:'
 
-const isManagedWorld = (w: BukkitWorld) => w.name.startsWith(managedPrefix)
-const isPlayerWorld = (w: BukkitWorld) => w.name.includes(playerPrefix)
-const playernameFromWorld = (w: BukkitWorld) => w.name.split(playerPrefix)[1]
+const isManagedWorld = (w: World) => w.name.startsWith(managedPrefix)
+const isPlayerWorld = (w: World) => w.name.includes(playerPrefix)
+const playernameFromWorld = (w: World) => w.name.split(playerPrefix)[1]
 
 class WorldManagerClass {
     private managedWorlds: { [worldname: string]: ManagedWorld }
@@ -139,14 +139,16 @@ class WorldManagerClass {
         log(`Worlds under management: ${Object.keys(this.managedWorlds)}`)
     }
 
-    private manageExistingWorld(world: BukkitWorld) {
+    private manageExistingWorld(world: World) {
         const worldname = world.name
         const playername = isPlayerWorld
             ? worldname.split(playerPrefix)[1]
             : undefined
         const newlyManagedWorld = new ManagedWorld(world, playername)
 
-        this.registerPlayerLeftWorldListener(worldname, playername)
+        if (playername) {
+            this.registerPlayerLeftWorldListener(worldname, playername)
+        }
 
         this.managedWorlds[worldname] = newlyManagedWorld
         log(`Managed Worlds: ${Object.keys(this.managedWorlds)}`)

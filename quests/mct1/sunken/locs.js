@@ -1,21 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Location = Java.type('org.bukkit.Location');
-exports.getLocations = function (bukkitWorld) {
+exports.getLocations = function (World) {
     return {
-        world: bukkitWorld,
+        world: World,
         locations: {
-            spawn: new Location(bukkitWorld, 0, 118, 2, 178, 13),
-            endChest: new Location(bukkitWorld, 36, 117, -137),
+            spawn: new Location(World, 0, 118, 2, 178, 13),
+            endChest: new Location(World, 36, 117, -137),
         },
         regions: {
             endPortal: [
-                new Location(bukkitWorld, 41, 116, -146),
-                new Location(bukkitWorld, 51, 121, -156),
+                new Location(World, 41, 116, -146),
+                new Location(World, 51, 121, -156),
             ],
             endGate: [
-                new Location(bukkitWorld, 44, 117, -145),
-                new Location(bukkitWorld, 48, 119, -145),
+                new Location(World, 44, 117, -145),
+                new Location(World, 48, 119, -145),
             ],
         },
     };

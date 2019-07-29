@@ -8,6 +8,7 @@ const log = Logger(__filename)
 const Material = Java.type('org.bukkit.Material')
 const Effect = Java.type('org.bukkit.Effect')
 const Sound = Java.type('org.bukkit.Sound')
+const EntityType = Java.type('org.bukkit.entity.EntityType')
 
 export default class Rockfall {
     public region: Region
@@ -124,7 +125,7 @@ export default class Rockfall {
         // After rockfall is complete...
         setTimeout(() => {
             world.entities.forEach(entity => {
-                if (entity.type == 'DROPPED_ITEM') {
+                if (entity.type == EntityType.DROPPED_ITEM) {
                     entity.remove()
                 }
             })

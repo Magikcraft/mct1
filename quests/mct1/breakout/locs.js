@@ -4,7 +4,7 @@ var Location = Java.type('org.bukkit.Location');
 var log_1 = require("../../../log");
 var log = log_1.Logger(__filename);
 exports.getLocations = function (managedWorld) {
-    var world = managedWorld.getBukkitWorld();
+    var world = managedWorld.getWorld();
     return {
         world: world,
         locations: {

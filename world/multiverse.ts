@@ -11,7 +11,9 @@ class MultiverseClass {
     private multiversePlugin: MultiverseCorePlugin
     private worldmanager: WorldManager
     constructor() {
-        this.multiversePlugin = server.getPlugin('Multiverse-Core')
+        this.multiversePlugin = server.getPlugin(
+            'Multiverse-Core'
+        ) as MultiverseCorePlugin
         if (!this.multiversePlugin) {
             throw new Error(
                 'Multiverse-Core plugin not found! Is it installed on this server?'
@@ -39,7 +41,7 @@ class MultiverseClass {
 
     public async importWorld(worldName: string) {
         log(`Importing world ${worldName}...`)
-        let world: BukkitWorld
+        let world: World
         let err: string | undefined
         world = utils.world(worldName)
         if (world) {
@@ -69,7 +71,7 @@ class MultiverseClass {
     }: {
         targetWorldname: string
         templateWorldname: string
-    }): Promise<BukkitWorld | undefined> {
+    }): Promise<World | undefined> {
         await this.destroyWorld(targetWorldname)
         log(`Cloning world ${targetWorldname}`)
         const templateWorld = await this.importWorld(templateWorldname)
@@ -110,12 +112,12 @@ class MultiverseClass {
 
 export const Multiverse = new MultiverseClass()
 
-interface MultiverseCorePlugin {
+interface MultiverseCorePlugin extends Plugin {
     cloneWorld(
         templateWorldName: string,
         worldName: string,
         mode: 'normal'
-    ): BukkitWorld
+    ): World
     getMVWorldManager(): WorldManager
 }
 
@@ -125,5 +127,5 @@ interface WorldManager {
         removeFromConfig: boolean,
         deleteWorldFolder: boolean
     )
-    getMVWorld(name: string): BukkitWorld | null
+    getMVWorld(name: string): World | null
 }

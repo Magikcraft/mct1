@@ -1,5 +1,6 @@
 import * as events from 'events'
 import { Logger } from '../log'
+import BarManager from '../mct1/BarManager'
 import MCT1Player from './MCT1Player'
 
 const log = Logger(__filename)
@@ -14,7 +15,7 @@ class MCT1PlayerManagerClass {
         events.playerJoin(event => this.onPlayerJoin(event))
     }
 
-    public getMct1Player(player: BukkitPlayer) {
+    public getMct1Player(player: Player) {
         if (!player) {
             throw new Error('No Player passed in!')
         }
@@ -25,14 +26,14 @@ class MCT1PlayerManagerClass {
         return this.cache[player.name]
     }
 
-    public deleteMct1Player(player: BukkitPlayer) {
+    public deleteMct1Player(player: Player) {
         if (this.cache[player.name]) {
             this.cache[player.name].cleanse()
             delete this.cache[player.name]
         }
     }
 
-    public flushMct1Player = (player: BukkitPlayer) => {
+    public flushMct1Player = (player: Player) => {
         this.deleteMct1Player(player)
         return this.getMct1Player(player)
     }
@@ -48,6 +49,7 @@ class MCT1PlayerManagerClass {
             log(`MCT1PlayerManager player quit handler`)
             this.deleteMct1Player(player)
             log(`Deleted MCT1 Player for ${player.name}`)
+            BarManager.removeBars(player)
         }, 100)
 }
 

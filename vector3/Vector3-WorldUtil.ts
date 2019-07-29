@@ -1,6 +1,6 @@
-import { Vector3 } from './Vector3'
 import * as blocks from 'blocks'
-
+import { Vector3 } from './Vector3'
+const Material = Java.type('org.bukkit.Material')
 export class Vector3World {
     // Will get the first safe spawnable block
     static GetSafePos(vector: Vector3): Vector3 {
@@ -8,7 +8,7 @@ export class Vector3World {
         var priorPos = vector
         var currentPos = vector
         var hasFoundBlock = false
-        var priorBlock = null
+        var priorBlock: Block | null = null
         while (!hasFoundBlock) {
             var block = world.getBlockAt(
                 currentPos.x,
@@ -59,7 +59,7 @@ export class Vector3World {
                 currentPos.z
             )
             // log("Checking for block, at: " + new Vector3(currentPos.x,currentPos.y,currentPos.z).toString() + ", block is: " + block.getType​());
-            if (block.getType() != 'AIR') {
+            if (block.getType() != Material.AIR) {
                 // log("Block has been found: " + block.getType​());
                 hasFoundBlock = true
                 finalPos = new Vector3(

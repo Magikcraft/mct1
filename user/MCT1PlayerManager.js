@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = require("events");
 var log_1 = require("../log");
+var BarManager_1 = require("../mct1/BarManager");
 var MCT1Player_1 = require("./MCT1Player");
 var log = log_1.Logger(__filename);
 var MCT1PlayerManagerClass = /** @class */ (function () {
@@ -25,6 +26,7 @@ var MCT1PlayerManagerClass = /** @class */ (function () {
                 log("MCT1PlayerManager player quit handler");
                 _this.deleteMct1Player(player);
                 log("Deleted MCT1 Player for " + player.name);
+                BarManager_1.default.removeBars(player);
             }, 100);
         };
         events.playerQuit(function (event) { return _this.onPlayerQuit(event); });

@@ -14,7 +14,7 @@ const GameMode = Java.type('org.bukkit.GameMode')
 
 // User class
 export default class MCT1Player {
-    public player: BukkitPlayer
+    public player: Player
     public sessionId
     public world // the world player is currently in
     public mct1: MCT1
@@ -163,6 +163,26 @@ export default class MCT1Player {
                 this.unregisterEvent(key)
             }
         }
+    }
+
+    public startDKA(durationSeconds: number) {
+        log(`Start DKA for ${this.player.name}`)
+        // we will go up to 20 BGL in durationSeconds
+        const modifier = 15 / durationSeconds
+        let iterations = 0
+
+        return new Promise(resolve => {
+            const doLoop = () => {
+                if (iterations < durationSeconds) {
+                    this.mct1.bgl = this.mct1.bgl + modifier
+                    iterations++
+                    setTimeout(() => doLoop(), 1000)
+                } else {
+                    resolve()
+                }
+            }
+            doLoop()
+        })
     }
 
     public setReloadInventoryAtSpawn(bool: boolean) {

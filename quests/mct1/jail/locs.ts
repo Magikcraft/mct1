@@ -2,53 +2,46 @@ import { Vector3 } from '../../..//vector3'
 import { Region } from '../../../regions'
 const Location = Java.type('org.bukkit.Location')
 
-export const getLocations = (bukkitWorld: BukkitWorld) => {
+export const getLocations = (World: World) => {
     return {
-        world: bukkitWorld,
+        world: World,
         waypoints: {
             combolock: {
                 region: [
-                    new Location(bukkitWorld, 211, 66, 231),
-                    new Location(bukkitWorld, 217, 61, 224),
+                    new Location(World, 211, 66, 231),
+                    new Location(World, 217, 61, 224),
                 ],
-                saveLocation: new Location(
-                    bukkitWorld,
-                    212,
-                    61,
-                    230,
-                    -122.7,
-                    -5.4
-                ),
+                saveLocation: new Location(World, 212, 61, 230, -122.7, -5.4),
             },
         },
         locations: {
-            spawn: new Location(bukkitWorld, 215, 84, 319, 124, 7),
+            spawn: new Location(World, 215, 84, 319, 124, 7),
             // spawn: new Location(world, 215, 55, 144), // end
-            journal: new Location(bukkitWorld, 216, 84, 315),
-            chest1: new Location(bukkitWorld, 215, 82, 318),
-            endChest: new Location(bukkitWorld, 208, 56, 142),
-            jailGuard: new Location(bukkitWorld, 209, 83, 315),
-            jailBrawl: new Location(bukkitWorld, 207, 83, 331),
-            jailGuardLure: new Location(bukkitWorld, 203, 83, 331),
-            jailDoor: new Location(bukkitWorld, 210, 83, 313),
+            journal: new Location(World, 216, 84, 315),
+            chest1: new Location(World, 215, 82, 318),
+            endChest: new Location(World, 208, 56, 142),
+            jailGuard: new Location(World, 209, 83, 315),
+            jailBrawl: new Location(World, 207, 83, 331),
+            jailGuardLure: new Location(World, 203, 83, 331),
+            jailDoor: new Location(World, 210, 83, 313),
         },
         regions: {
             jailHall: [
-                new Location(bukkitWorld, 205, 83, 304),
-                new Location(bukkitWorld, 209, 87, 324),
+                new Location(World, 205, 83, 304),
+                new Location(World, 209, 87, 324),
             ],
             endPortal: [
-                new Location(bukkitWorld, 214, 55, 136),
-                new Location(bukkitWorld, 216, 57, 130),
+                new Location(World, 214, 55, 136),
+                new Location(World, 216, 57, 130),
             ],
             endGate: [
-                new Location(bukkitWorld, 214, 55, 139),
-                new Location(bukkitWorld, 216, 57, 139),
+                new Location(World, 214, 55, 139),
+                new Location(World, 216, 57, 139),
             ],
             rockfall: new Region(
-                new Vector3(210, 83, 315, bukkitWorld.name),
-                new Vector3(205, 87, 330, bukkitWorld.name),
-                bukkitWorld.name
+                new Vector3(210, 83, 315, World.name),
+                new Vector3(205, 87, 330, World.name),
+                World.name
             ),
         },
     }

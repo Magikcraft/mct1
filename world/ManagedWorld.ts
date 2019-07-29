@@ -10,7 +10,7 @@ const log = Logger(__filename)
 export default class ManagedWorld {
     public playername?: string
     public worldname: string
-    private bukkitWorld
+    private World
     private started: boolean = false
     private regions: IWorldRegion[] = []
     private regionEvents
@@ -23,10 +23,10 @@ export default class ManagedWorld {
     private intervals: any = {}
     private timers: any = {}
 
-    constructor(bukkitWorld, playername?: string) {
-        this.bukkitWorld = bukkitWorld
-        this.logger = Logger(`world--${this.bukkitWorld.name}`)
-        this.worldname = bukkitWorld.name
+    constructor(World, playername?: string) {
+        this.World = World
+        this.logger = Logger(`world--${this.World.name}`)
+        this.worldname = World.name
         log(`Creating ManagedWorld ${this.worldname}`)
         this.playername = playername
         this._watchPlayersJoinWorld()
@@ -57,34 +57,33 @@ export default class ManagedWorld {
         this.destroyed = true
         this.cleanse()
     }
-    public getBukkitWorld() {
-        return this.bukkitWorld
+    public getWorld() {
+        return this.World
     }
 
     public getName(): string {
-        return this.bukkitWorld.name
+        return this.World.name
     }
     // setTime = (time: 'dawn' | 'day' | 'dusk' | 'night') => server.executeCommand(`time ${time} ${this.world.name}`)
-    public setDawn = () => this.bukkitWorld.setTime(6000)
-    public setDay = () => this.bukkitWorld.setTime(12000)
-    public setDusk = () => this.bukkitWorld.setTime(18000)
-    public setNight = () => this.bukkitWorld.setTime(20000)
+    public setDawn = () => this.World.setTime(6000)
+    public setDay = () => this.World.setTime(12000)
+    public setDusk = () => this.World.setTime(18000)
+    public setNight = () => this.World.setTime(20000)
     public setSun = () =>
-        this.bukkitWorld.setStorm(false) ||
-        this.bukkitWorld.setThundering(false)
+        this.World.setStorm(false) || this.World.setThundering(false)
     public setStorm = () =>
-        this.bukkitWorld.setThundering(true) || this.bukkitWorld.setStorm(true)
-    public setRain = () => this.bukkitWorld.setStorm(true)
+        this.World.setThundering(true) || this.World.setStorm(true)
+    public setRain = () => this.World.setStorm(true)
 
     public killAll(type: '*' | 'mobs' | 'monsters') {
         if (this.destroyed) {
             return
         }
-        server.executeCommand(`killall ${type} ${this.bukkitWorld.name}`)
+        server.executeCommand(`killall ${type} ${this.World.name}`)
     }
 
     public setChunkBiome(loc, biome: string) {
-        const chunk = this.bukkitWorld.getChunkAt(loc)
+        const chunk = this.World.getChunkAt(loc)
         for (let x = 0; x < 16; x++) {
             for (let z = 0; z < 16; z++) {
                 const block = chunk.getBlock(x, 0, z)
@@ -139,7 +138,7 @@ export default class ManagedWorld {
 
     public preventBlockBreak(except: string[] = []) {
         this.registerEvent('blockBreak', event => {
-            if (event.block.world.name !== this.bukkitWorld.name) {
+            if (event.block.world.name !== this.World.name) {
                 return
             }
             const blockType = event.block.type.toString()
@@ -159,7 +158,7 @@ export default class ManagedWorld {
         this.registerEvent(
             'creatureSpawn',
             event => {
-                if (event.entity.world.name !== this.bukkitWorld.name) {
+                if (event.entity.world.name !== this.World.name) {
                     return
                 }
                 const mobType = event.entity.type.toString()
@@ -242,8 +241,8 @@ export default class ManagedWorld {
         this.events[k] = events[type](callback)
     }
 
-    public spawnEntity(location: BukkitLocation, entityType: any) {
-        this.bukkitWorld.spawnEntity(location, entityType)
+    public spawnEntity(location: Location, entityType: any) {
+        this.World.spawnEntity(location, entityType)
     }
 
     public unregisterEvent(key: string) {
@@ -290,19 +289,17 @@ export default class ManagedWorld {
     }
 
     private _watchPlayersJoinWorld() {
-        this.bukkitWorld.players.forEach(player =>
-            this._playerJoinedWorld(player)
-        )
+        this.World.players.forEach(player => this._playerJoinedWorld(player))
 
         this.registerEvent('playerJoin', event => {
-            if (event.player.world.name !== this.bukkitWorld.name) {
+            if (event.player.world.name !== this.World.name) {
                 return
             }
             this._playerJoinedWorld(event.player)
         })
 
         this.registerEvent('playerChangedWorld', event => {
-            if (event.player.world.name !== this.bukkitWorld.name) {
+            if (event.player.world.name !== this.World.name) {
                 return
             }
             this._playerJoinedWorld(event.player)
@@ -310,7 +307,7 @@ export default class ManagedWorld {
     }
 
     private _playerJoinedWorld(player) {
-        this.log(`player ${player.name} joined world ${this.bukkitWorld.name}`)
+        this.log(`player ${player.name} joined world ${this.World.name}`)
         const worldPlayer = {
             inRegionNames: [],
             moveCount: 0,
@@ -329,7 +326,7 @@ export default class ManagedWorld {
 
     private _watchPlayersMove() {
         this.registerEvent('playerMove', event => {
-            if (event.player.world.name !== this.bukkitWorld.name) {
+            if (event.player.world.name !== this.World.name) {
                 return
             }
             if (!this.regions.length) {
