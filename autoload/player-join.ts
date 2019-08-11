@@ -1,5 +1,6 @@
 import * as events from 'events'
 import { Logger } from '../log'
+import { questCommand } from '../quests'
 const log = Logger(__filename)
 
 log('Registering Player Join event handler')
@@ -12,6 +13,14 @@ events.playerJoin(({ player }) => {
             `Hi ${player.name}. Welcome to MC:T1, made with <3 by Magikcraft.io`
         )
         echo(player, '')
-        echo(player, `Type /quest mct1 to start the quest!`)
+
+        questCommand({
+            method: 'start',
+            opts: {
+                verbose: false,
+            },
+            player,
+            questName: 'mct1',
+        })
     }, 1000)
 })
