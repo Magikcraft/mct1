@@ -54,7 +54,7 @@ var BarManagerClass = /** @class */ (function () {
         delete this.getPlayerCache(player).digestion2;
     };
     BarManagerClass.prototype.removeBars = function (player) {
-        this.removeBarsImpl(Mct1BarNamespace + ":" + player.name + "-");
+        this.removeBarsImpl(ns(Mct1BarNamespace + ":" + player.name + "-"));
         delete this.getPlayerCache(player).bgl;
         delete this.getPlayerCache(player).insulin;
         delete this.getPlayerCache(player).digestion1;
