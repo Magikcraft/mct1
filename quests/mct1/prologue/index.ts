@@ -59,7 +59,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
             if (showIntroMsgSeconds-- === 0) {
                 this.clearInterval(showIntroMsg)
             }
-        }, 1000)
+        }, 500)
         this.log(
             `Started quest mct1-prologue for ${
                 this.player.name

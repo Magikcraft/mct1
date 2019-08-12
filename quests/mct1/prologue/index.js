@@ -62,7 +62,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
             if (showIntroMsgSeconds-- === 0) {
                 _this.clearInterval(showIntroMsg);
             }
-        }, 1000);
+        }, 500);
         this.log("Started quest mct1-prologue for " + this.player.name + ", with intervalModifier: " + intervalModifier);
         this.setTimeout(function () {
             _this.log("Start Storm!");
