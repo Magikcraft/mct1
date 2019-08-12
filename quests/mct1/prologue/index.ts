@@ -49,12 +49,17 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         // Hide portal.
         questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR')
         questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS')
-
-        actionbar(
-            this.player.name,
-            'Welcome to the village. What happened to everyone??',
-            TextColor.GOLD
-        )
+        let showIntroMsgSeconds = 5
+        const showIntroMsg = this.setInterval(() => {
+            actionbar(
+                this.player.name,
+                'Welcome to the village. What happened to everyone??',
+                TextColor.GOLD
+            )
+            if (showIntroMsgSeconds-- === 0) {
+                this.clearInterval(showIntroMsg)
+            }
+        }, 1000)
         this.log(
             `Started quest mct1-prologue for ${
                 this.player.name

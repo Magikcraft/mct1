@@ -30,6 +30,7 @@ var QuestBase = /** @class */ (function () {
         this.setInterval = function (callback, interval, key) {
             var k = key || tools.uuid();
             this.intervals[k] = setInterval(callback, interval);
+            return k;
         };
         this.name = conf.name;
         this.nextQuestName = conf.nextQuestName;
@@ -145,6 +146,7 @@ var QuestBase = /** @class */ (function () {
     QuestBase.prototype.setTimeout = function (callback, interval, key) {
         var k = key || tools.uuid();
         this.timers[k] = setTimeout(callback, interval);
+        return k;
     };
     QuestBase.prototype.clearTimeout = function (key) {
         clearTimeout(this.timers[key]);

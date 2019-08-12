@@ -56,7 +56,13 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         // Hide portal.
         questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR');
         questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS');
-        core_1.actionbar(this.player.name, 'Welcome to the village. What happened to everyone??', core_1.TextColor.GOLD);
+        var showIntroMsgSeconds = 5;
+        var showIntroMsg = this.setInterval(function () {
+            core_1.actionbar(_this.player.name, 'Welcome to the village. What happened to everyone??', core_1.TextColor.GOLD);
+            if (showIntroMsgSeconds-- === 0) {
+                _this.clearInterval(showIntroMsg);
+            }
+        }, 1000);
         this.log("Started quest mct1-prologue for " + this.player.name + ", with intervalModifier: " + intervalModifier);
         this.setTimeout(function () {
             _this.log("Start Storm!");

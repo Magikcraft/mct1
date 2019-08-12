@@ -178,6 +178,7 @@ export class QuestBase {
     public setTimeout(callback: any, interval: number, key?: string) {
         const k = key || tools.uuid()
         this.timers[k] = setTimeout(callback, interval)
+        return k
     }
 
     public clearTimeout(key: string) {
@@ -205,6 +206,7 @@ export class QuestBase {
     ) {
         const k = key || tools.uuid()
         this.intervals[k] = setInterval(callback, interval)
+        return k
     }
 
     public clearInterval(key: string) {
