@@ -49,7 +49,7 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         // Hide portal.
         questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR')
         questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS')
-        let showIntroMsgSeconds = 10
+        let showIntroMsgSeconds = 20
         const showIntroMsg = this.setInterval(() => {
             actionbar(
                 this.player.name,

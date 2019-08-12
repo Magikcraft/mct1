@@ -56,7 +56,7 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         // Hide portal.
         questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR');
         questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS');
-        var showIntroMsgSeconds = 10;
+        var showIntroMsgSeconds = 20;
         var showIntroMsg = this.setInterval(function () {
             core_1.actionbar(_this.player.name, 'What is this place?? What happened to everyone??', core_1.TextColor.GOLD);
             if (showIntroMsgSeconds-- === 0) {
