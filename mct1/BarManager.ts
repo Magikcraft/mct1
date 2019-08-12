@@ -14,6 +14,9 @@ interface BarCache {
         [playername: string]: PlayerBarCache
     }
 }
+
+const ns = (name: string) => name.toLowerCase()
+
 class BarManagerClass {
     barCache: BarCache = {} as BarCache
 
@@ -23,7 +26,7 @@ class BarManagerClass {
             bars.bgl = new BossBar(
                 player,
                 Mct1BarNamespace,
-                `${player.name}-bgl`
+                ns(`${player.name}-bgl`)
             )
             bars.bgl.style(BossBar.Style.NOTCHED_20)
         }
@@ -36,7 +39,7 @@ class BarManagerClass {
             bars.insulin = new BossBar(
                 player,
                 Mct1BarNamespace,
-                `${player.name}-insulin`
+                ns(`${player.name}-insulin`)
             )
             bars.insulin
                 .color(BossBar.Color.BLUE)
@@ -51,7 +54,7 @@ class BarManagerClass {
             bars.digestion1 = new BossBar(
                 player,
                 Mct1BarNamespace,
-                `${player.name}-digestion1`
+                ns(`${player.name}-digestion1`)
             )
             bars.digestion1
                 .color(BossBar.Color.BLUE)
@@ -66,7 +69,7 @@ class BarManagerClass {
             bars.digestion2 = new BossBar(
                 player,
                 Mct1BarNamespace,
-                `${player.name}-digestion2`
+                ns(`${player.name}-digestion2`)
             )
             bars.digestion2
                 .color(BossBar.Color.BLUE)
@@ -76,12 +79,12 @@ class BarManagerClass {
     }
 
     removeDigestionBar1(player) {
-        this.removeBarsImpl(`${Mct1BarNamespace}:${player.name}-digestion1`)
+        this.removeBarsImpl(ns(`${Mct1BarNamespace}:${player.name}-digestion1`))
         delete this.getPlayerCache(player).digestion1
     }
 
     removeDigestionBar2(player) {
-        this.removeBarsImpl(`${Mct1BarNamespace}:${player.name}-digestion2`)
+        this.removeBarsImpl(ns(`${Mct1BarNamespace}:${player.name}-digestion2`))
         delete this.getPlayerCache(player).digestion2
     }
 

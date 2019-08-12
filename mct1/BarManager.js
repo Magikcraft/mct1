@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@magikcraft/core");
 var Mct1BarNamespace = 'mct1-bars';
+var ns = function (name) { return name.toLowerCase(); };
 var BarManagerClass = /** @class */ (function () {
     function BarManagerClass() {
         this.barCache = {};
@@ -9,7 +10,7 @@ var BarManagerClass = /** @class */ (function () {
     BarManagerClass.prototype.getBglBar = function (player) {
         var bars = this.getPlayerCache(player);
         if (!bars.bgl) {
-            bars.bgl = new core_1.BossBar(player, Mct1BarNamespace, player.name + "-bgl");
+            bars.bgl = new core_1.BossBar(player, Mct1BarNamespace, ns(player.name + "-bgl"));
             bars.bgl.style(core_1.BossBar.Style.NOTCHED_20);
         }
         return bars.bgl;
@@ -17,7 +18,7 @@ var BarManagerClass = /** @class */ (function () {
     BarManagerClass.prototype.getInsulinBar = function (player) {
         var bars = this.getPlayerCache(player);
         if (!bars.insulin) {
-            bars.insulin = new core_1.BossBar(player, Mct1BarNamespace, player.name + "-insulin");
+            bars.insulin = new core_1.BossBar(player, Mct1BarNamespace, ns(player.name + "-insulin"));
             bars.insulin
                 .color(core_1.BossBar.Color.BLUE)
                 .style(core_1.BossBar.Style.NOTCHED_20);
@@ -27,7 +28,7 @@ var BarManagerClass = /** @class */ (function () {
     BarManagerClass.prototype.getDigestionBar1 = function (player) {
         var bars = this.getPlayerCache(player);
         if (!bars.digestion1) {
-            bars.digestion1 = new core_1.BossBar(player, Mct1BarNamespace, player.name + "-digestion1");
+            bars.digestion1 = new core_1.BossBar(player, Mct1BarNamespace, ns(player.name + "-digestion1"));
             bars.digestion1
                 .color(core_1.BossBar.Color.BLUE)
                 .style(core_1.BossBar.Style.NOTCHED_20);
@@ -37,7 +38,7 @@ var BarManagerClass = /** @class */ (function () {
     BarManagerClass.prototype.getDigestionBar2 = function (player) {
         var bars = this.getPlayerCache(player);
         if (!bars.digestion2) {
-            bars.digestion2 = new core_1.BossBar(player, Mct1BarNamespace, player.name + "-digestion2");
+            bars.digestion2 = new core_1.BossBar(player, Mct1BarNamespace, ns(player.name + "-digestion2"));
             bars.digestion2
                 .color(core_1.BossBar.Color.BLUE)
                 .style(core_1.BossBar.Style.NOTCHED_20);
@@ -45,11 +46,11 @@ var BarManagerClass = /** @class */ (function () {
         return bars.digestion2;
     };
     BarManagerClass.prototype.removeDigestionBar1 = function (player) {
-        this.removeBarsImpl(Mct1BarNamespace + ":" + player.name + "-digestion1");
+        this.removeBarsImpl(ns(Mct1BarNamespace + ":" + player.name + "-digestion1"));
         delete this.getPlayerCache(player).digestion1;
     };
     BarManagerClass.prototype.removeDigestionBar2 = function (player) {
-        this.removeBarsImpl(Mct1BarNamespace + ":" + player.name + "-digestion2");
+        this.removeBarsImpl(ns(Mct1BarNamespace + ":" + player.name + "-digestion2"));
         delete this.getPlayerCache(player).digestion2;
     };
     BarManagerClass.prototype.removeBars = function (player) {
