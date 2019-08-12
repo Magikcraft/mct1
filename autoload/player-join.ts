@@ -12,15 +12,19 @@ events.playerJoin(({ player }) => {
             player,
             `Hi ${player.name}. Welcome to MC:T1, made with <3 by Magikcraft.io`
         )
-        echo(player, '')
+        echo(player, 'Satrting the gmae in 5 seconds...')
 
-        questCommand({
-            method: 'start',
-            opts: {
-                verbose: false,
-            },
-            player,
-            questName: 'mct1',
-        })
+        setTimeout(
+            () =>
+                questCommand({
+                    method: 'start',
+                    opts: {
+                        verbose: false,
+                    },
+                    player,
+                    questName: 'mct1',
+                }),
+            5000
+        )
     }, 1000)
 })

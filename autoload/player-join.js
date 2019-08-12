@@ -10,14 +10,16 @@ events.playerJoin(function (_a) {
     setTimeout(function () {
         // Initial join is a bit chaotic
         echo(player, "Hi " + player.name + ". Welcome to MC:T1, made with <3 by Magikcraft.io");
-        echo(player, '');
-        quests_1.questCommand({
-            method: 'start',
-            opts: {
-                verbose: false,
-            },
-            player: player,
-            questName: 'mct1',
-        });
+        echo(player, 'Satrting the gmae in 5 seconds...');
+        setTimeout(function () {
+            return quests_1.questCommand({
+                method: 'start',
+                opts: {
+                    verbose: false,
+                },
+                player: player,
+                questName: 'mct1',
+            });
+        }, 5000);
     }, 1000);
 });
