@@ -10,7 +10,7 @@ import { QuestMCT1 } from '../../QuestMCT1'
 import * as Locations from './locs'
 import Wither from './wither'
 
-const intervalModifier = 0 // 60000 // Useful for testing!
+const intervalModifier = 15000 // 60000 // Useful for testing!
 
 const log = Logger(__filename)
 
@@ -49,11 +49,11 @@ export default class QuestMCT1Prologue extends QuestMCT1 {
         // Hide portal.
         questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR')
         questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS')
-        let showIntroMsgSeconds = 5
+        let showIntroMsgSeconds = 10
         const showIntroMsg = this.setInterval(() => {
             actionbar(
                 this.player.name,
-                'Welcome to the village. What happened to everyone??',
+                'What is this place?? What happened to everyone??',
                 TextColor.GOLD
             )
             if (showIntroMsgSeconds-- === 0) {

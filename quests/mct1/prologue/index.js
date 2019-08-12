@@ -23,7 +23,7 @@ var questTools = require("../../quest-tools");
 var QuestMCT1_1 = require("../../QuestMCT1");
 var Locations = require("./locs");
 var wither_1 = require("./wither");
-var intervalModifier = 0; // 60000 // Useful for testing!
+var intervalModifier = 15000; // 60000 // Useful for testing!
 var log = log_1.Logger(__filename);
 var QuestMCT1Prologue = /** @class */ (function (_super) {
     __extends(QuestMCT1Prologue, _super);
@@ -56,9 +56,9 @@ var QuestMCT1Prologue = /** @class */ (function (_super) {
         // Hide portal.
         questTools.replaceRegionV1(this.Locs.regions.portalOuter, 'AIR');
         questTools.replaceRegionV1(this.Locs.regions.portalGround, 'GRASS');
-        var showIntroMsgSeconds = 5;
+        var showIntroMsgSeconds = 10;
         var showIntroMsg = this.setInterval(function () {
-            core_1.actionbar(_this.player.name, 'Welcome to the village. What happened to everyone??', core_1.TextColor.GOLD);
+            core_1.actionbar(_this.player.name, 'What is this place?? What happened to everyone??', core_1.TextColor.GOLD);
             if (showIntroMsgSeconds-- === 0) {
                 _this.clearInterval(showIntroMsg);
             }
