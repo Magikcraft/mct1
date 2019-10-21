@@ -25,6 +25,28 @@ npm i -g mct1-server
 mct1-server
 ```
 
+### The Middle Path
+
+Use smac to run it:
+
+1. Install [smac](https://www.npmjs.com/package/smac):
+
+```bash
+npm i -g smac
+```
+
+1. Git clone this repo:
+
+```bash
+git clone https://github.com/Magikcraft/mct1.git
+```
+
+1. Use smac to start the server:
+
+```bash 
+cd mct1/dev-server && smac start
+```
+
 ### The Hard Way
 
 If you want to dev on this plugin, then you can run from source like this:
