@@ -27,9 +27,9 @@ mct1-server
 
 ### The Middle Path
 
-Use smac to run it:
+Use [smac](https://www.npmjs.com/package/smac) to run it:
 
-1. Install [smac](https://www.npmjs.com/package/smac):
+1. Install smac:
 
 ```bash
 npm i -g smac
