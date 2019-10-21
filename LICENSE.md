@@ -1,8 +1,8 @@
 # License
 
-Code in this repository contributed after Monday, 21 October, 2019, is licensed under the [Affero GNU Public License 3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
+Code in this repository contributed on or after 1 May, 2019, is licensed under the [Affero GNU Public License 3.0](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
-Code contributed before Monday, 21 October, 2019 is licensed under ISC.
+Code contributed before 1 May, 2019 is licensed under ISC.
 
 
 ## ISC License
