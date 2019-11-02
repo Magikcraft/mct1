@@ -1,6 +1,6 @@
 import { MCT1PlayerCache } from '../user'
 import commando from '../utils/commando'
-commando('quest', (args, player) => {
+commando('units', (args, player) => {
     const mct1Player = MCT1PlayerCache.getMct1Player(player)
     const currentUnit = mct1Player.mct1.isUSA ? 'mgdl' : 'mmolL'
     echo(player, `Currently using ${currentUnit}`)

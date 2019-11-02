@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var user_1 = require("../user");
 var commando_1 = require("../utils/commando");
-commando_1.default('quest', function (args, player) {
+commando_1.default('units', function (args, player) {
     var mct1Player = user_1.MCT1PlayerCache.getMct1Player(player);
     var currentUnit = mct1Player.mct1.isUSA ? 'mgdl' : 'mmolL';
     echo(player, "Currently using " + currentUnit);
