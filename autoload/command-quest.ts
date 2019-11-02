@@ -41,6 +41,7 @@ commando('quest', (args, player) => {
     log('/quest - args: ' + args)
 
     const parsed = parseOptions(args, player.name)
+    console.log(`quest options: ${JSON.stringify(parsed)}`)
 
     if (parsed.questName == 'mct1') {
         actionbar(

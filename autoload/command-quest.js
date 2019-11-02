@@ -35,6 +35,7 @@ function parseOptions(args, playername) {
 commando_1.default('quest', function (args, player) {
     log('/quest - args: ' + args);
     var parsed = parseOptions(args, player.name);
+    console.log("quest options: " + JSON.stringify(parsed));
     if (parsed.questName == 'mct1') {
         core_1.actionbar(player, 'You are about to start the MCT1 quest!', core_1.TextColor.MAGIC);
     }
