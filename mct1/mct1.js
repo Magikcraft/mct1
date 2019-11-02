@@ -484,8 +484,8 @@ var MCT1 = /** @class */ (function () {
     };
     MCT1.prototype.getBglDisplayValue = function () {
         return this.isUSA
-            ? Math.round(this.bgl * 18) / 10
-            : Math.round(this.bgl * 10) / 10;
+            ? Math.round(this.bgl * 180) / 10 + ' mgdl'
+            : Math.round(this.bgl * 10) / 10 + ' mmolL';
     };
     MCT1.prototype.roundToOneDecimalPlace = function (value) {
         return (value / 20) * 100;

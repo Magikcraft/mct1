@@ -229,8 +229,8 @@ export class MCT1 {
 
     private getBglDisplayValue() {
         return this.isUSA
-            ? Math.round(this.bgl * 18) / 10
-            : Math.round(this.bgl * 10) / 10
+            ? Math.round(this.bgl * 180) / 10 + ' mgdl'
+            : Math.round(this.bgl * 10) / 10 + ' mmolL'
     }
 
     private roundToOneDecimalPlace(value: number) {
