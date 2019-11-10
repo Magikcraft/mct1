@@ -23,7 +23,7 @@ var QuestMCT1Magmarun = /** @class */ (function (_super) {
     function QuestMCT1Magmarun(conf) {
         var _this = _super.call(this, conf) || this;
         _this.activeRuns = [];
-        _this.Locs = Locations.getLocations(_this.world);
+        _this.Locs = Locations.getLocations(_this.world.getWorld());
         return _this;
     }
     QuestMCT1Magmarun.prototype.start = function () {

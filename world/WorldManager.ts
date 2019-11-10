@@ -24,7 +24,7 @@ const log = Logger(__filename)
 // We use this to detect worlds that should be managed when reloading the code
 const managedPrefix = '_m_'
 // We use this to know which player a world is for
-const playerPrefix = '--player:'
+const playerPrefix = '--player--'
 
 const isManagedWorld = (w: World) => w.name.startsWith(managedPrefix)
 const isPlayerWorld = (w: World) => w.name.includes(playerPrefix)

@@ -10,7 +10,7 @@ export default class QuestMCT1Magmarun extends QuestMCT1 {
 
     constructor(conf: QuestConfig) {
         super(conf)
-        this.Locs = Locations.getLocations(this.world)
+        this.Locs = Locations.getLocations(this.world.getWorld())
     }
 
     public start() {

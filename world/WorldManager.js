@@ -58,7 +58,7 @@ var log = log_1.Logger(__filename);
 // We use this to detect worlds that should be managed when reloading the code
 var managedPrefix = '_m_';
 // We use this to know which player a world is for
-var playerPrefix = '--player:';
+var playerPrefix = '--player--';
 var isManagedWorld = function (w) { return w.name.startsWith(managedPrefix); };
 var isPlayerWorld = function (w) { return w.name.includes(playerPrefix); };
 var playernameFromWorld = function (w) { return w.name.split(playerPrefix)[1]; };
