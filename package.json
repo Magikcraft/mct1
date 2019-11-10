@@ -4,7 +4,8 @@
     "description": "Minecraft for Type 1 Diabetes",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"No tests yet\" && exit 0"
+        "test": "echo \"No tests yet\" && exit 0",
+        "build": "tsc"
     },
     "repository": {
         "type": "git",
@@ -30,7 +31,6 @@
     "homepage": "https://github.com/Magikcraft/mct1#readme",
     "scriptcraft_load_dir": "autoload",
     "devDependencies": {
-        "@types/typescript": "^2.0.0",
         "husky": "^1.3.1",
         "lint-staged": "^8.1.5",
         "prettier": "1.16.4",
